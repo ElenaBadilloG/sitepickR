@@ -13,11 +13,11 @@ In selecting units and subunits, sitepickR uses the cube method (e.g., Deville &
 
 In addition, sitepickR uses statistical matching to select possible replacement units. In education RCTs, the share of selected districts that agrees to participate tends to be low. To address this challenge, sitepickR selects and ranks up to 10 replacement districts for each districts selected using the cube method. Replacement districts are selected using statistical matching based on propensity score methods. To implement statistical matching, sitepickR uses [SOMETHING ABOUT MATCHIT].
 
-References
+## References
 
-Deville, J. C., & Tillé, Y. (2004). Efficient balanced sampling: the cube method. __Biometrika__, 91, 893-912.
+Deville, J. C., & Tillé, Y. (2004). Efficient balanced sampling: the cube method. _Biometrika_, 91, 893-912.
 
-Tillé, Y. (2011). Ten years of balanced sampling with the cube method: An appraisal. __Survey Methodology__, 37, 215-226.
+Tillé, Y. (2011). Ten years of balanced sampling with the cube method: An appraisal. _Survey Methodology_, 37, 215-226.
 
 
 _Main Inputs_: 
