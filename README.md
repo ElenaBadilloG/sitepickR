@@ -1,10 +1,12 @@
-# <img src="man/figures/logo.png" align="right" height="119" />
+# <img src="man/figures/logo.png" align="left" height="119" />
 # sitepickR: A Generalizability R package
 Elizabeth A. Stuart, Robert Olsen, Elena Badillo-Goicoechea (2022)
 
 ## Introduction
 
-sitepickR is designed to select a representative sample of sites for a prospective impact evaluation, such as a randomized controlled trial (RCT). Like generalizeR, this package is designed for selecting schools but can be used to select any type of site defined by geography or administrative responsibility (e.g., county, job training center, health clinic). Unlike generalizeR, sitepicker is designed to select sites in two stages—first “units” that contain multiple sites located nearby and/or under the same administration and then “subunits” containing individual sites. Two-stage sampling may be necessary when the cost of the study depend on the number of units (e.g., school districts), and a one-stage sample of subunits (e.g., schools) would likely contain more units than the study can afford.
+sitepickR is designed to select a representative sample of sites for a prospective impact evaluation, such as a randomized controlled trial (RCT). 
+
+Like [generalizeR](https://nustat.github.io/generalizeR/), this package is designed for selecting schools but can be used to select any type of site defined by geography or administrative responsibility (e.g., county, job training center, health clinic). Unlike generalizeR, sitepicker is designed to select sites in two stages—first “units” that contain multiple sites located nearby and/or under the same administration and then “subunits” containing individual sites. Two-stage sampling may be necessary when the cost of the study depend on the number of units (e.g., school districts), and a one-stage sample of subunits (e.g., schools) would likely contain more units than the study can afford.
 
 The main function in this package, selectMatch() lets the user carry out a two-level sample selection where the possibility of an initially selected participant not wanting to participate is anticipated. The procedure aims to reduce the bias (and/or loss of generalizability to the population) this could introduce.
 
