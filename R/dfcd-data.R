@@ -3,7 +3,10 @@
 #' A pre-processed dataset containing key variables from administrative data compiled by the CCD, aggregated at 
 #' the district and school level for public schools in California for the 2017 and 2018 school years.
 #'
-#' @format A data frame with 1890 rows and 13 variables:
+#' @docType data
+#' @usage data(dfCCD)
+#' @keywords datasets
+#' @format A data frame with 1890 rows and 13 variables.
 #' \describe{
 #'   \item{LEAID}{school district unique identifier}
 #'   \item{NCESSCH}{school unique identifier}
@@ -17,7 +20,4 @@
 #'   \item{sch.pct.female}{percentage of students in the school who are female.}
 #' }
 #' @source \url{https://nces.ed.gov/ccd//}
-#' @docType data
-#' @keywords datasets
-#' @name dfCCD
-#' @usage data(dfCCD)
+"dfCCD"

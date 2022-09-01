@@ -1,6 +1,6 @@
 ##########################################################################################################
 ############ Wrapper functions for getting balance diagnostics figures for selectMatch() [sitepickR Package - Testing Version]  ######
-################### Elizabeth A. Stuart, Robert Olsen & Elena Badillo-Goicoechea, August 2022 ###############
+################### Robert Olsen, Elizabeth A. Stuart & Elena Badillo-Goicoechea, August 2022 ###############
 ##########################################################################################################
 
 
