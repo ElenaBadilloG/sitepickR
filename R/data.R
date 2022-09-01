@@ -17,4 +17,7 @@
 #'   \item{sch.pct.female}{percentage of students in the school who are female.}
 #' }
 #' @source \url{https://nces.ed.gov/ccd//}
-"dfCCD"
+#' @docType data
+#' @keywords datasets
+#' @name dfCCD
+#' @usage data(dfCCD)

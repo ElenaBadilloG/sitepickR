@@ -2,13 +2,13 @@
 
 ##########################################################################################################
 ####################### selectMatch() [sitepickR Package - Testing Version]  ######################
-################### Elizabeth A. Stuart, Robert Olsen & Elena Badillo-Goicoechea, May 2022 ###############
+################### Robert Olsen, Elizabeth A. Stuart & Elena Badillo-Goicoechea, August 2022 ###############
 ##########################################################################################################
 
 
 # Helper 1. Obtain best unit matches
 
-#'@noRd
+#' @noRd
 #' @param dfSU dataframe
 #' @param sizeFlag character; unit column name
 #' @param unit_vars character; unit column name
