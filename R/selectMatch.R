@@ -5,6 +5,7 @@
 ################### Elizabeth A. Stuart, Robert Olsen & Elena Badillo-Goicoechea, May 2022 ###############
 ##########################################################################################################
 
+
 # Helper 1. Obtain best unit matches
 
 #'@noRd
@@ -25,26 +26,30 @@ getMatches <- function(dfSU, sizeFlag, unit_vars, exact_match_vars,
   # Prepare dataset for matching:
   if(sizeFlag==TRUE){
     
-    unit_vars <- c("unitSize", all_of(unit_vars))
-    calip_match_vars <- c("unitSize", all_of(calip_match_vars))}
+    unit_vars <- c("unitSize", tidyselect::all_of(unit_vars))
+    calip_match_vars <- c("unitSize", tidyselect::all_of(calip_match_vars))}
   
   calipers = rep(calipValue, length(calip_match_vars))
   names(calipers) <- calip_match_vars
   
   if(!is.null(exact_match_vars)){
     
-    dfMatch <- dfSU %>% distinct() %>% select(c("unit_ID", "unitSize", "Selected",
-                                                all_of(unit_vars))) %>% 
-      group_by_at(c("unit_ID", "Selected", all_of(exact_match_vars))) %>%
-      summarise_at(c("unitSize", all_of(setdiff(unit_vars, exact_match_vars))), mean)
-    
+    dfMatch <- dfSU %>% 
+              dplyr::distinct() %>% 
+              dplyr::select(c("unit_ID", "unitSize", "Selected",
+                                                tidyselect::all_of(unit_vars))) %>% 
+              dplyr::group_by_at(c("unit_ID", "Selected", tidyselect::all_of(exact_match_vars))) %>%
+              dplyr::summarise_at(c("unitSize", tidyselect::all_of(setdiff(unit_vars, exact_match_vars))), mean)
+       
   } else{
     
-    dfMatch <- dfSU %>% distinct() %>% select(c("unit_ID", "unitSize", "Selected",
-                                                all_of(unit_vars))) %>% 
-      group_by_at(c("unit_ID", "Selected")) %>%
-      summarise_at(c("unitSize", unit_vars), mean)
-  }
+    dfMatch <- dfSU %>% 
+               dplyr::distinct() %>% 
+               dplyr::select(c("unit_ID", "unitSize", "Selected",
+                                                tidyselect::all_of(unit_vars))) %>% 
+                dplyr::group_by_at(c("unit_ID", "Selected")) %>%
+                dplyr::summarise_at(c("unitSize", unit_vars), mean)
+       }
   
   
   # Find matches for each unit (casewise and relaxing calliper when needed):
@@ -181,7 +186,7 @@ buildDF <- function(df, unit_ID, subUnit_ID, unit_vars, subUnit_samp_vars){
   # Get unit size (i.e.its number of sub-units):
   dfU <- df %>%
     dplyr::group_by(unit_ID) %>%
-    summarise(unitSize = n())
+    dplyr::summarise(unitSize = dplyr::n())
 
   df_ <- suppressMessages(dplyr::left_join(df, dfU))
   df_ <- dplyr::distinct(dplyr::select(df_, c("unit_ID", "unitSize", "subUnit_ID",
@@ -367,7 +372,7 @@ selectMatch <- function(df,
   subUnitTable <- subUnitTable %>%
     tidyr::unnest(sub_units) %>%
     dplyr::group_by_at(c("unit_ID")) %>%
-    dplyr::mutate(key = row_number()) %>%
+    dplyr::mutate(key = dplyr::row_number()) %>%
     tidyr::spread(key, sub_units)
 
   colnames(subUnitTable) <- c("Unit_ID", sapply(colnames(subUnitTable)[2:ncol(subUnitTable)],
@@ -386,7 +391,7 @@ selectMatch <- function(df,
 
   #2.Covariate SMD between Replacement (1,...,nth) and Initially selected (0) unit groups:
 
-  unitNumVars <- all_of(setdiff(unit_vars,
+  unitNumVars <- tidyselect::all_of(setdiff(unit_vars,
                                 exact_match_vars))
   
   # Recover unit groups from MatchIt::matchit Output:
@@ -422,7 +427,7 @@ selectMatch <- function(df,
 
   ### 4. Covariate SMD between Sub-units and Population:
 
-  subunitNumVars <- c("unitSize", all_of(setdiff(c(unit_vars, subUnit_samp_vars),
+  subunitNumVars <- c("unitSize", tidyselect::all_of(setdiff(c(unit_vars, subUnit_samp_vars),
                                                  exact_match_vars)))
 
   subUnitBalance_ <- subUnitBalance(df_, dfSU, mUnits, subUnitTable, subunitNumVars, nRepUnits)

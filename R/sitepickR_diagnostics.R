@@ -1,6 +1,6 @@
 ##########################################################################################################
-############ Balance diagnostics Functions for selectMatch() [sitepickR Package - Testing Version]  ######
-################### Elizabeth A. Stuart, Robert Olsen & Elena Badillo-Goicoechea, May 2022 ###############
+############ Wrapper functions for getting balance diagnostics figures for selectMatch() [sitepickR Package - Testing Version]  ######
+################### Elizabeth A. Stuart, Robert Olsen & Elena Badillo-Goicoechea, August 2022 ###############
 ##########################################################################################################
 
 
@@ -9,7 +9,7 @@
 #' @param m.out list; selectMatch() output
 #' @return ggplot object
 getUnitBalanceTab <- function(m.out){
-
+  
   return(m.out[[3]])
 }
 
@@ -18,10 +18,11 @@ getUnitBalanceTab <- function(m.out){
 #' @param m.out list; selectMatch() output
 #' @return ggplot object
 getUnitLovePlot <- function(m.out){
-
-  return(m.out[[4]] + xlim(-1, 1) + theme(title=element_text(size=12),
-                                                axis.text.x=element_text(size=10),
-                                                axis.text.y=element_text(size=10)))
+  
+  return(m.out[[4]] + ggplot2::xlim(-1, 1) +
+           ggplot2::theme(title=ggplot2::element_text(size=10),
+                          axis.text.x=ggplot2::element_text(size=9),
+                          axis.text.y=ggplot2::element_text(size=9)))
 }
 
 # 3. SMD between sampled and replacement units (figure)
@@ -30,10 +31,10 @@ getUnitLovePlot <- function(m.out){
 #' @param m.out list; selectMatch() output
 #' @return ggplot object
 getUnitReplacementBalance <- function(m.out, title=NULL){
-
-  return(m.out[[5]] + ylim(-2, 2) + theme(title=element_text(size=12),
-                                              axis.text.x=element_text(size=10),
-                                              axis.text.y=element_text(size=10)))
+  
+  return(m.out[[5]] + ggplot2::ylim(-2, 2) + ggplot2::theme(title=ggplot2::element_text(size=10),
+                                                                     axis.text.x=ggplot2::element_text(size=9),
+                                                                     axis.text.y=ggplot2::element_text(size=9)))
 }
 
 # 4. Percentage of successful matches vs. original units in each replacement unit group (figure)
@@ -42,10 +43,10 @@ getUnitReplacementBalance <- function(m.out, title=NULL){
 #' @param m.out list; selectMatch() output
 #' @return ggplot object
 getMatchCount  <- function(m.out, title=NULL){
-
-  return(m.out[[6]] + ylim(0, 110) + theme(title=element_text(size=12),
-                                           axis.text.x=element_text(size=10),
-                                           axis.text.y=element_text(size=10)))
+  
+  return(m.out[[6]] + ggplot2::ylim(0, 110) + ggplot2::theme(title=ggplot2::element_text(size=10),
+                                                             axis.text.x=ggplot2::element_text(size=9),
+                                                             axis.text.y=ggplot2::element_text(size=9)))
 }
 
 
@@ -55,10 +56,11 @@ getMatchCount  <- function(m.out, title=NULL){
 #' @param m.out list; selectMatch() output
 #' @return ggplot object
 getSubUnitBalance  <- function(m.out){
-
-  return(m.out[[7]] + ylim(-2, 2) + theme(title=element_text(size=12),
-                                              axis.text.x=element_text(size=10),
-                                              axis.text.y=element_text(size=10)) +
-           theme(strip.text.x = element_text(size = 6)))
+  
+  return(m.out[[7]] + ggplot2::ylim(-2, 2) + ggplot2::theme(title=ggplot2::element_text(size=10),
+                                                            axis.text.x=ggplot2::element_text(size=9),
+                                                            axis.text.y=ggplot2::element_text(size=9)) +
+           ggplot2::theme(strip.text.x = ggplot2::element_text(size = 6)))
 }
+
 

@@ -6,10 +6,14 @@ Author: Elizabeth A. Stuart, Robert Olsen, Elena Badillo-Goicoechea
 Date: 2022-08-24
 Maintainer: Elena Badillo-Goicoechea <egoicoe1@jhu.edu>
 Description: Carries out a two-level sample selection where the possibility of an initially selected site not wanting to participate is anticipated, and the site is optimally replaced. The procedure aims to reduce the bias (and/or loss of generalizability) with respect to the target population.
-Imports: MatchIt, sampling, dplyr, ggplot2, reshape2, data.table, stats, stringr, tidyr, magrittr
+Imports: MatchIt, sampling, dplyr, ggplot2, reshape2, data.table, stats, stringr, tidyr, magrittr, tidyselect
 License: GPL (>=3)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.1
 Depends: 
     R (>= 2.10)
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
