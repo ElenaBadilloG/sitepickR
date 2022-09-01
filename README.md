@@ -1,4 +1,4 @@
-# sitepickR <img src="man/figures/logo.png" align="right" height="119" />
+# <img src="man/figures/logo.png" align="right" height="119" />
 # sitepickR: A Generalizability R package
 Elizabeth A. Stuart, Robert Olsen, Elena Badillo-Goicoechea (2022)
 
