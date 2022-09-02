@@ -1,5 +1,6 @@
 # <img src="man/figures/logo.png" align="left" height="119" />
 # sitepickR: A Generalizability R package
+
  Robert Olsen, Elena Badillo-Goicoechea & Elizabeth A. Stuart (2022)
 
 ## Introduction

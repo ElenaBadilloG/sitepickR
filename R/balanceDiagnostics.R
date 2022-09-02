@@ -1,5 +1,6 @@
-# Helper. Get SMD for a given variable:
-
+#' @importFrom magrittr "%>%"
+#' 
+## 0. Get SMD for a given variable:
 
 #' @noRd
 #' @param df dataframe

@@ -5,6 +5,7 @@
 ################### Robert Olsen, Elizabeth A. Stuart & Elena Badillo-Goicoechea, August 2022 ###############
 ##########################################################################################################
 
+#' @importFrom magrittr "%>%"
 
 # Helper 1. Obtain best unit matches
 

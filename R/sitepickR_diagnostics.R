@@ -3,7 +3,8 @@
 ################### Robert Olsen, Elizabeth A. Stuart & Elena Badillo-Goicoechea, August 2022 ###############
 ##########################################################################################################
 
-
+#' @importFrom magrittr "%>%"
+#' 
 ## 1. SMD between sampled units and all units in population  (table)
 #' @export
 #' @param m.out list; selectMatch() output
