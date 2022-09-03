@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 __Robert Olsen, Elizabeth A. Stuart & Elena Badillo-Goicoechea__
 
-2022-09-02
+2022-09-01
 
 ## Introduction
 
@@ -43,11 +43,23 @@ This vignette guides the reader, using a pre-processed dataset with data from th
 First, if needed, install the sitepickR package with the help of devtools, and load it:
 
 ```{r}
-library(sitepickR)
-```
-## Load data:
 
-Load the CCD-California 2017-18 sample dataset that comes installed with the package:
+if(!require(devtools)){
+  install.packages("devtools")
+}
+
+if(!require(sitepickR)){
+ devtools::install_github("ElenaBadilloG/sitepickR")
+}
+
+
+library(sitepickR)
+
+
+```
+## Load data and set basic inputs:
+
+Load the pre-processed [CCD dataset](), which is included with the package installation:
 
 ```{r}
 dfCCD <- sitepickR::dfCCD
@@ -57,27 +69,24 @@ head(dfCCD)
 If you 'll want to write the two main results into a .csv file, specify a preferred local folder path and two separate filenames, one for each output directory:
 
 ```{r}
-PATH = "SOME-USER-FOLDER/" 
-replDISTRICTS = paste0(PATH, "/replacementUnits.csv") # filepath for {initial district:[replacements]} directory
-dictSCHOOLS = paste0(PATH, "/subUnitTable.csv") # filepath for {district: [schools]} directory
+PATH = "SOME-PREFERRED-FOLDER/" 
+replDISTRICTS = paste0(PATH, "/replacementUnits.csv") # {initial district:[replacements]} directory
+dictSCHOOLS = paste0(PATH, "/subUnitTable.csv") # {district: [schools]} directory
 ```
 
-## Define key input values:
+## Study design:
 
-Since there are underlying random sampling procedures, set a seed for replication purposes (optional)
-```{r}
-seed = 1122 
-```
+Specify district level covariates on which to match selected districts with non-selected alternatives. In this example we'll include: 1) percentage of students who are under free/reduced price lunch program, 2) percentage of students in the school district who are Black, 3) percentage of students in the school district who are Hispanic, 4) percentage of students in the school district who are female.
 
-Specify district level covariates on which to match selected districts with non-selected alternatives:
 ```{r}
 unitSamp_varsCCD <- c("w.pct.frlunch", "w.pct.black", "w.pct.hisp", "w.pct.female") 
 ```
-Specify school level covariates on which to match districts:
+
+Specify school level covariates on which to match districts with their potential replacements:
 ```{r}
 subUnitSamp_varsCCD <- c("sch.pct.frlunch", "sch.pct.black", "sch.pct.hisp", "sch.pct.female")
 ```
-Specify covariates on which to _exactly_ match districts (these would usually be categorical):
+Specify covariates on which to _exactly_ match districts (these would usually be categorical). In our example, we'll use "district type":
 ```{r}
 exact_match_vars <-  c("distr.type")
 ```
@@ -86,29 +95,54 @@ Specify covariates on which to match districts within a given caliper (these wou
 calip_match_vars <-  c("w.pct.black", "w.pct.hisp", "w.pct.female")
 ```
 
-## Run selectMatch()
+## Set key input values:
 
-We'll match districts using Mahalanobis distance (we can also do this using propensity scores, as specified in the documentation):
+Since there will be some underlying random sampling procedures, you may want to set a seed for replication purposes (optional):
 
 ```{r}
+ seedN = 1234 
+ unit_vars=unitSamp_varsCCD
+ subUnit_samp_vars=subUnitSamp_varsCCD
+ exact_match_vars=NULL
+ calip_match_vars=calip_match_vars # numeric covariates contrained to be within a maximum given distance
+ nUnitSamp = 100 # original district sample size
+ nRepUnits = 10 # number of desired matches per selected district
+ nsubUnits = 5 # number of schools to sample from each candidate district
+ calipValue = 0.2 # maximum distance (in terms of ansolute SMD) allowed for calip_match_vars
+ seedN = 1234
+ matchDistance = "mahalanobis" 
+ sizeFlag = TRUE # conduct initial district sampling proportional to its number of schools 
+ replaceFlag = FALSE # match districts without replacement
+ writeOut = FALSE # write out a csv file for: 1) matched units and 2) selected schools
+ replacementUnitsFilename = replDISTRICTS # filename for {unit:replacement} directory
+ subUnitTableFilename = dictSCHOOLS # filename for final {unit:school} directory
+
+```
+
+## Run selectMatch()
+
+selectMatch will take care of implementing both stages (initial sampling and unit matching) in one pass:
+
+```{r}
+
 m.out <- selectMatch(df=dfCCD, # dataset
                        unit_ID="LEAID", # column name of district ID
                        subUnit_ID="NCESSCH", # column name of school ID
                        unit_vars=unitSamp_varsCCD,
                        subUnit_samp_vars=subUnitSamp_varsCCD,
-                       exact_match_vars=exact_match_vars,
-                       calip_match_vars=calip_match_vars , 
-                       nUnitSamp = 100, # original district sample size
-                       nRepUnits = 10, # number of desired matches per selected district
-                       nsubUnits = 5, # number of schools to sample from each candidate district
-                       calipValue = 0.2, # 
-                       seedN = seed,
-                       matchDistance = "mahalanobis",
-                       sizeFlag = TRUE,
-                       replaceFlag = FALSE, #match without replacement
-                       writeOut = FALSE, # write out a csv file for: 1) matched units and 2) selected schools
-                       replacementUnitsFilename = replDISTRICTS,
-                       subUnitTableFilename = dictSCHOOLS
+                       exact_match_vars,
+                       calip_match_vars, 
+                       nUnitSamp, # original district sample size
+                       nRepUnits, # number of desired matches per selected district
+                       nsubUnits, # number of schools to sample from each candidate district
+                       calipValue, # maximum SMD for calip_match_vars
+                       seedN, # seed number
+                       matchDistance,
+                       sizeFlag, # conduct initial district sampling proportional to its number of schools 
+                       replaceFlag, # match districts without replacement
+                       writeOut, # write out a csv file for: 1) matched units and 2) selected schools
+                       replacementUnitsFilename,
+                       subUnitTableFilenam
 )
 ```
 
@@ -117,25 +151,25 @@ m.out <- selectMatch(df=dfCCD, # dataset
 
 By default, balance diagnostics in sitepickR are expressed in terms of standardize Mean difference (SMD) between two comparison groups --in this case, selected districts or schools against population, or against the originally selectd units.
 
- 1. Balance against population: originally selected vs. all districts:
+### 1. Balance against population: originally selected vs. all districts:
 
 ```{r fig.width=5, fig.height=5}
 getUnitLovePlot(m.out)
 ```
 
-2. Balance against originally selected district: each originally selected district vs. its K replacement districts groups (ordered in terms of covariate similarity):
+### 2. Balance against originally selected district: each originally selected district vs. its K replacement districts groups (ordered in terms of covariate similarity):
 
 ```{r}
 getUnitReplacementBalance(m.out)
 ```
 
- 3. Percentage of successfully computed matches for the original districts in each of their  1-K replacements groups (ordered in terms of covariate similarity) 
+### 3. Percentage of successfully computed matches for the original districts in each of their  1-K replacements groups (ordered in terms of covariate similarity) 
 
 ```{r}
 getMatchCount(m.out)
 ```
 
-4. Balance against all schools from originally selected district: schools from each originally selected district vs. schools from their respective K replacement districts groups (ordered in terms of covariate similarity):
+### 4. Balance against all schools from originally selected district: schools from each originally selected district vs. schools from their respective K replacement districts groups (ordered in terms of covariate similarity):
 
 ```{r}
 getSubUnitBalance(m.out)
