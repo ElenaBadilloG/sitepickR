@@ -50,7 +50,16 @@ library(sitepickR)
 Load the CCD-California 2017-18 sample dataset that comes installed with the package:
 
 ```{r}
-dfCCD <- sitepickR::dfCCD
+rwCCD <- sitepickR::rwCCD
+
+head(rwCCD)
+```
+
+Process the raw aggregate dataset in order for it to be in the format expected by selectMatch by  using sitepckr [buildDF()]() function:
+
+```{r}
+dfCCD <- buildDF(rwCCD,
+                 unit_ID="LEAID", subUnit_ID="NCESSCH")
 head(dfCCD)
 ```
 
@@ -96,7 +105,7 @@ m.out <- selectMatch(df=dfCCD, # dataset
                        subUnit_ID="NCESSCH", # column name of school ID
                        unit_vars=unitSamp_varsCCD,
                        subUnit_samp_vars=subUnitSamp_varsCCD,
-                       exact_match_vars=exact_match_vars,
+                       exact_match_vars= exact_match_vars,
                        calip_match_vars=calip_match_vars , 
                        nUnitSamp = 100, # original district sample size
                        nRepUnits = 10, # number of desired matches per selected district
@@ -117,25 +126,25 @@ m.out <- selectMatch(df=dfCCD, # dataset
 
 By default, balance diagnostics in sitepickR are expressed in terms of standardize Mean difference (SMD) between two comparison groups --in this case, selected districts or schools against population, or against the originally selectd units.
 
- 1. Balance against population: originally selected vs. all districts:
+### 1. Balance against population: originally selected vs. all districts:
 
 ```{r fig.width=5, fig.height=5}
 getUnitLovePlot(m.out)
 ```
 
-2. Balance against originally selected district: each originally selected district vs. its K replacement districts groups (ordered in terms of covariate similarity):
+### 2. Balance against originally selected district: each originally selected district vs. its K replacement districts groups (ordered in terms of covariate similarity):
 
 ```{r}
 getUnitReplacementBalance(m.out)
 ```
 
- 3. Percentage of successfully computed matches for the original districts in each of their  1-K replacements groups (ordered in terms of covariate similarity) 
+### 3. Percentage of successfully computed matches for the original districts in each of their  1-K replacements groups (ordered in terms of covariate similarity) 
 
 ```{r}
 getMatchCount(m.out)
 ```
 
-4. Balance against all schools from originally selected district: schools from each originally selected district vs. schools from their respective K replacement districts groups (ordered in terms of covariate similarity):
+### 4. Balance against all schools from originally selected district: schools from each originally selected district vs. schools from their respective K replacement districts groups (ordered in terms of covariate similarity):
 
 ```{r}
 getSubUnitBalance(m.out)

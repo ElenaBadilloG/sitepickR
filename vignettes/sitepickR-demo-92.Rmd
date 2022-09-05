@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Sampling AY 2017-18 California schools and districts
+## Two-stage sampling AY 2017-18 California schools and districts
 
 __Robert Olsen, Elizabeth A. Stuart & Elena Badillo-Goicoechea__
 
@@ -54,7 +54,6 @@ if(!require(sitepickR)){
 
 
 library(sitepickR)
-
 
 ```
 ## Load data and set basic inputs:

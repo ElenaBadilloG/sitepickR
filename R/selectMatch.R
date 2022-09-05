@@ -1,5 +1,5 @@
 
-
+library(tidyverse)
 ##########################################################################################################
 ####################### selectMatch() [sitepickR Package - Testing Version]  ######################
 ################### Robert Olsen, Elizabeth A. Stuart & Elena Badillo-Goicoechea, August 2022 ###############
@@ -38,9 +38,10 @@ getMatches <- function(dfSU, sizeFlag, unit_vars, exact_match_vars,
     dfMatch <- dfSU %>% 
               dplyr::distinct() %>% 
               dplyr::select(c("unit_ID", "unitSize", "Selected",
-                                                tidyselect::all_of(unit_vars))) %>% 
+                                                tidyselect::all_of(c(unit_vars, exact_match_vars)))) %>% 
               dplyr::group_by_at(c("unit_ID", "Selected", tidyselect::all_of(exact_match_vars))) %>%
-              dplyr::summarise_at(c("unitSize", tidyselect::all_of(setdiff(unit_vars, exact_match_vars))), mean)
+              dplyr::summarise_at(c("unitSize", tidyselect::all_of(dplyr::setdiff(unit_vars, exact_match_vars))),
+                                  mean)
        
   } else{
     
@@ -93,7 +94,7 @@ getMatches <- function(dfSU, sizeFlag, unit_vars, exact_match_vars,
         #Which of the 10 requested matches were not found
         nas <- is.na(m1$match.matrix[i,])
         if (any(nas)) {
-          m1$match.matrix[i, nas] <- setdiff(m2$match.matrix[i,],
+          m1$match.matrix[i, nas] <- dplyr::setdiff(m2$match.matrix[i,],
                                              m1$match.matrix[i, !nas])[1:sum(nas)]
         }
       }
@@ -167,33 +168,6 @@ getUnitID <- function(idx_col, units){
   return(res)
 }
 
-#' Prepare dataset
-#' @export
-#' @param df dataframe
-#' @param unit_ID character; unit column name
-#' @param subUnit_ID character; unit column name
-#' @param unit_vars character; unit column name
-#' @param subUnit_samp_vars character; unit column name
-#' @return processed df
-buildDF <- function(df, unit_ID, subUnit_ID, unit_vars, subUnit_samp_vars){
-  
-  # Assign standard variable name to unit/subunit columns:
-  df$unit_ID <- df[,unit_ID]
-  df$subUnit_ID <- df[,subUnit_ID]
-
-  unit_ID ="unit_ID"
-  subUnit_ID ="subUnit_ID"
-
-  # Get unit size (i.e.its number of sub-units):
-  dfU <- df %>%
-    dplyr::group_by(unit_ID) %>%
-    dplyr::summarise(unitSize = dplyr::n())
-
-  df_ <- suppressMessages(dplyr::left_join(df, dfU))
-  df_ <- dplyr::distinct(dplyr::select(df_, c("unit_ID", "unitSize", "subUnit_ID",
-                                       as.vector(union(unit_vars, subUnit_samp_vars)))))
-  return(df_)
-}
 
 #' Initial Unit Selection
 #' @noRd
@@ -208,7 +182,7 @@ sampleUnits <- function(df_, unit_vars, exact_match_vars, nUnitSamp,  sizeFlag){
 
   if(sizeFlag == TRUE) {SEL = 1} else {SEL = 2}
 
-  dfSampledU  <- as.data.frame(sampling::balancedcluster(df_[,setdiff(c("unitSize", unit_vars),
+  dfSampledU  <- as.data.frame(sampling::balancedcluster(df_[,dplyr::setdiff(c("unitSize", unit_vars),
                                                                       exact_match_vars)],
                                                          m=nUnitSamp,
                                                          cluster=df_$unit_ID,
@@ -223,6 +197,8 @@ sampleUnits <- function(df_, unit_vars, exact_match_vars, nUnitSamp,  sizeFlag){
     dplyr::select(unit_ID, Selected, InclusionProb)
 
   dfSU <- suppressMessages(dplyr::right_join(dplyr::distinct(dfSampledU), df_, by="unit_ID"))
+  
+
 
   return(dfSU)
 }
@@ -268,7 +244,7 @@ sampleSubUnits <- function(df_, subUnitLookup, replacementUnits, subUnit_samp_va
 }
 
 
-# I. MAIN FUNCTION: selectMatch()
+#  MAIN FUNCTION: selectMatch()
 
 #' Two-level sample selection
 #' 
@@ -320,11 +296,10 @@ selectMatch <- function(df,
   if(!is.na(seedN)) {
     set.seed(seedN)}
 
-  df_ <- buildDF(df, unit_ID, subUnit_ID, unit_vars, subUnit_samp_vars)
 
   ### 1. INITIAL UNIT SELECTION: Select units (1 = Selected, 0 = Non selected) via nested cube sampling
 
-  dfSU <- sampleUnits(df_, unit_vars, exact_match_vars, nUnitSamp,  sizeFlag)
+  dfSU <- sampleUnits(df, unit_vars, exact_match_vars, nUnitSamp,  sizeFlag)
 
   # calculate appropriate weights for unit balance diagnstics :
   if(sizeFlag == TRUE){dfSU$w <- 1 / dfSU$InclusionProb} else {dfSU$w <- 1}
@@ -334,7 +309,7 @@ selectMatch <- function(df,
   units$selectedUnit_idx <- rownames(units)
 
   subUnitLookup <- dplyr::distinct(suppressMessages(dplyr::inner_join(units,
-                            dplyr::select(df_, c("unit_ID", "subUnit_ID")))))
+                            dplyr::select(df, c("unit_ID", "subUnit_ID")))))
   subUnitLookup <- dplyr::distinct(subUnitLookup)
 
 
@@ -366,7 +341,7 @@ selectMatch <- function(df,
 
   ### 3. SELECT SUB-UNITS FOR SELECTED / REPLACEMENT UNITS:
 
-  subUnitTable <- sampleSubUnits(df_, subUnitLookup, replacementUnits, subUnit_samp_vars, nsubUnits)
+  subUnitTable <- sampleSubUnits(df, subUnitLookup, replacementUnits, subUnit_samp_vars, nsubUnits)
 
   # Build  directory of the form: {potential unit U:[U sub-unit list]} (user output #2):
 
@@ -392,7 +367,7 @@ selectMatch <- function(df,
 
   #2.Covariate SMD between Replacement (1,...,nth) and Initially selected (0) unit groups:
 
-  unitNumVars <- tidyselect::all_of(setdiff(unit_vars,
+  unitNumVars <- tidyselect::all_of(dplyr::setdiff(unit_vars,
                                 exact_match_vars))
   
   # Recover unit groups from MatchIt::matchit Output:
@@ -427,11 +402,13 @@ selectMatch <- function(df,
   matchCount_ <- matchCount(replacementUnits, nRepUnits)
 
   ### 4. Covariate SMD between Sub-units and Population:
+  
+  if(!is.null(exact_match_vars)){
+    subunitNumVars <- c("unitSize", tidyselect::all_of(dplyr::setdiff(c(unit_vars, subUnit_samp_vars),
+                                                 exact_match_vars)))} else{
+    subunitNumVars <- c("unitSize", tidyselect::all_of(c(unit_vars, subUnit_samp_vars))) }
 
-  subunitNumVars <- c("unitSize", tidyselect::all_of(setdiff(c(unit_vars, subUnit_samp_vars),
-                                                 exact_match_vars)))
-
-  subUnitBalance_ <- subUnitBalance(df_, dfSU, mUnits, subUnitTable, subunitNumVars, nRepUnits)
+  subUnitBalance_ <- subUnitBalance(df, dfSU, mUnits, subUnitTable, subunitNumVars, nRepUnits)
 
   # 5. PREPARE OUTPUT
 
