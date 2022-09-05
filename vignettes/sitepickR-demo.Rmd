@@ -55,7 +55,7 @@ rwCCD <- sitepickR::rwCCD
 head(rwCCD)
 ```
 
-Process the raw aggregate dataset in order for it to be in the format expected by selectMatch by  using sitepckr [buildDF()]() function:
+Process the raw aggregate dataset in order for it to be in the format expected by selectMatch by using sitepckr [buildDF()]() function. This will re-define key variables and create a new variable, 'unitSize', that will be used in the step of the selectMatch procedure where units are initially sampled. Specifically, cube sampling allows us to (optionally) select units in a way that is not biased by its number of sub-units:
 
 ```{r}
 dfCCD <- buildDF(rwCCD,
@@ -63,7 +63,7 @@ dfCCD <- buildDF(rwCCD,
 head(dfCCD)
 ```
 
-If you 'll want to write the two main results into a .csv file, specify a preferred local folder path and two separate filenames, one for each output directory:
+If you'll want to write the two main results into a .csv file, specify a preferred local folder path and two separate filenames, one for each output directory:
 
 ```{r}
 PATH = "SOME-USER-FOLDER/" 
@@ -73,31 +73,58 @@ dictSCHOOLS = paste0(PATH, "/subUnitTable.csv") # filepath for {district: [schoo
 
 ## Define key input values:
 
-Since there are underlying random sampling procedures, set a seed for replication purposes (optional)
+Since there is some underlying random sampling in selectMatch, we can set a seed for replication purposes (optional):
 ```{r}
 seed = 1122 
 ```
 
-Specify district level covariates on which to match selected districts with non-selected alternatives:
+Now, specify district level covariates on which you'll want to match selected districts (units) with their replacement candidates on the non-selected sample:
 ```{r}
 unitSamp_varsCCD <- c("w.pct.frlunch", "w.pct.black", "w.pct.hisp", "w.pct.female") 
 ```
-Specify school level covariates on which to match districts:
+Similarly, specify school level covariates on which you'll want to match districts. In our running CCD example, these covariates are just school (sub-unit) level aggregates of the same district level underlying variable. However, they could be any other sub-unit level variables available in your own dataset:
 ```{r}
 subUnitSamp_varsCCD <- c("sch.pct.frlunch", "sch.pct.black", "sch.pct.hisp", "sch.pct.female")
 ```
-Specify covariates on which to _exactly_ match districts (these would usually be categorical):
+You can (optionally) specify covariates on which to _exactly_ match districts. These would usually be categorical covariates, with relatively few categories --otherwise the matching could fail, being too restrictive or even empty:
 ```{r}
 exact_match_vars <-  c("distr.type")
 ```
-Specify covariates on which to match districts within a given caliper (these would be numeric):
+Similarly, you can optionally specify covariates on which to match districts within a given numeric caliper, in terms of standard deviations. Such covariates are expected to be numeric variables. In this case, we are interested in caliper-matching on thre covariates: percentage of Black,  Hispanic, and  female students in the district.
+
+Notice that the lower the caliper, the more restrictive the matching (which could result in ferwe proportion of successful matches per replacement group, or even empty ones):
 ```{r}
 calip_match_vars <-  c("w.pct.black", "w.pct.hisp", "w.pct.female")
 ```
 
-## Run selectMatch()
+## Run selectMatch
 
-We'll match districts using Mahalanobis distance (we can also do this using propensity scores, as specified in the documentation):
+We'll now leverage MatchIt functionality, and match districts using [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance). We can also do this using propensity scores, as specified on [MatchIt's documentation](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html#trying-a-different-matching-specification):
+
+```{r}
+m.out <- selectMatch(df=dfCCD, # dataset
+                       unit_ID="LEAID", # column name of district ID
+                       subUnit_ID="NCESSCH", # column name of school ID
+                       unit_vars=unitSamp_varsCCD,
+                       subUnit_samp_vars=subUnitSamp_varsCCD,
+                       exact_match_vars= exact_match_vars,
+                       calip_match_vars=calip_match_vars , 
+                       nUnitSamp = 100, # original district sample size
+                       nRepUnits = 10, # number of desired matches per selected district
+                       nsubUnits = 5, # number of schools to sample from each candidate district
+                       calipValue = 0.2, # 
+                       seedN = seed,
+                       matchDistance = "mahalanobis",
+                       sizeFlag = TRUE,
+                       replaceFlag = FALSE, #match without replacement
+                       writeOut = FALSE, # write out a csv file for: 1) matched units and 2) selected schools
+                       replacementUnitsFilename = replDISTRICTS,
+                       subUnitTableFilename = dictSCHOOLS
+)
+```
+## Run selectMatch
+
+We'll now leverage the MatchIt functionality, and match districts using [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance). We can also do this using propensity scores, as specified on [MatchIt's documentation](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html#trying-a-different-matching-specification):
 
 ```{r}
 m.out <- selectMatch(df=dfCCD, # dataset
@@ -122,29 +149,46 @@ m.out <- selectMatch(df=dfCCD, # dataset
 ```
 
 
-## Balance diagnostics
+## Assessing balance and match quality
 
-By default, balance diagnostics in sitepickR are expressed in terms of standardize Mean difference (SMD) between two comparison groups --in this case, selected districts or schools against population, or against the originally selectd units.
+By default, balance diagnostics in sitepickR are expressed in terms of standardized mean difference (SMD) between some two comparison groups of interest: initially selected districts (or schools) against target population (or against each of the K distrcit replacement groups).
 
-### 1. Balance against population: originally selected vs. all districts:
+
+
+### 1. Original units vs. target population
+
+First, we want to look at the overall balance (SMD) between the initially selected districts (i.e. the group of districts that were selected in the initial cube sampling step of the selectMatch procedure) and __all__ the districts in the population:
 
 ```{r fig.width=5, fig.height=5}
 getUnitLovePlot(m.out)
 ```
 
-### 2. Balance against originally selected district: each originally selected district vs. its K replacement districts groups (ordered in terms of covariate similarity):
+We can also take a look at a table with the actual SMD values for each covariate of interest applying the getBalanceTable function:
+```{r}
+getUnitBalanceTab(m.out)
+```
+
+### 2. Original units vs. replacement candidates
+
+To assess the quality of our resulting district matches, we look at the balance (SMD) between the group of initially selected districts and each of its K replacement districts groups, where group 1 is composed of the first closest matches ordered in terms of distance, group 2 corresponds to the second-best matches, and so on:
 
 ```{r}
 getUnitReplacementBalance(m.out)
 ```
 
-### 3. Percentage of successfully computed matches for the original districts in each of their  1-K replacements groups (ordered in terms of covariate similarity) 
+### 3. Successfully computed unit matches
+
+We also want to look at the success rate of the matching process between the original districts and the replacement candidate groups from the non-select pool: for each of their K replacements groups (ordered from most to least similar, in terms of all specified covariates), we look at the percentage of replacements. 
+
+This percentage is expected to be inversely related to restrictions imposed by exact matching, caliper value, and inherent structure and size of the data, as well as K, the number of matches (i.e. replacement candidates) we want for each of the original districts:
 
 ```{r}
 getMatchCount(m.out)
 ```
 
-### 4. Balance against all schools from originally selected district: schools from each originally selected district vs. schools from their respective K replacement districts groups (ordered in terms of covariate similarity):
+### 4. Sub-units from original vs. candidate units
+
+Ultimately, the procedure wants to yield not only districts but also schools that are similar to the target population, in terms both of the district level covariates and the school level ones. sitepickR's getSubUnitBalance function lets us gauge the matching quality precisley on this terms:
 
 ```{r}
 getSubUnitBalance(m.out)

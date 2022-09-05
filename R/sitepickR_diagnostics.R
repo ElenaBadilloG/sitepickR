@@ -6,6 +6,7 @@
 #' @importFrom magrittr "%>%"
 #' 
 ## 1. SMD between sampled units and all units in population  (table)
+
 #' @export
 #' @param m.out list; selectMatch() output
 #' @return ggplot object
