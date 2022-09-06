@@ -9,14 +9,14 @@ vignette: >
 
 ```{r, include = FALSE}
 options(rmarkdown.html_vignette.check_title = FALSE) 
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.width=7, fig.height=5) 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.width=8, fig.height=5) 
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
-## Sampling AY 2017-18 California schools and districts
+## Getting Started: Sampling AY 2017-18 California schools and districts
 
 __Robert Olsen, Elizabeth A. Stuart & Elena Badillo-Goicoechea__
 
