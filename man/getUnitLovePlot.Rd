@@ -2,7 +2,8 @@
 % Please edit documentation in R/sitepickR_diagnostics.R
 \name{getUnitLovePlot}
 \alias{getUnitLovePlot}
-\title{SMD between sampled units and all units in population}
+\title{Love plot for sampled units vs. all units in population (figure)
+SMD between sampled units and all units in population}
 \usage{
 getUnitLovePlot(m.out)
 }
@@ -13,5 +14,6 @@ getUnitLovePlot(m.out)
 ggplot object
 }
 \description{
+Love plot for sampled units vs. all units in population (figure)
 SMD between sampled units and all units in population
 }

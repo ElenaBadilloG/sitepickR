@@ -2,7 +2,8 @@
 % Please edit documentation in R/sitepickR_diagnostics.R
 \name{getSubUnitBalance}
 \alias{getSubUnitBalance}
-\title{SMD between sampled units vs. all units in population, for each covariate of interest}
+\title{Balance of original sub-units vs. sub-units from replacement unit groups (figure)
+SMD between sampled units vs. all units in population, for each covariate of interest}
 \usage{
 getSubUnitBalance(m.out)
 }
@@ -13,5 +14,6 @@ getSubUnitBalance(m.out)
 ggplot object
 }
 \description{
+Balance of original sub-units vs. sub-units from replacement unit groups (figure)
 SMD between sampled units vs. all units in population, for each covariate of interest
 }

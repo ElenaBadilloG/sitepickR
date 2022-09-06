@@ -5,12 +5,11 @@
 
 #' @importFrom magrittr "%>%"
 #' 
-## 1. SMD between sampled units and all units in population  (table)
-
-#' Balance table for sampled units vs. all units in population
 #' 
-#' Table with average SMD across all covariates of interest between original units and target population
+#' 
+#' Balance table for sampled units vs. all units in population
 #'
+#' Table with average SMD across all covariates of interest between original units and target population
 #' @export
 #' @param m.out list; selectMatch() output
 #' @return ggplot object
@@ -19,7 +18,7 @@ getUnitBalanceTab <- function(m.out){
   return(m.out[[3]])
 }
 
-## 2. Love plot for sampled units vs. all units in population (figure)
+#' Love plot for sampled units vs. all units in population (figure)
 
 #' SMD between sampled units and all units in population
 #' @export
@@ -33,7 +32,7 @@ getUnitLovePlot <- function(m.out){
                           axis.text.y=ggplot2::element_text(size=9)))
 }
 
-# 3. Balance of sampled vs. replacement units (figure)
+#' Balance of sampled vs. replacement units (figure)
 
 #' SMD between sampled units vs. all units in population, for each covariate of interest
 #' @export
@@ -46,9 +45,9 @@ getUnitReplacementBalance <- function(m.out, title=NULL){
                                                                      axis.text.y=ggplot2::element_text(size=9)))
 }
 
-# 4. Successful unit matches (figure)
+#' Successful unit matches (figure)
 
-#'Percentage of successful matches vs. original units in each replacement unit group
+#' Percentage of successful matches vs. original units in each replacement unit group
 #' @export
 #' @param m.out list; selectMatch() output
 #' @return ggplot object
@@ -60,7 +59,7 @@ getMatchCount  <- function(m.out, title=NULL){
 }
 
 
-## 5. Balance of original sub-units vs. sub-units from replacement unit groups (figure)
+#' Balance of original sub-units vs. sub-units from replacement unit groups (figure)
 
 #' SMD between sampled units vs. all units in population, for each covariate of interest
 #' @export

@@ -2,7 +2,8 @@
 % Please edit documentation in R/sitepickR_diagnostics.R
 \name{getMatchCount}
 \alias{getMatchCount}
-\title{Percentage of successful matches vs. original units in each replacement unit group}
+\title{Successful unit matches (figure)
+Percentage of successful matches vs. original units in each replacement unit group}
 \usage{
 getMatchCount(m.out, title = NULL)
 }
@@ -13,5 +14,6 @@ getMatchCount(m.out, title = NULL)
 ggplot object
 }
 \description{
+Successful unit matches (figure)
 Percentage of successful matches vs. original units in each replacement unit group
 }
