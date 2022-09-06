@@ -24,7 +24,7 @@ A data frame with 1890 rows and 13 variables.
 \url{https://nces.ed.gov/ccd//}
 }
 \usage{
-data(dfCCD)
+data(rwCCD)
 }
 \description{
 A pre-processed dataset containing key variables from administrative data compiled by the CCD, aggregated at 

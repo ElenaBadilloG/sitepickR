@@ -4,7 +4,7 @@
 #' the district and school level for public schools in California for the 2017 and 2018 school years.
 #'
 #' @docType data
-#' @usage data(dfCCD)
+#' @usage data(rwCCD)
 #' @keywords datasets
 #' @format A data frame with 1890 rows and 13 variables.
 #' \describe{
