@@ -94,18 +94,35 @@ dictSCHOOLS = paste0(PATH, "/subUnitTable.csv") # filepath for {district: [schoo
 
 ## Study sample design
 
-### Define key input values:
+### Define key input values
 
 Since there is some underlying random sampling in selectMatch, we can set a seed for replication purposes (optional):
 ```{r}
 seed = 1122 
 ```
+ 
+Set distance tolerance for restricted covariates:
+```{r}
+calip = 0.2 # maximum standard deviations of covariate distance around to target population
+```
 
+#### Set output sample sizes
+Set size for: initial unit sample (NU) , number of matches per unit (K), and number of sub-units selected for each potential unit:
+
+```{r}
+Nu = 100 # district sample size
+K = 10 # number of matches per district
+Ns = 5 # number of schools per potential district
+```
+
+### Specify covariates of interest
 Now, specify district level covariates on which you'll want to match selected districts (units) with their replacement candidates on the non-selected sample:
+
 ```{r}
 unitSamp_varsCCD <- c("w.pct.frlunch", "w.pct.black", "w.pct.hisp", "w.pct.female") 
 ```
 Similarly, specify school level covariates on which you'll want to match districts. In our running CCD example, these covariates are just school (sub-unit) level aggregates of the same district level underlying variable. However, they could be any other sub-unit level variables available in your own dataset:
+
 ```{r}
 subUnitSamp_varsCCD <- c("sch.pct.frlunch", "sch.pct.black", "sch.pct.hisp", "sch.pct.female")
 ```
@@ -113,6 +130,7 @@ You can (optionally) specify covariates on which to _exactly_ match districts. T
 ```{r}
 exact_match_vars <-  c("distr.type")
 ```
+
 Similarly, you can optionally specify covariates on which to match districts within a given numeric caliper, in terms of standard deviations. Such covariates are expected to be numeric variables. In this case, we are interested in caliper-matching on thre covariates: percentage of Black,  Hispanic, and  female students in the district.
 
 Notice that the lower the caliper, the more restrictive the matching (which could result in ferwe proportion of successful matches per replacement group, or even empty ones):
@@ -132,10 +150,10 @@ m.out <- selectMatch(df=dfCCD, # dataset
                        subUnit_samp_vars=subUnitSamp_varsCCD,
                        exact_match_vars= exact_match_vars,
                        calip_match_vars=calip_match_vars , 
-                       nUnitSamp = 100, # original district sample size
-                       nRepUnits = 10, # number of desired matches per selected district
-                       nsubUnits = 5, # number of schools to sample from each candidate district
-                       calipValue = 0.2, # 
+                       nUnitSamp = Nu, # original district sample size
+                       nRepUnits = K, # number of desired matches per selected district
+                       nsubUnits = Ns, # number of schools to sample from each candidate district
+                       calipValue = calip, # 
                        seedN = seed,
                        matchDistance = "mahalanobis",
                        sizeFlag = TRUE,
@@ -146,7 +164,7 @@ m.out <- selectMatch(df=dfCCD, # dataset
 )
 ```
 
-## Assessing balance and match quality
+## Assess balance and match quality
 
 By default, balance diagnostics in sitepickR are expressed in terms of standardized mean difference (SMD) between some two comparison groups of interest: initially selected districts (or schools) against target population (or against each of the K distrcit replacement groups).
 
