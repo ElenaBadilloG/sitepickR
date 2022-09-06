@@ -1,5 +1,4 @@
 
-library(tidyverse)
 ##########################################################################################################
 ####################### selectMatch() [sitepickR Package - Testing Version]  ######################
 ################### Robert Olsen, Elizabeth A. Stuart & Elena Badillo-Goicoechea, August 2022 ###############
