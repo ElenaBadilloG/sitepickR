@@ -102,11 +102,12 @@ Two-stage sampling may be necessary when the cost of the study depend on
 the number of units (e.g., school districts), and a one-stage sample of
 subunits (e.g., schools) would likely contain more units than the study
 can afford.</p>
-<p>The main function in this package, <a href="vignettes/selectMatch.html">selectMatch()</a> lets the user carry
-out a two-level sample selection where the possibility of an initially
-selected participant not wanting to participate is anticipated. The
-procedure aims to reduce the bias (and/or loss of generalizability to
-the population) this could introduce.</p>
+<p>The main function in this package, <a href="https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html" class="external-link">selectMatch()</a>
+lets the user carry out a two-level sample selection where the
+possibility of an initially selected participant not wanting to
+participate is anticipated. The procedure aims to reduce the bias
+(and/or loss of generalizability to the population) this could
+introduce.</p>
 <p>In selecting units and subunits, sitepickR uses the cube method
 (e.g., Deville &amp; Tillé, 2004; Tillé 2011). The cube method is a
 probability sampling method that is designed to satisfy criteria for
@@ -151,11 +152,11 @@ covariates of interest, both at the unit and sub-unit level.</li>
 </li>
 </ul>
 <p>This vignette will guide the reader, step-by-step, on sitepickR’s
-basic functionalities, with data from the <a href="">Common Core of Data
-(CCD)</a> for California schools (2017-18), using a pre-processed
-dataset that comes with the package installation. Further technical
-details on each of the package’s main functions and on the sample
-dataset is included in the documentation.</p>
+basic functionalities, with data from the <a href="https://sitepickr.github.io/sitepickR-website/reference/rwCCD.html" class="external-link">Common
+Core of Data (CCD)</a> for California schools (2017-18), using a
+pre-processed dataset that comes with the package installation. Further
+technical details on each of the package’s main functions and on the
+sample dataset is included in the documentation.</p>
 </div>
 <div class="section level2">
 <h2 id="package-and-data-set-up">Package and data set up<a class="anchor" aria-label="anchor" href="#package-and-data-set-up"></a>
@@ -201,7 +202,7 @@ installed with the package:</p>
 <span><span class="co">#&gt; 5          A</span></span>
 <span><span class="co">#&gt; 6          A</span></span></code></pre></div>
 <p>Process the raw aggregate dataset in order for it to be in the format
-expected by selectMatch by using sitepckr <a href="">buildDF()</a>
+expected by selectMatch by using sitepckr <a href="https://sitepickr.github.io/sitepickR-website/reference/buildDF.html" class="external-link">buildDF()</a>
 function. This will re-define key variables and create a new variable,
 ‘unitSize’, that will be used in the step of the selectMatch procedure
 where units are initially sampled. Specifically, cube sampling allows us
