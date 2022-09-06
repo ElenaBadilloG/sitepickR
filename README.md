@@ -29,7 +29,15 @@ if(!require(devtools)){
 devtools::install_github("ElenaBadilloG/sitepickR")
 
 ```
+sitepickR's core sampling + matching procedure, implemented with the [selectMatch()]() function, consists of four main steps:
 
+- Study sample design: identify: 1) a target population that has a nested structure (e.g. [school district:school]); 2) observable covariates on interest at the unit level; 3) observable covariates of interest at the sub-unit level.
+- Randomly select an initial sample of units from the target population.
+- Obtain a list of 'best' matches (e.g. replacement candidates) for each initially selected unit, in terms of the covariates of interest.
+- Assess balance and match quality in terms of the covariates of interest:
+    - Balance between initially selected ('original') units and the target population.
+    - Balance between original units and each group of matches (1 to K, from closest to further).
+    - Balance between sub-units associated to each unit replacement group and the original sub-units in the population, in terms of available covariates of interest, both at the unit and sub-unit level. 
 ## References
 
 Deville, J. C., & Tillé, Y. (2004). Efficient balanced sampling: the cube method. _Biometrika_, 91, 893-912.

@@ -36,18 +36,39 @@ In selecting units and subunits, sitepickR uses the cube method (e.g., Deville &
 In addition, sitepickR uses statistical matching to select possible replacement units. In education RCTs, the share of selected districts that agrees to participate tends to be low. To address this challenge, sitepickR selects and ranks up to 10 replacement districts for each districts selected using the cube method. Replacement districts are selected using statistical matching based on propensity score methods. To implement statistical matching, sitepickR uses the [MatchIt](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html) R package.
 
 
-sitepickR's sampling + matching procedure consists on five steps: 1) identifying a target population with a nested structure (e.g. [unit:subunit]), 2) randomly selecting an initial sample of units from the target population, 3) obtaining a list of 'best' potential replacements for each initially selected unit, in terms of the unit-level covariates of interest; 4) assessing the quality of the replacements in terms of their similarity to their original counterparts, and 5) assessing the balance of each replacement group against the target population, in terms of available covariates of interest. 
+sitepickR's core sampling + matching procedure, implemented with the selectMatch() function, consists of four main steps:
 
-This vignette guides the reader, using a pre-processed dataset with data from the [Common Core of Data (CCD)]()  for California schools (2017-18), on how to use sitepickR's main functionality, step-by-step. Technical details are included in the documentation.
+- Study sample design: identify: 1) a target population that has a nested structure (e.g. [school district:school]); 2) observable covariates on interest at the unit level; 3) observable covariates of interest at the sub-unit level.
+- Randomly select an initial sample of units from the target population.
+- Obtain a list of 'best' matches (e.g. replacement candidates) for each initially selected unit, in terms of the covariates of interest.
+- Assess balance and match quality in terms of the covariates of interest:
+    - Balance between initially selected ('original') units and the target population.
+    - Balance between original units and each group of matches (1 to K, from closest to further).
+    - Balance between sub-units associated to each unit replacement group and the original sub-units in the population, in terms of available covariates of interest, both at the unit and sub-unit level. 
 
-First, if needed, install the sitepickR package with the help of devtools, and load it:
+This vignette will guide the reader, step-by-step, on sitepickR's basic functionalities, with data from the [Common Core of Data (CCD)]() for California schools (2017-18), using a pre-processed dataset that comes with the package installation. Further technical details on each of the package's main functions and on the sample dataset is included in the documentation.
+
+## Package and data set up
+
+First, if needed, install the sitepickR package with the help of devtools:
+
+```{r}
+if(!require(devtools)){
+    install.packages("devtools")
+}
+
+if(!require(sitepickR)){
+    devtools::install_github("ElenaBadilloG/sitepickR")
+    }
+```
+
+Now load the package by calling its library:
 
 ```{r}
 library(sitepickR)
 ```
-## Load data:
 
-Load the CCD-California 2017-18 sample dataset that comes installed with the package:
+Now let's load the sample CCD-California 2017-18 dataset that comes installed with the package:
 
 ```{r}
 rwCCD <- sitepickR::rwCCD
@@ -71,7 +92,9 @@ replDISTRICTS = paste0(PATH, "/replacementUnits.csv") # filepath for {initial di
 dictSCHOOLS = paste0(PATH, "/subUnitTable.csv") # filepath for {district: [schools]} directory
 ```
 
-## Define key input values:
+## Study sample design
+
+### Define key input values:
 
 Since there is some underlying random sampling in selectMatch, we can set a seed for replication purposes (optional):
 ```{r}
@@ -97,34 +120,9 @@ Notice that the lower the caliper, the more restrictive the matching (which coul
 calip_match_vars <-  c("w.pct.black", "w.pct.hisp", "w.pct.female")
 ```
 
-## Run selectMatch
+## Get unit matches
 
-We'll now leverage MatchIt functionality, and match districts using [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance). We can also do this using propensity scores, as specified on [MatchIt's documentation](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html#trying-a-different-matching-specification):
-
-```{r}
-m.out <- selectMatch(df=dfCCD, # dataset
-                       unit_ID="LEAID", # column name of district ID
-                       subUnit_ID="NCESSCH", # column name of school ID
-                       unit_vars=unitSamp_varsCCD,
-                       subUnit_samp_vars=subUnitSamp_varsCCD,
-                       exact_match_vars= exact_match_vars,
-                       calip_match_vars=calip_match_vars , 
-                       nUnitSamp = 100, # original district sample size
-                       nRepUnits = 10, # number of desired matches per selected district
-                       nsubUnits = 5, # number of schools to sample from each candidate district
-                       calipValue = 0.2, # 
-                       seedN = seed,
-                       matchDistance = "mahalanobis",
-                       sizeFlag = TRUE,
-                       replaceFlag = FALSE, #match without replacement
-                       writeOut = FALSE, # write out a csv file for: 1) matched units and 2) selected schools
-                       replacementUnitsFilename = replDISTRICTS,
-                       subUnitTableFilename = dictSCHOOLS
-)
-```
-## Run selectMatch
-
-We'll now leverage the MatchIt functionality, and match districts using [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance). We can also do this using propensity scores, as specified on [MatchIt's documentation](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html#trying-a-different-matching-specification):
+We'll now leverage sampling + MatchIt packages joint functionality, and match districts with their candidate replacements among the non-initially selected units using [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance). We can also do this using propensity scores, as specified on [MatchIt's documentation](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html#trying-a-different-matching-specification):
 
 ```{r}
 m.out <- selectMatch(df=dfCCD, # dataset
@@ -147,12 +145,10 @@ m.out <- selectMatch(df=dfCCD, # dataset
                        subUnitTableFilename = dictSCHOOLS
 )
 ```
-
 
 ## Assessing balance and match quality
 
 By default, balance diagnostics in sitepickR are expressed in terms of standardized mean difference (SMD) between some two comparison groups of interest: initially selected districts (or schools) against target population (or against each of the K distrcit replacement groups).
-
 
 
 ### 1. Original units vs. target population
