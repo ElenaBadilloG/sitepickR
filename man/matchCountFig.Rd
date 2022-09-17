@@ -4,7 +4,7 @@
 \alias{matchCountFig}
 \title{Percentage of successful matches in each replacement unit group, 1...K}
 \usage{
-matchCountFig(m.out, title = NULL)
+matchCountFig(m.out, title = "Percentage of Successful Matches per Unit Group")
 }
 \arguments{
 \item{m.out}{list; selectMatch() output}

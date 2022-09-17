@@ -4,7 +4,7 @@
 \alias{matchBalanceTab}
 \title{Summary table: SMD between sampled units and population, for each covariate of interest}
 \usage{
-matchBalanceTab(m.out, title = NULL)
+matchBalanceTab(m.out)
 }
 \arguments{
 \item{m.out}{list; selectMatch() output}

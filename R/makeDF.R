@@ -2,13 +2,15 @@
 ################### Elena Badillo-Goicoechea, Robert Olsen, and Elizabeth A. Stuart, September 2022 ###############
 ##########################################################################################################
 
-#' @importFrom magrittr "%>%"
-#' 
-#' @export
+
+
+#' Prepare nested dataset
+#' @name makeDF
 #' @param df dataframe
 #' @param unitID character; unit column name
 #' @param subunitID character; unit column name
 #' @return processed df
+#' @export
 makeDF <- function(df, unitID, subunitID){
   
   # Assign standard variable name to unit/subunit columns:

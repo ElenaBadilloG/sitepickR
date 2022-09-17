@@ -44,7 +44,7 @@ unitSampBalance <- function(dfSU, unit_vars, exactMatchVars){
   # Build love plot (user output #4):
   unitSampLvPLt <- ggplot2::ggplot(unitSMDs, ggplot2::aes(x=SMD, y=Covariate)) +
     ggplot2::geom_dotplot(binaxis='y', fill="#0F3957", dotsize = 0.95) +
-    ggplot2::ggtitle("Standardized Mean Difference: Selected Units vs. Population") +
+    ggplot2::ggtitle("") +
     ggplot2::xlim(-0.5, 0.5) +
     ggplot2::geom_vline(xintercept=0) +
     ggplot2::theme_bw()
@@ -91,7 +91,7 @@ matchBalance <- function(mUnits, unitNumVars, nRepUnits){
     # Line chart (user output #5):
     u10gPlt <- ggplot2::ggplot(dfU10gPlt, ggplot2::aes(x=unitGrp, y=value)) +
       ggplot2::geom_line(color="#0F3957")  +
-      ggplot2::ggtitle("Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units") +
+      ggplot2::ggtitle("") +
       ggplot2::geom_hline(yintercept = 0, style="dashed", color="grey") +
       ggplot2::ylab("SMD") +
       ggplot2::xlab("Replacement Unit Group") +
@@ -127,7 +127,7 @@ matchCount <- function(replacementUnits, nRepUnits){
     ggplot2::theme_bw() +
     ggplot2::ylab("% Matches") +
     ggplot2::xlab("Unit Group") +
-    ggplot2::ggtitle("% of Successful Matches per Unit Group") +
+    ggplot2::ggtitle("") +
     ggplot2::scale_x_discrete(labels=unlist(lapply(completeUnitGrps$UnitGroup, 
                                           function(x) {paste0("Repl. Group", x)}))) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle=90))
@@ -184,7 +184,7 @@ subUnitBalance <- function(df_, dfSU, mUnits, subUnitTable, subunitNumVars, nRep
   # Line chart (user output #7):
   sub10gPlt <- ggplot2::ggplot(dfSub10gPlt, ggplot2::aes(x=unitGrp, y=value)) +
     ggplot2::geom_line(color="#0F3957")  +
-    ggplot2::ggtitle("Subunits from Original and Replacement Unit Groups vs. Population (SMD)") +
+    ggplot2::ggtitle("") +
     ggplot2::geom_hline(yintercept = 0, style="dashed", color="grey") +
     ggplot2::ylab("Standardized Mean Difference") +
     ggplot2::xlab("Unit Group") +
@@ -195,5 +195,5 @@ subUnitBalance <- function(df_, dfSU, mUnits, subUnitTable, subunitNumVars, nRep
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle=90)) +
     ggplot2::facet_wrap(facets=~variable)
 
-  return(sub10gPlt)
+  return(list(dfSub10gPlt, sub10gPlt))
 }
