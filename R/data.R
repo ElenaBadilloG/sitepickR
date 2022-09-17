@@ -4,7 +4,7 @@
 #' the district and school level for public schools in California for the 2017 and 2018 school years.
 #'
 #' @docType data
-#' @usage data(rwCCD)
+#' @usage data(rawCCD)
 #' @keywords datasets
 #' @format A data frame with 1890 rows and 13 variables.
 #' \describe{
@@ -21,4 +21,4 @@
 #'   \item{distr.type}{categorical  district type (artificially created for illustration purposes; (values={"A", "B", "C", "D"})).}
 #' }
 #' @source \url{https://nces.ed.gov/ccd//}
-"rwCCD"
+"rawCCD"

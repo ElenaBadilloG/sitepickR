@@ -11,45 +11,46 @@
 #' @noRd
 #' @param dfSU dataframe
 #' @param sizeFlag character; unit column name
-#' @param unit_vars character; unit column name
-#' @param exact_match_vars character; unit column name
-#' @param calip_match_vars character; unit column name
+#' @param unitVars character; unit column name
+#' @param exactMatchVars character; unit column name
+#' @param calipMatchVars character; unit column name
 #' @param calipValue character; unit column name
 #' @param matchDistance character; unit column name
 #' @param nRepUnits character; unit column name
 #' @param replaceFlag character; unit column name
 #' @param calipers character; unit column name
 #' @return list: matches matrix, df used to run match
-getMatches <- function(dfSU, sizeFlag, unit_vars, exact_match_vars,
-                       calip_match_vars, calipValue, matchDistance, nRepUnits, replaceFlag, calipers){
+getMatches <- function(dfSU, sizeFlag, unitVars, exactMatchVars,
+                       calipMatchVars, calipValue, matchDistance, nRepUnits, 
+                       replaceFlag, calipers){
   
   # Prepare dataset for matching:
   if(sizeFlag==TRUE){
     
-    unit_vars <- c("unitSize", tidyselect::all_of(unit_vars))
-    calip_match_vars <- c("unitSize", tidyselect::all_of(calip_match_vars))}
+    unitVars <- c("unitSize", tidyselect::all_of(unitVars))
+    calipMatchVars <- c("unitSize", tidyselect::all_of(calipMatchVars))}
   
-  calipers = rep(calipValue, length(calip_match_vars))
-  names(calipers) <- calip_match_vars
+  calipers = rep(calipValue, length(calipMatchVars))
+  names(calipers) <- calipMatchVars
   
-  if(!is.null(exact_match_vars)){
+  if(!is.null(exactMatchVars)){
     
     dfMatch <- dfSU %>% 
               dplyr::distinct() %>% 
-              dplyr::select(c("unit_ID", "unitSize", "Selected",
-                                                tidyselect::all_of(c(unit_vars, exact_match_vars)))) %>% 
-              dplyr::group_by_at(c("unit_ID", "Selected", tidyselect::all_of(exact_match_vars))) %>%
-              dplyr::summarise_at(c("unitSize", tidyselect::all_of(dplyr::setdiff(unit_vars, exact_match_vars))),
+              dplyr::select(c("unitID", "unitSize", "Selected",
+                                                tidyselect::all_of(c(unitVars, exactMatchVars)))) %>% 
+              dplyr::group_by_at(c("unitID", "Selected", tidyselect::all_of(exactMatchVars))) %>%
+              dplyr::summarise_at(c("unitSize", tidyselect::all_of(dplyr::setdiff(unitVars, exactMatchVars))),
                                   mean)
        
   } else{
     
     dfMatch <- dfSU %>% 
                dplyr::distinct() %>% 
-               dplyr::select(c("unit_ID", "unitSize", "Selected",
-                                                tidyselect::all_of(unit_vars))) %>% 
-                dplyr::group_by_at(c("unit_ID", "Selected")) %>%
-                dplyr::summarise_at(c("unitSize", unit_vars), mean)
+               dplyr::select(c("unitID", "unitSize", "Selected",
+                                                tidyselect::all_of(unitVars))) %>% 
+                dplyr::group_by_at(c("unitID", "Selected")) %>%
+                dplyr::summarise_at(c("unitSize", unitVars), mean)
        }
   
   
@@ -59,7 +60,7 @@ getMatches <- function(dfSU, sizeFlag, unit_vars, exact_match_vars,
   
   if(is.null(calipers)) {
     
-    unitMatch <- MatchIt::matchit(as.formula(paste("Selected ~ ", paste(unit_vars, collapse= "+"))),
+    unitMatch <- MatchIt::matchit(as.formula(paste("Selected ~ ", paste(unitVars, collapse= "+"))),
                          data = dfMatch,
                          distance = matchDistance,
                          ratio = nRepUnits,
@@ -71,7 +72,7 @@ getMatches <- function(dfSU, sizeFlag, unit_vars, exact_match_vars,
     if(!is.null(calipers) & replaceFlag == TRUE){ # Match with calipers (case NULL/numeric vector):
       
       #Do matching with replacement with the caliper:
-      m1 <- MatchIt::matchit(as.formula(paste("Selected ~ ", paste(unit_vars, collapse= "+"))),
+      m1 <- MatchIt::matchit(as.formula(paste("Selected ~ ", paste(unitVars, collapse= "+"))),
                     data = dfMatch,
                     distance = matchDistance,
                     ratio = nRepUnits,
@@ -80,7 +81,7 @@ getMatches <- function(dfSU, sizeFlag, unit_vars, exact_match_vars,
                     std.caliper = rep(TRUE,length(calipers)))
       
       #Second round of matching without a caliper:
-      m2 <- MatchIt::matchit(as.formula(paste("Selected ~ ", paste(unit_vars, collapse= "+"))),
+      m2 <- MatchIt::matchit(as.formula(paste("Selected ~ ", paste(unitVars, collapse= "+"))),
                     data = dfMatch,
                     distance = matchDistance,
                     ratio = nRepUnits,
@@ -107,7 +108,7 @@ getMatches <- function(dfSU, sizeFlag, unit_vars, exact_match_vars,
         if(!is.null(calipers) & replaceFlag==FALSE) {
           
           #Do matching with replacement with the caliper:
-          m1 <- MatchIt::matchit(as.formula(paste("Selected ~ ", paste(unit_vars, collapse= "+"))),
+          m1 <- MatchIt::matchit(as.formula(paste("Selected ~ ", paste(unitVars, collapse= "+"))),
                         data = dfMatch,
                         distance = matchDistance,
                         ratio = nRepUnits,
@@ -116,7 +117,7 @@ getMatches <- function(dfSU, sizeFlag, unit_vars, exact_match_vars,
                         std.caliper = rep(TRUE,length(calipers)))
           
           #Second round of matching without a caliper on unmatched units
-          m2 <- MatchIt::matchit(as.formula(paste("Selected ~ ", paste(unit_vars, collapse= "+"))),
+          m2 <- MatchIt::matchit(as.formula(paste("Selected ~ ", paste(unitVars, collapse= "+"))),
                         data = dfMatch,
                         distance = matchDistance,
                         ratio = nRepUnits,
@@ -148,18 +149,18 @@ getMatches <- function(dfSU, sizeFlag, unit_vars, exact_match_vars,
 
 # Helper 2. Recover a unit ID from its assiged unit index after matching
 
-#' @param idx_col integer; index of a given unit in output matrix after matching
+#' @param idxCol integer; index of a given unit in output matrix after matching
 #' @param units dataframe; unit level dataframe with all unit level covariates  relevant for selection and matching.
 #' @return vector of original IDs
-getUnitID <- function(idx_col, units){
+getUnitID <- function(idxCol, units){
   res=c()
-  for(i1 in 1:length(idx_col)){
+  for(i1 in 1:length(idxCol)){
     uiD = NA
     for(i2 in 1:nrow(units)){
-      if(!is.na(idx_col[i1]) & !is.na(units$selectedUnit_idx[i2]))
+      if(!is.na(idxCol[i1]) & !is.na(units$selectedunitIDx[i2]))
       {
-        if (idx_col[i1] == units$selectedUnit_idx[i2]){
-          uiD <- units$unit_ID[i2]
+        if (idxCol[i1] == units$selectedunitIDx[i2]){
+          uiD <- units$unitID[i2]
         }
         res[i1] <- uiD} else{res[i1] <- NA}
     }
@@ -171,31 +172,31 @@ getUnitID <- function(idx_col, units){
 #' Initial Unit Selection
 #' @noRd
 #' @param df_
-#' @param unit_vars
-#' @param exact_match_vars
+#' @param unitVars
+#' @param exactMatchVars
 #' @param nUnitSamp
 #' @param sizeFlag
 #' @return dataframe with selection status and selection probabilities
-sampleUnits <- function(df_, unit_vars, exact_match_vars, nUnitSamp,  sizeFlag){
+sampleUnits <- function(df_, unitVars, exactMatchVars, nUnitSamp,  sizeFlag){
   # Select units (1 = Selected, 0 = Non selected) via nested cube sampling:
 
   if(sizeFlag == TRUE) {SEL = 1} else {SEL = 2}
 
-  dfSampledU  <- as.data.frame(sampling::balancedcluster(df_[,dplyr::setdiff(c("unitSize", unit_vars),
-                                                                      exact_match_vars)],
+  dfSampledU  <- as.data.frame(sampling::balancedcluster(df_[,dplyr::setdiff(c("unitSize", unitVars),
+                                                                      exactMatchVars)],
                                                          m=nUnitSamp,
-                                                         cluster=df_$unit_ID,
+                                                         cluster=df_$unitID,
                                                          selection=SEL,
                                                          comment=FALSE,
                                                          method=SEL))
-  dfSampledU$unit_ID <- df_$unit_ID
+  dfSampledU$unitID <- df_$unitID
 
   dfSampledU <- dfSampledU %>%
     dplyr::mutate(Selected = V1,
            InclusionProb = V2)  %>%
-    dplyr::select(unit_ID, Selected, InclusionProb)
+    dplyr::select(unitID, Selected, InclusionProb)
 
-  dfSU <- suppressMessages(dplyr::right_join(dplyr::distinct(dfSampledU), df_, by="unit_ID"))
+  dfSU <- suppressMessages(dplyr::right_join(dplyr::distinct(dfSampledU), df_, by="unitID"))
   
 
 
@@ -207,34 +208,34 @@ sampleUnits <- function(df_, unit_vars, exact_match_vars, nUnitSamp,  sizeFlag){
 #' @noRd
 #' @param subUnitLookup
 #' @param replacementUnits
-#' @param subUnit_samp_vars
+#' @param subunitSampVars
 #' @param nsubUnits 
 #' @return subunit lookup table
-sampleSubUnits <- function(df_, subUnitLookup, replacementUnits, subUnit_samp_vars, nsubUnits){
+sampleSubUnits <- function(df_, subUnitLookup, replacementUnits, subunitSampVars, nsubUnits){
 
   subUnitTable <- dplyr::distinct(dplyr::select(reshape2::melt(replacementUnits,
                                                         measure.vars=colnames(replacementUnits)), c("value")))
   subUnitTable <- dplyr::filter(subUnitTable, !is.na(value))
   subUnitTable$sub_units = NA
-  colnames(subUnitTable) <- c("unit_ID", "sub_units")
+  colnames(subUnitTable) <- c("unitID", "sub_units")
   subUnitTable <- dplyr::distinct(subUnitTable)
 
   # Sample sub-units for each potential unit:
   for(i in 1:nrow(subUnitTable)){
 
-    un_ <- subUnitTable$unit_ID[i]
-    df_IDs <- dplyr::filter(subUnitLookup, unit_ID==un_)
+    un_ <- subUnitTable$unitID[i]
+    df_IDs <- dplyr::filter(subUnitLookup, unitID==un_)
 
-    if(nrow(df_IDs) <= nsubUnits) {subUnitTable$sub_units[i] <- list(df_IDs$subUnit_ID)} else {
+    if(nrow(df_IDs) <= nsubUnits) {subUnitTable$sub_units[i] <- list(df_IDs$subunitID)} else {
 
-      df_ID <- dplyr::filter(df_, unit_ID==un_)
+      df_ID <- dplyr::filter(df_, unitID==un_)
 
       PIK=rep(nsubUnits/nrow(df_ID), times=nrow(df_ID))
-      s=sampling::samplecube(as.matrix(df_ID[, subUnit_samp_vars]),
+      s=sampling::samplecube(as.matrix(df_ID[, subunitSampVars]),
                              pik=PIK,
                              order=1,
                              comment=F)
-      subUnitTable$sub_units[i] <- list(df_IDs[(1:length(PIK))[s==1],]$subUnit_ID)
+      subUnitTable$sub_units[i] <- list(df_IDs[(1:length(PIK))[s==1],]$subunitID)
 
     }
   }
@@ -252,17 +253,17 @@ sampleSubUnits <- function(df_, subUnitLookup, replacementUnits, subUnit_samp_va
 #'The procedure aims to reduce the bias (and/or loss of generalizability) with respect to the target population.
 #' @export
 #' @param df dataframe; sub-unit level dataframe with both sub-unit and unit level variables
-#' @param unit_ID character; name of unit ID column
-#' @param subUnit_ID character; name of sub-unit ID column
-#' @param unit_vars vector; column names of unit level variables  to match units on
+#' @param unitID character; name of unit ID column
+#' @param subunitID character; name of sub-unit ID column
+#' @param unitVars vector; column names of unit level variables  to match units on
 #' @param nUnitSamp numeric; number of units to be initially randomly selected
 #' @param nRepUnits numeric; number of replacement units to find for each selected unit
 #' @param nsubUnits numeric; number of sub-units to be randomly selected for each unit
-#' @param subUnit_samp_vars vector;  column names of unit level variables  to sample units on
-#' @param calipValue numeric; number of standard deviations to be used as caliper for matching units on calip_match_vars
+#' @param subunitSampVars vector;  column names of unit level variables  to sample units on
+#' @param calipValue numeric; number of standard deviations to be used as caliper for matching units on calipMatchVars
 #' @param seedN numeric; seed number to be used for sampling. If NA, calls set.seed(); default = NA
-#' @param exact_match_vars vector; column names of categorical variables on which units must be matched exactly. Must be present in 'unit_vars'; default = NULL
-#' @param calip_match_vars vector; column names of continuous variables on which units must be matched within a specified caliper. Must be present in 'unit_vars'; default = NULL
+#' @param exactMatchVars vector; column names of categorical variables on which units must be matched exactly. Must be present in 'unitVars'; default = NULL
+#' @param calipMatchVars vector; column names of continuous variables on which units must be matched within a specified caliper. Must be present in 'unitVars'; default = NULL
 #' @param matchDistance character; MatchIt::matchit distance parameter to obtain optimal matches (nearest neigboors); default = "mahalanois"
 #' @param sizeFlag logical; if TRUE, sampling is made proportional to unit size; default = TRUE
 #' @param replaceFlag logical; if TRUE, get matches with replacement; default = TRUE
@@ -271,15 +272,15 @@ sampleSubUnits <- function(df_, subUnitLookup, replacementUnits, subUnit_samp_va
 #' @param subUnitTableFilename character; csv filename for saving {unit:replacement} directory when writeOut == TRUE; default = "subUnitTable.csv"
 #' @return list with: 1) table of the form: {selected unit i: (unit i replacements)}, 2) table of the form: {potential unit i:(unit i sub-units)}, 3) balance diagnostics.
 selectMatch <- function(df,
-                        unit_ID,
-                        subUnit_ID,
-                        subUnit_samp_vars,
-                        unit_vars,
+                        unitID,
+                        subunitID,
+                        subunitSampVars,
+                        unitVars,
                         nUnitSamp,
                         nRepUnits,
                         nsubUnits,
-                        exact_match_vars=NULL,
-                        calip_match_vars=NULL,
+                        exactMatchVars=NULL,
+                        calipMatchVars=NULL,
                         calipValue = 0.2,
                         seedN = NA,
                         matchDistance = "mahalanobis",
@@ -298,24 +299,24 @@ selectMatch <- function(df,
 
   ### 1. INITIAL UNIT SELECTION: Select units (1 = Selected, 0 = Non selected) via nested cube sampling
 
-  dfSU <- sampleUnits(df, unit_vars, exact_match_vars, nUnitSamp,  sizeFlag)
+  dfSU <- sampleUnits(df, unitVars, exactMatchVars, nUnitSamp,  sizeFlag)
 
   # calculate appropriate weights for unit balance diagnstics :
   if(sizeFlag == TRUE){dfSU$w <- 1 / dfSU$InclusionProb} else {dfSU$w <- 1}
 
   # Create a subunit lookup table of the form: {unit U:[all U sub_units]}:
-  units <- dplyr::distinct(dplyr::select(dfSU, "unit_ID"))
-  units$selectedUnit_idx <- rownames(units)
+  units <- dplyr::distinct(dplyr::select(dfSU, "unitID"))
+  units$selectedunitIDx <- rownames(units)
 
   subUnitLookup <- dplyr::distinct(suppressMessages(dplyr::inner_join(units,
-                            dplyr::select(df, c("unit_ID", "subUnit_ID")))))
+                            dplyr::select(df, c("unitID", "subunitID")))))
   subUnitLookup <- dplyr::distinct(subUnitLookup)
 
 
   ### 2. FIND BEST MATCHES FOR ALL INITIALLY SELECTED UNITS
 
-  rmatches <- getMatches(dfSU, sizeFlag, unit_vars, exact_match_vars,
-                          calip_match_vars, calipValue, matchDistance, nRepUnits, replaceFlag, calipers)
+  rmatches <- getMatches(dfSU, sizeFlag, unitVars, exactMatchVars,
+                          calipMatchVars, calipValue, matchDistance, nRepUnits, replaceFlag, calipers)
 
   unitMatch <- rmatches[[1]]
   dfMatch <- rmatches[[2]]
@@ -324,10 +325,10 @@ selectMatch <- function(df,
 
   replacementUnits <- as.data.frame(unitMatch[[1]])
   replacementUnits <- dplyr::distinct(replacementUnits)
-  replacementUnits$selectedUnit_idx <- rownames(replacementUnits)
+  replacementUnits$selectedunitIDx <- rownames(replacementUnits)
   colnames(replacementUnits)[1:nRepUnits] <- unlist(lapply(colnames(replacementUnits)[1:nRepUnits] ,
                                                            function (x) stringr::str_replace(x, "V", "Unit_replacement_")))
-  replacementUnits <- dplyr::select(replacementUnits, c(selectedUnit_idx, colnames(replacementUnits)[1:nRepUnits]))
+  replacementUnits <- dplyr::select(replacementUnits, c(selectedunitIDx, colnames(replacementUnits)[1:nRepUnits]))
 
 
   # Re-map original unit ID names for unit row indeces:
@@ -335,22 +336,22 @@ selectMatch <- function(df,
     replacementUnits[,col] = getUnitID(replacementUnits[,col], units)
   }
   replacement_unit_cols <- colnames(replacementUnits)[2:ncol(replacementUnits)]
-  colnames(replacementUnits) <- c("Unit_ID", replacement_unit_cols)
+  colnames(replacementUnits) <- c("unitID", replacement_unit_cols)
 
 
   ### 3. SELECT SUB-UNITS FOR SELECTED / REPLACEMENT UNITS:
 
-  subUnitTable <- sampleSubUnits(df, subUnitLookup, replacementUnits, subUnit_samp_vars, nsubUnits)
+  subUnitTable <- sampleSubUnits(df, subUnitLookup, replacementUnits, subunitSampVars, nsubUnits)
 
   # Build  directory of the form: {potential unit U:[U sub-unit list]} (user output #2):
 
   subUnitTable <- subUnitTable %>%
     tidyr::unnest(sub_units) %>%
-    dplyr::group_by_at(c("unit_ID")) %>%
+    dplyr::group_by_at(c("unitID")) %>%
     dplyr::mutate(key = dplyr::row_number()) %>%
     tidyr::spread(key, sub_units)
 
-  colnames(subUnitTable) <- c("Unit_ID", sapply(colnames(subUnitTable)[2:ncol(subUnitTable)],
+  colnames(subUnitTable) <- c("unitID", sapply(colnames(subUnitTable)[2:ncol(subUnitTable)],
                                                 function (x) paste("Sub_unit", x, "_ID", "")))
   subUnitTable <- subUnitTable[,c(1:(nsubUnits+1))]
 
@@ -359,15 +360,15 @@ selectMatch <- function(df,
 
   #1. Covariate SMD between Units and Population:
 
-  unitBal <- unitSampBalance(dfSU, unit_vars, exact_match_vars)
+  unitBal <- unitSampBalance(dfSU, unitVars, exactMatchVars)
 
   unitSampBalTab <- unitBal[[1]]
   unitSampBalance_ <- unitBal[[2]]
 
   #2.Covariate SMD between Replacement (1,...,nth) and Initially selected (0) unit groups:
 
-  unitNumVars <- tidyselect::all_of(dplyr::setdiff(unit_vars,
-                                exact_match_vars))
+  unitNumVars <- tidyselect::all_of(dplyr::setdiff(unitVars,
+                                exactMatchVars))
   
   # Recover unit groups from MatchIt::matchit Output:
 
@@ -379,13 +380,13 @@ selectMatch <- function(df,
                          data = dfMatch,
                          include.s.weights = TRUE)
 
-  mUnits <- dplyr::inner_join(dfMatch, dplyr::select(matches, c("unit_ID", "subclass", "weights")), by ="unit_ID")
+  mUnits <- dplyr::inner_join(dfMatch, dplyr::select(matches, c("unitID", "subclass", "weights")), by ="unitID")
 
   mUnits$unitGrp <- NA
   for(i in 1:nrow(mUnits)){
     if(is.na(mUnits$unitGrp[i])){
       for(j in 0:nRepUnits){
-        if(mUnits$unit_ID[i] %in% replacementUnits[,(j+1)]){
+        if(mUnits$unitID[i] %in% replacementUnits[,(j+1)]){
           mUnits$unitGrp[i] = j}
 
       }} else{next}
@@ -393,6 +394,7 @@ selectMatch <- function(df,
 
 
   # Calculate difference between each unit replacement group (1,..., n) and initially selected units:
+  
   matchBalance_ <- matchBalance(mUnits, unitNumVars, nRepUnits)
 
 
@@ -402,10 +404,10 @@ selectMatch <- function(df,
 
   ### 4. Covariate SMD between Sub-units and Population:
   
-  if(!is.null(exact_match_vars)){
-    subunitNumVars <- c("unitSize", tidyselect::all_of(dplyr::setdiff(c(unit_vars, subUnit_samp_vars),
-                                                 exact_match_vars)))} else{
-    subunitNumVars <- c("unitSize", tidyselect::all_of(c(unit_vars, subUnit_samp_vars))) }
+  if(!is.null(exactMatchVars)){
+    subunitNumVars <- c("unitSize", tidyselect::all_of(dplyr::setdiff(c(unitVars, subunitSampVars),
+                                                 exactMatchVars)))} else{
+    subunitNumVars <- c("unitSize", tidyselect::all_of(c(unitVars, subunitSampVars))) }
 
   subUnitBalance_ <- subUnitBalance(df, dfSU, mUnits, subUnitTable, subunitNumVars, nRepUnits)
 
@@ -425,7 +427,7 @@ selectMatch <- function(df,
   # Output objects (7) into list:
   mainRes = list(replacementUnits, subUnitTable, # {selected unit: unit replacements} & {unit:subunits} lookup tables
                  unitSampBalTab, unitSampBalance_, # balance table & love plot for selected units vs. population
-                 matchBalance_, # SMD line charts for unit groups vs. initial units
+                 matchBalance_, # SMD for unit groups vs. initial units (table and figure)
                  matchCount_, # barchart with % of successful matches per unit group
                  subUnitBalance_ # SMD line charts for subunits from each unit groups vs. population
 

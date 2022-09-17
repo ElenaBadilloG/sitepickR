@@ -6,15 +6,15 @@
 \usage{
 selectMatch(
   df,
-  unit_ID,
-  subUnit_ID,
-  subUnit_samp_vars,
-  unit_vars,
+  unitID,
+  subunitID,
+  subunitSampVars,
+  unitVars,
   nUnitSamp,
   nRepUnits,
   nsubUnits,
-  exact_match_vars = NULL,
-  calip_match_vars = NULL,
+  exactMatchVars = NULL,
+  calipMatchVars = NULL,
   calipValue = 0.2,
   seedN = NA,
   matchDistance = "mahalanobis",
@@ -28,13 +28,13 @@ selectMatch(
 \arguments{
 \item{df}{dataframe; sub-unit level dataframe with both sub-unit and unit level variables}
 
-\item{unit_ID}{character; name of unit ID column}
+\item{unitID}{character; name of unit ID column}
 
-\item{subUnit_ID}{character; name of sub-unit ID column}
+\item{subunitID}{character; name of sub-unit ID column}
 
-\item{subUnit_samp_vars}{vector;  column names of unit level variables  to sample units on}
+\item{subunitSampVars}{vector;  column names of unit level variables  to sample units on}
 
-\item{unit_vars}{vector; column names of unit level variables  to match units on}
+\item{unitVars}{vector; column names of unit level variables  to match units on}
 
 \item{nUnitSamp}{numeric; number of units to be initially randomly selected}
 
@@ -42,11 +42,11 @@ selectMatch(
 
 \item{nsubUnits}{numeric; number of sub-units to be randomly selected for each unit}
 
-\item{exact_match_vars}{vector; column names of categorical variables on which units must be matched exactly. Must be present in 'unit_vars'; default = NULL}
+\item{exactMatchVars}{vector; column names of categorical variables on which units must be matched exactly. Must be present in 'unitVars'; default = NULL}
 
-\item{calip_match_vars}{vector; column names of continuous variables on which units must be matched within a specified caliper. Must be present in 'unit_vars'; default = NULL}
+\item{calipMatchVars}{vector; column names of continuous variables on which units must be matched within a specified caliper. Must be present in 'unitVars'; default = NULL}
 
-\item{calipValue}{numeric; number of standard deviations to be used as caliper for matching units on calip_match_vars}
+\item{calipValue}{numeric; number of standard deviations to be used as caliper for matching units on calipMatchVars}
 
 \item{seedN}{numeric; seed number to be used for sampling. If NA, calls set.seed(); default = NA}
 
