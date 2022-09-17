@@ -1,0 +1,26 @@
+{
+    "id": "1EB74BCC",
+    "path": "~/sitepickR/R/sitepickR_diagnostics.R",
+    "project_path": "R/sitepickR_diagnostics.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1662124087842.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "88,48",
+        "scrollLine": "67"
+    },
+    "folds": "14|107|22|0|\n33|129|41|0|\n51|84|61|0|\n71|112|80|0|\n91|40|97|12|\n",
+    "lastKnownWriteTime": 1663424088,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1663424088136,
+    "read_only": false,
+    "read_only_alternatives": []
+}

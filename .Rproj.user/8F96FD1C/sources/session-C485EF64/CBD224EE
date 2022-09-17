@@ -1,0 +1,26 @@
+{
+    "id": "CBD224EE",
+    "path": "~/sitepickR/R/balanceDiagnostics.R",
+    "project_path": "R/balanceDiagnostics.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1662124092914.0,
+    "source_on_save": false,
+    "relative_order": 7,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "188,26",
+        "scrollLine": "177"
+    },
+    "folds": "10|28|20|0|\n28|62|52|0|\n60|58|105|0|\n112|53|135|0|\n",
+    "lastKnownWriteTime": 1663423920,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1663423920533,
+    "read_only": false,
+    "read_only_alternatives": []
+}

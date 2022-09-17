@@ -16,21 +16,6 @@
     <loc>/index.html</loc>
   </url>
   <url>
-    <loc>/reference/buildDF.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getMatchCount.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getSubUnitBalance.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getUnitLovePlot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getUnitReplacementBalance.html</loc>
-  </url>
-  <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
@@ -40,25 +25,10 @@
     <loc>/reference/matchBalance.html</loc>
   </url>
   <url>
-    <loc>/reference/matchBalanceFig.html</loc>
-  </url>
-  <url>
-    <loc>/reference/matchBalanceTab.html</loc>
-  </url>
-  <url>
     <loc>/reference/matchCount.html</loc>
   </url>
   <url>
-    <loc>/reference/matchCountFig.html</loc>
-  </url>
-  <url>
-    <loc>/reference/matchCountTab.html</loc>
-  </url>
-  <url>
     <loc>/reference/rawCCD.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rwCCD.html</loc>
   </url>
   <url>
     <loc>/reference/selectMatch.html</loc>

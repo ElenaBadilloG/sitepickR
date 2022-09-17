@@ -1,0 +1,795 @@
+library(tidyverse)
+library(anytime)
+library(survey)
+library(srvyr)
+library(maps)
+library(R.utils)
+library(data.table)
+library(RCurl)
+library(gtsummary)
+library(MASS)
+
+
+################################ Mental Health and IP Schooling in the U.S. during the COVID-19 Pandemic ################################
+
+setwd("/Users/elenagoicoechea/Documents/FB_MH/k12_US/MH_IP")
+source("HelperFuncs.R")
+#source("MainTextFigures.R")
+source("/Users/elenagoicoechea/Documents/FB_MH/k12_US/ggplot_theme.R")
+
+# Read and process data
+
+split_week <- function(wy) {
+  wy = str_split(wy, "-")[[1]]
+  w = wy[1]
+  y = wy[2]
+  if(nchar(w) == 1){return(paste0(y,"-0",w))} else{return(paste0(y,"-",w))}
+}
+
+# II.Groupings
+
+# 1. Weekly
+dfW <-  df %>% 
+  group_by(week) %>% 
+  summarise(anxious = weighted.mean(anxious_bin, w=weight, na.rm=T),
+            depressed = weighted.mean(depressed_bin, w=weight, na.rm=T))
+dfW$week <- unlist(lapply(dfW$week, split_week))
+dfW <- arrange(dfW, week)
+dfW$weekN <- rank(dfW$week)
+
+# 2. Weekly,  Gender
+dfWGen <-  df %>% 
+  group_by(week, Gender) %>% 
+  summarise(anxious = weighted.mean(anxious_bin, w=weight, na.rm=T),
+            depressed = weighted.mean(depressed_bin, w=weight, na.rm=T))
+dfWGen$week <- unlist(lapply(dfWGen$week, split_week))
+dfWGen <- arrange(dfWGen, week)
+dfWGen$weekN <- rank(dfWGen$week)
+dfWGen <- arrange(dfWGen, week)
+dfWGen$weekN <- rank(dfWGen$week)
+
+
+# 3. Weekly, Age
+
+dfWAge <-  df %>% 
+  group_by(week, Age) %>% 
+  summarise(anxious = weighted.mean(anxious_bin, w=weight, na.rm=T),
+            depressed = weighted.mean(depressed_bin, w=weight, na.rm=T))
+dfWAge$week <- unlist(lapply(dfWAge$week, split_week))
+dfWAge <- arrange(dfWAge, week)
+dfWAge$weekN <- rank(dfWAge$week)
+dfWAge <- arrange(dfWAge, week)
+dfWAge$weekN <- rank(dfWAge$week)
+
+# 4. Weekly, Employment
+dfWEmp <-  df %>% 
+  group_by(week, Employed) %>% 
+  summarise(anxious = weighted.mean(anxious_bin, w=weight, na.rm=T),
+            depressed = weighted.mean(depressed_bin, w=weight, na.rm=T))
+dfWEmp$week <- unlist(lapply(dfWEmp$week, split_week))
+dfWEmp <- arrange(dfWEmp, week)
+dfWEmp$weekN <- rank(dfWEmp$week)
+dfWEmp <- arrange(dfWEmp, week)
+dfWEmp$weekN <- rank(dfWEmp$week)
+
+
+# 5. Weekly, Educ
+dfWEduc <-  df %>% 
+  group_by(week, Educational_Level) %>% 
+  summarise(anxious = weighted.mean(anxious_bin, w=weight, na.rm=T),
+            depressed = weighted.mean(depressed_bin, w=weight, na.rm=T))
+dfWEduc$week <- unlist(lapply(dfWEduc$week, split_week))
+dfWEduc  <- arrange(dfWEduc , week)
+dfWEduc$weekN <- rank(dfWEduc$week)
+
+
+###### III. PLOTS
+
+# 1.1 US vs. Parents: Depression
+ggWMH <- ggplot(data = dfW, aes(x = weekN, y = depressed)) +
+  ggtitle("Depressive and Anxiety Symptoms (Weekly Prevalence): U.S. Adults") +
+  geom_line(color="blue") +
+  geom_line(aes(y=anxious, color="red")) +
+  ylab("%") +
+  xlab("Week") +
+  ylim(0, 0.25) + 
+  scale_x_continuous(breaks=c(unique(dfW$weekN)[1],
+    unique(dfW$weekN)[16],
+    unique(dfW$weekN)[31],
+    unique(dfW$weekN)[46],
+    unique(dfW$weekN)[61],
+    unique(dfW$weekN)[76],
+    unique(dfW$weekN)[91],
+    unique(dfW$weekN)[106],
+    unique(dfW$weekN)[119]),
+    
+    labels= c(unique(dfW$week)[1],
+              unique(dfW$week)[16],
+              unique(dfW$week)[31],
+              unique(dfW$week)[46],
+              unique(dfW$week)[61],
+              unique(dfW$week)[76],
+              unique(dfW$week)[91],
+              unique(dfW$week)[106],
+              unique(dfW$week)[119])) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text.x      = element_text(size=12, angle=90)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) 
+
+
+
+# 2 . By Gender
+
+
+ggWMHD <- ggplot(data = filter(dfWGen, Gender !="(Missing)"), aes(x = weekN, y = depressed, color=Gender)) +
+  ggtitle("Depressive Symptoms (Weekly Prevalence): U.S. Adults by Gender") +
+  geom_line() +
+  ylab("%") +
+  xlab("Week") +
+  ylim(0, 0.65) + 
+  scale_color_manual(values=c("#e79796",
+                              "#7fc2cb",
+                              "#b4a7d6",
+                              "#babd8e",
+                              "grey")) +
+  scale_x_continuous(breaks=c(unique(dfWGen$weekN)[1],
+                              unique(dfWGen$weekN)[16],
+                              unique(dfWGen$weekN)[31],
+                              unique(dfWGen$weekN)[46],
+                              unique(dfWGen$weekN)[61],
+                              unique(dfWGen$weekN)[76],
+                              unique(dfWGen$weekN)[91],
+                              unique(dfWGen$weekN)[106],
+                              unique(dfWGen$weekN)[119]),
+                     
+                     labels= c(unique(dfWGen$week)[1],
+                               unique(dfWGen$week)[16],
+                               unique(dfWGen$week)[31],
+                               unique(dfWGen$week)[46],
+                               unique(dfWGen$week)[61],
+                               unique(dfWGen$week)[76],
+                               unique(dfWGen$week)[91],
+                               unique(dfWGen$week)[106],
+                               unique(dfWGen$week)[119])) +
+  theme_bw() +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text.x      = element_text(size=12, angle=90)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) 
+
+
+
+
+
+ggWMHAnx <- ggplot(data = filter(dfWGen, Gender !="(Missing)"),
+                   aes(x = weekN, y = anxious, color=Gender)) +
+  ggtitle("Anxiety Symptoms (Weekly Prevalence): U.S. Adults by Gender") +
+  geom_line() +
+  ylab("%") +
+  xlab("Week") +
+  ylim(0, 0.65) + 
+  scale_color_manual(values=c("#e79796",
+                              "#7fc2cb",
+                              "#b4a7d6",
+                              "#babd8e",
+                              "grey")) +
+  scale_x_continuous(breaks=c(unique(dfWGen$weekN)[1],
+                              unique(dfWGen$weekN)[16],
+                              unique(dfWGen$weekN)[31],
+                              unique(dfWGen$weekN)[46],
+                              unique(dfWGen$weekN)[61],
+                              unique(dfWGen$weekN)[76],
+                              unique(dfWGen$weekN)[91],
+                              unique(dfWGen$weekN)[106],
+                              unique(dfWGen$weekN)[119]),
+                     
+                     labels= c(unique(dfWGen$week)[1],
+                               unique(dfWGen$week)[16],
+                               unique(dfWGen$week)[31],
+                               unique(dfWGen$week)[46],
+                               unique(dfWGen$week)[61],
+                               unique(dfWGen$week)[76],
+                               unique(dfWGen$week)[91],
+                               unique(dfWGen$week)[106],
+                               unique(dfWGen$week)[119])) +
+  theme_bw() +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text.x      = element_text(size=12, angle=90)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) 
+
+
+
+# 2 . By Age
+
+dfWAge$Age <- factor(dfWAge$Age, levels=c("18.24",
+                                          "25.34",
+                                          "35.44",
+                                          "45.54",
+                                          "55.64", "65plus", "(Missing)"))
+ggWDepAge <- ggplot(data = filter(dfWAge, Age != "(Missing)"),
+                    aes(x = weekN, y = depressed, color=Age)) +
+  ggtitle("Depressive Symptoms (Weekly Prevalence): U.S. Adults by Age") +
+  geom_line() +
+  ylab("%") +
+  xlab("Week") +
+  ylim(0, 0.5) + 
+  scale_color_manual(values=c("#293462", "#2F8F9D", "#3BACB6", "#82DBD8", "#B3E8E5",
+                              "grey")) +
+  scale_x_continuous(breaks=c(unique(dfWAge$weekN)[1],
+                              unique(dfWAge$weekN)[16],
+                              unique(dfWAge$weekN)[31],
+                              unique(dfWAge$weekN)[46],
+                              unique(dfWAge$weekN)[61],
+                              unique(dfWAge$weekN)[76],
+                              unique(dfWAge$weekN)[91],
+                              unique(dfWAge$weekN)[106],
+                              unique(dfWAge$weekN)[119]),
+                     
+                     labels= c(unique(dfWAge$week)[1],
+                               unique(dfWAge$week)[16],
+                               unique(dfWAge$week)[31],
+                               unique(dfWAge$week)[46],
+                               unique(dfWAge$week)[61],
+                               unique(dfWAge$week)[76],
+                               unique(dfWAge$week)[91],
+                               unique(dfWAge$week)[106],
+                               unique(dfWAge$week)[119])) +
+  theme_bw() +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text.x      = element_text(size=12, angle=90)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) 
+
+
+
+ggWAnxAge <- ggplot(data = filter(dfWAge, Age != "(Missing)"),
+                    aes(x = weekN, y = anxious, color=Age)) +
+  ggtitle("Anxiety Symptoms (Weekly Prevalence): U.S. Adults by Age") +
+  geom_line() +
+  ylab("%") +
+  xlab("Week") +
+  ylim(0, 0.5) + 
+  scale_color_manual(values=c("#293462", "#2F8F9D", "#3BACB6", "#82DBD8", "#B3E8E5",
+                              "grey")) +
+  scale_x_continuous(breaks=c(unique(dfWAge$weekN)[1],
+                              unique(dfWAge$weekN)[16],
+                              unique(dfWAge$weekN)[31],
+                              unique(dfWAge$weekN)[46],
+                              unique(dfWAge$weekN)[61],
+                              unique(dfWAge$weekN)[76],
+                              unique(dfWAge$weekN)[91],
+                              unique(dfWAge$weekN)[106],
+                              unique(dfWAge$weekN)[119]),
+                     
+                     labels= c(unique(dfWAge$week)[1],
+                               unique(dfWAge$week)[16],
+                               unique(dfWAge$week)[31],
+                               unique(dfWAge$week)[46],
+                               unique(dfWAge$week)[61],
+                               unique(dfWAge$week)[76],
+                               unique(dfWAge$week)[91],
+                               unique(dfWAge$week)[106],
+                               unique(dfWAge$week)[119])) +
+  theme_bw() +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text.x      = element_text(size=12, angle=90)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) 
+
+
+
+
+
+
+# 1.2. US vs. Parents: Anxiety
+
+ggMonthAnx <- ggplot(data = dfMonth, aes(x = monthN, y = anxious, 
+                                         color=Parent)) +
+  ggtitle("Anxiety Symptoms (Monthly Prevalence): Non-parent vs. Parent Adults") +
+  geom_line() +
+ylim(0, 0.25) + scale_x_continuous(breaks=c(unique(dfMonth$monthN)[1],
+                                           unique(dfMonth$monthN)[6],
+                                           unique(dfMonth$monthN)[11],
+                                           unique(dfMonth$monthN)[16],
+                                           unique(dfMonth$monthN)[21],
+                                           unique(dfMonth$monthN)[27]),
+                                  labels= c("Apr-2020", "Sep-2020", "Feb-2021", "July-2021", "Dec-2021", "June-2022")) +
+  
+  theme_bw() +
+  theme(legend.position = c(0.8, 0.2)) +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text        = element_text(size=12)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) 
+
+
+
+
+# 2.1 US vs. Parents subgroups: Depression
+
+ggMonthDepG2 <- ggplot(data = dfMonthG2, aes(x = monthN,
+                                      y = depressed, 
+                                     color=Parent, linetype = Gender)) +
+  ggtitle("Depression Symptoms (Monthly Prevalence): Non-parent vs. Parent Adults By Subgroups \n
+          Gender & Age Group") +
+  geom_line() +
+  #ylim(0, 0.6) +
+  scale_x_continuous(breaks=c(unique(dfMonthG2$monthN)[1],
+    unique(dfMonthG2$monthN)[6],
+    unique(dfMonthG2$monthN)[11],
+    unique(dfMonthG2$monthN)[16],
+    unique(dfMonthG2$monthN)[21],
+    unique(dfMonthG2$monthN)[27]),
+    labels= c("Apr-2020", "Sep-2020", "Feb-2021", "July-2021", "Dec-2021", "June-2022")) +
+  theme_bw() +
+  theme(legend.position = c(0.8, 0.1)) +
+  theme(legend.title = element_text(size=8)) +
+  theme(legend.text = element_text(size=8)) +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text        = element_text(size=10, angle=90)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) +
+  facet_wrap(~ Age)
+
+
+
+
+
+ggMonthAnxG2 <- ggplot(data = dfMonthG2, aes(x = monthN,
+                                             y = anxious, 
+                                             color=Parent, linetype = Gender)) +
+  ggtitle("Anxiety Symptoms (Monthly Prevalence): Non-parent vs. Parent Adults By Subgroups \n
+          Gender & Age Group") +
+  geom_line() +
+  #ylim(0, 0.6) +
+  scale_x_continuous(breaks=c(unique(dfMonthG2$monthN)[1],
+                              unique(dfMonthG2$monthN)[6],
+                              unique(dfMonthG2$monthN)[11],
+                              unique(dfMonthG2$monthN)[16],
+                              unique(dfMonthG2$monthN)[21],
+                              unique(dfMonthG2$monthN)[27]),
+                     labels= c("Apr-2020", "Sep-2020", "Feb-2021", "July-2021", "Dec-2021", "June-2022")) +
+  theme_bw() +
+  theme(legend.position = c(0.8, 0.1)) +
+  theme(legend.title = element_text(size=8)) +
+  theme(legend.text = element_text(size=8)) +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text        = element_text(size=10, angle=90)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) +
+  facet_wrap(~ Age)
+
+
+
+
+# 2.3 US vs. Parents subgroups: Depression
+
+ggMonthDepG3 <- ggplot(data = dfMonthG3, aes(x = monthN,
+                                             y = depressed, 
+                                             color=Parent, linetype = finance_worry)) +
+  ggtitle("Depression Symptoms (Monthly Prevalence): Non-parent vs. Parent Adults By Subgroups \n
+          Financial stress & Living Situation") +
+  geom_line() +
+  #ylim(0, 0.6) +
+  scale_x_continuous(breaks=c(unique(dfMonthG3$monthN)[1],
+                              unique(dfMonthG3$monthN)[6],
+                              unique(dfMonthG3$monthN)[11],
+                              unique(dfMonthG3$monthN)[16],
+                              unique(dfMonthG3$monthN)[22]),
+                     labels= c("Sep-2020", "Feb-2021", "July-2021", "Dec-2021", "June-2022")) +
+  theme_bw() +
+  theme(legend.position = c(0.6, 0.8)) +
+  theme(legend.title = element_text(size=8)) +
+  theme(legend.text = element_text(size=8)) +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text        = element_text(size=10, angle=90)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) +
+  facet_wrap(~ alone)
+
+
+
+
+
+ggMonthAnxG3 <- ggplot(data = dfMonthG3, aes(x = monthN,
+                                             y = anxious, 
+                                             color=Parent, linetype = finance_worry)) +
+  ggtitle("Anxiety Symptoms (Monthly Prevalence): Non-parent vs. Parent Adults By Subgroups \n
+          Financial stress & Living Situation") +
+  geom_line() +
+  #ylim(0, 0.6) +
+  scale_x_continuous(breaks=c(unique(dfMonthG3$monthN)[1],
+                              unique(dfMonthG3$monthN)[6],
+                              unique(dfMonthG3$monthN)[11],
+                              unique(dfMonthG3$monthN)[16],
+                              unique(dfMonthG3$monthN)[22]),
+                     labels= c("Sep-2020", "Feb-2021", "July-2021", "Dec-2021", "June-2022")) +
+  theme_bw() +
+  theme(legend.position = c(0.6, 0.8)) +
+  theme(legend.title = element_text(size=8)) +
+  theme(legend.text = element_text(size=8)) +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text        = element_text(size=10, angle=90)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) +
+  facet_wrap(~ alone)
+
+
+
+
+
+
+
+
+# 5. Full time IP vs.nonFullTime IP Parents: Depression
+ggMonthDepIP <- ggplot(data = dfMIP, aes(x = monthN, 
+                                         y = depressed,
+                                         color=Child_IP_full)) +
+  ggtitle("Depressive Symptoms (Monthly Prevalence) for U.S. Parents: \n Full-time IP vs. Part-time or No IP Schooling ") +
+  geom_line() +
+  ylim(0, 0.25) +
+  scale_x_continuous(breaks=c(unique(dfMIP$monthN)[1],
+                              unique(dfMIP$monthN)[5],
+                              unique(dfMIP$monthN)[10],
+                              unique(dfMIP$monthN)[15],
+                              unique(dfMIP$monthN)[20]),
+                     labels= c("Nov-2020", "Mar-2021",
+                               "Aug-2021", "Jan-2022",
+                               "June-2022")) +
+  theme_bw() +
+  theme(legend.position = c(0.8, 0.1)) +
+  theme(legend.title = element_text(size=10)) +
+  theme(legend.text = element_text(size=10)) +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text        = element_text(size=10)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) 
+
+
+# 4. Full time IP vs.nonFullTime IP Parents: Anxiety
+ggMonthAnxIP <- ggplot(data = dfMIP, aes(x = monthN, 
+                                         y = anxious,
+                                         color=Child_IP_full)) +
+  ggtitle("Anxiety Symptoms (Monthly Prevalence) for U.S. Parents: \n Full-time IP vs. Part-time or No IP Schooling ") +
+  geom_line() +
+  ylim(0, 0.25) +
+  scale_x_continuous(breaks=c(unique(dfMIP$monthN)[1],
+                              unique(dfMIP$monthN)[5],
+                              unique(dfMIP$monthN)[10],
+                              unique(dfMIP$monthN)[15],
+                              unique(dfMIP$monthN)[20]),
+                     labels= c("Nov-2020", "Mar-2021",
+                               "Aug-2021", "Jan-2022",
+                               "June-2022")) +
+  theme_bw() +
+  theme(legend.position = c(0.8, 0.1)) +
+  theme(legend.title = element_text(size=10)) +
+  theme(legend.text = element_text(size=10)) +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text        = element_text(size=10)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################
+
+# dfF <- dfad %>%
+#   mutate(period = case_when(
+#     str_detect(month, "2022")  ~  "p3",
+#     month == "11-2020" | month =="12-2020" | month =="1-2021" | month == "2-2021" | month == "3-2021" | month == "4-2021" | month =="5-2021" | month =="6-2021" | month =="7-2021" ~ "p1",
+#     month =="8-2021" | month == "9-2021" | month =="10-2021" | month =="11-2021" ~ "p2",
+#     TRUE ~ "p0")
+#   )
+
+
+
+dfF <- filter(df, ! State %in% c("PR", "MH", "GU", "MP", "FM", "AS", "AA", "PW", "AE",
+                                  "NJ", "AP"))
+dfF <- filter(dfF,!is.na(Child_IP_any) & Child_IP_any != "Don't know" & Child_IP_any != "(Missing)")
+dfF <- filter(dfF, period != "p0")
+
+dfStateMH <-  dfF %>% 
+  group_by(State, period) %>% 
+  summarise(anxious = weighted.mean(anxious_bin, w=weight, na.rm=T),
+            depressed = weighted.mean(depressed_bin, w=weight, na.rm=T)) %>%
+            mutate(anxiousLag = lag(anxious),
+                   depressedLag = lag(depressed),
+                   slopeA = anxiousLag - anxious,
+                   slopeD = depressedLag - depressed,
+                   slopecA = lead(ifelse(slopeA < 0, "d", "u")),
+                   slopecD = lead(ifelse(slopeD < 0, "d", "u")))
+
+dfIPMH <-  dfF %>% 
+  group_by(Child_IP_any, period) %>% 
+  summarise(anxious = weighted.mean(anxious_bin, w=weight, na.rm=T),
+            depressed = weighted.mean(depressed_bin, w=weight, na.rm=T)) %>%
+  mutate(anxiousLag = lag(anxious),
+         depressedLag = lag(depressed),
+         slopeA = anxiousLag - anxious,
+         slopeD = depressedLag - depressed,
+         slopecA = lead(ifelse(slopeA < 0, "d", "u")),
+         slopecD = lead(ifelse(slopeD < 0, "d", "u")))
+
+dfIPMH$Child_IP_any <- ifelse(dfIPMH$Child_IP_any == "Yes", "Some in-person",  "No in-person")
+
+# MH Slope Chart
+
+# All Parents
+# Anx:
+
+ggscha <- ggplot(data = dfStateMH, aes(x = period, y = anxious*100, group = State)) +
+  geom_line(aes(color = slopecA), size = 0.5, alpha=0.75) +
+  geom_point(color="#bcbcbc", fill="white", size = 1) +
+  scale_color_manual(values=c("#F44336", "#189f7c")) +
+  #scale_y_continuous(breaks = seq(10, 30, 5), lim = c(10, 30)) +
+  ggrepel::geom_text_repel(data = dfStateMH %>% filter(period == "p1"),
+                  aes(label = State) ,
+                  hjust = "left",
+                  size = 3,
+                  min.segment.length = Inf,
+                  nudge_x = -.05,
+                  direction = "y",
+                  max.overlaps = 5) +
+  ggrepel::geom_text_repel(data = dfStateMH %>% filter(period == "p4"),
+                  aes(label = State) ,
+                  min.segment.length = Inf,
+                  hjust = "right",
+                  size = 3,
+                  nudge_x = .05,
+                  direction = "y",
+                  max.overlaps = 5) +
+theme_bw() +
+  theme(legend.position = "none") +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text.x.top      = element_text(size=12)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) +
+  labs(
+    title = "Prevalence of Anxiety Symptoms in the U.S.",
+    subtitle = "In Adults with a K12-age Child at Home, weighted %",
+    caption = "p1 = Nov.2020 - Mar.2021, p2 = Apr.2021 - July.2021, p3 = Aug.2021 - Dec.2021, p4 = Jan.2022-Mar.2022"
+  )
+
+
+ggschd <- ggplot(data = dfStateMH, aes(x = period, y = depressed*100, group = State)) +
+  geom_line(aes(color = slopecD), size = 0.5, alpha=0.75) +
+  geom_point(color="#bcbcbc", fill="white", size = 1) +
+  scale_color_manual(values=c("#F44336", "#189f7c")) +
+  #scale_y_continuous(breaks = seq(6, 2, 5), lim = c(10, 25)) +
+  ggrepel::geom_text_repel(data = dfStateMH %>% filter(period == "p1"),
+                           aes(label = State) ,
+                           hjust = "left",
+                           size = 3,
+                           min.segment.length = Inf,
+                           nudge_x = -.05,
+                           direction = "y",
+                           max.overlaps = 5) +
+  ggrepel::geom_text_repel(data = dfStateMH %>% filter(period == "p4"),
+                           aes(label = State) ,
+                           min.segment.length = Inf,
+                           hjust = "right",
+                           size = 3,
+                           nudge_x = .05,
+                           direction = "y",
+                           max.overlaps = 5) +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text.x.top      = element_text(size=12)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) +
+  labs(
+    title = "Prevalence of Depression Symptoms in the U.S.",
+    subtitle = "In Adults with a K12-age Child at Home, weighted %",
+    caption = "p1 = Nov.2020 - July.2021, p2 = Aug.2021 - Nov.2021, p3 = Jan.2022-Mar.2022"
+  )
+
+
+ggschaIP <- ggplot(data = dfIPMH, aes(x = period, y = anxious*100,
+                                      group = Child_IP_any)) +
+  geom_line(aes(color = slopecA), size = 0.5, alpha=0.75) +
+  geom_point(color="#bcbcbc", fill="white", size = 1) +
+  scale_color_manual(values=c("#F44336", "#189f7c")) +
+  scale_y_continuous(breaks = seq(5, 25, 5), lim = c(5, 25)) +
+  ggrepel::geom_text_repel(data = dfIPMH %>% filter(period == "p1"),
+                           aes(label = Child_IP_any) ,
+                           hjust = "left",
+                           size = 3,
+                           min.segment.length = Inf,
+                           nudge_x = -.05,
+                           direction = "y") +
+  ggrepel::geom_text_repel(data = dfIPMH %>% filter(period == "p3"),
+                           aes(label = Child_IP_any),
+                           min.segment.length = Inf,
+                           hjust = "right",
+                           size = 3,
+                           nudge_x = .05,
+                           direction = "y") +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text.x.top      = element_text(size=12)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) +
+  labs(
+    title = "Prevalence of Anxiety Symptoms in the U.S. By School Modality",
+    subtitle = "In Adults with a K12-age Child at Home, weighted %",
+    caption = "p1 = Nov.2020 - July.2021, p2 = Aug.2021 - Nov.2021, p3 = Jan.2022-Mar.2022"
+  )
+
+ggschdIP <- ggplot(data = dfIPMH, aes(x = period, y = depressed*100,
+                                      group = Child_IP_any)) +
+  geom_line(aes(color = slopecA), size = 0.5, alpha=0.75) +
+  geom_point(color="#bcbcbc", fill="white", size = 1) +
+  scale_color_manual(values=c("#F44336", "#189f7c")) +
+  scale_y_continuous(breaks = seq(5, 25, 5), lim = c(5, 25)) +
+  ggrepel::geom_text_repel(data = dfIPMH %>% filter(period == "p1"),
+                           aes(label = Child_IP_any) ,
+                           hjust = "left",
+                           size = 3,
+                           min.segment.length = Inf,
+                           nudge_x = -.05,
+                           direction = "y") +
+  ggrepel::geom_text_repel(data = dfIPMH %>% filter(period == "p3"),
+                           aes(label = Child_IP_any),
+                           min.segment.length = Inf,
+                           hjust = "right",
+                           size = 3,
+                           nudge_x = .05,
+                           direction = "y") +
+  theme_bw() +
+  theme(legend.position = "none") +
+  theme(axis.title.y     = element_blank()) +
+  theme(axis.title.x     = element_blank()) +
+  theme(panel.grid.major.x = element_blank()) +
+  theme(axis.text.x.top      = element_text(size=12)) +
+  theme(axis.ticks       = element_blank()) +
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)) +
+  theme(plot.subtitle    = element_text(hjust = 0.5)) +
+  labs(
+    title = "Prevalence of Depressive Symptoms in the U.S. By School Modality",
+    subtitle = "In Adults with a K12-age Child at Home, weighted %",
+    caption = "p1 = Nov.2020 - July.2021, p2 = Aug.2021 - Nov.2021, p3 = Jan.2022-Mar.2022"
+  )
+
+# Comparison Tables
+
+
+
+## 1. Study sample characteristics, weighted 
+
+
+svy_df = dfa %>%
+  srvyr::as_survey_design(weights=weight)
+
+svy_summChar <-  tbl_strata(svy_df, strata = period, ~.x %>% 
+                              tbl_svysummary(
+                               statistic = list(all_categorical() ~ "{p}%",
+                                                all_continuous() ~ "{mean} ({sd})"),
+                               by = Parent,
+                               include = c(anxious_bin, depressed_bin,
+                                           Gender,
+                                           Age, Educational_Level, 
+                                           total_ppl,
+                                           Employed, finance_worry, covid_worry
+                                           ),
+                               label = list(anxious_bin ~ "Anxiety symptoms",
+                                            depressed_bin ~ "Depression symptoms",
+                                            Gender ~ "Gender",
+                                            Educational_Level~ "Educational level",
+                                            total_ppl ~ "HH size",
+                                            Employed ~ "Working for pay",
+                                            finance_worry~ "Financial worry",
+                                            covid_worry ~ "COVID-19 worry")) %>% 
+
+  bold_labels()
+)
+
+
+write.csv(as_tibble(svy_summChar), "compTableIPMH-july2022.csv")
+
+
+svy_dfIP = dfParents %>%
+  srvyr::as_survey_design(weights=weight)
+
+svy_summCharIP <-  tbl_svysummary(svy_dfIP,
+                                statistic = list(all_categorical() ~ "{p}%",
+                                                 all_continuous() ~ "{mean} ({sd})"),
+                                by = Child_IP_full,
+                                include = c(anxious_bin, depressed_bin,
+                                            Gender,
+                                            Age, Educational_Level, 
+                                            Pre_K, Grades_15, Grades_68, Grades_912,
+                                            total_ppl, num_kids,
+                                            Employed,finance_worry, covid_worry
+                                ),
+                                label = list(anxious_bin ~ "Anxiety symptoms",
+                                             depressed_bin ~ "Depression symptoms",
+                                             Age ~ "Age",
+                                             Gender ~ "Gender",
+                                             Educational_Level~ "Educational level",
+                                             
+                                             Pre_K~ "Child in pre K grade",
+                                             Grades_15~ "Child in 1st-5th grade",
+                                             Grades_68~ "Child in 6-8th grade",
+                                             Grades_912~ "Child in 9-12th grade",
+                                        
+                                             total_ppl~ "HH size",
+                                             num_kids~ "No. kids at home",
+                                             Employed ~ "Working for pay",
+                                             finance_worry~ "Financial worry",
+                                             covid_worry ~ "COVID-19 worry")) %>% 
+                              
+                              bold_labels()
+
+write.csv(as_tibble(svy_summCharIP), "compTableIP-july2022.csv")

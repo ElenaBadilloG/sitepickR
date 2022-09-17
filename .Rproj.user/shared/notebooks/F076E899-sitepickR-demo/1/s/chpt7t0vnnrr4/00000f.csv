@@ -1,0 +1,6 @@
+"0","dfCCD <- buildDF(rwCCD,
+                 unitID=""LEAID"", subunitID=""NCESSCH"")
+"
+"2","Error in buildDF(rwCCD, unitID = ""LEAID"", subunitID = ""NCESSCH"") : 
+  could not find function ""buildDF""
+"
