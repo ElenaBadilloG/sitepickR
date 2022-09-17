@@ -9,8 +9,8 @@ summary(m.out, balMeasure)
 \arguments{
 \item{m.out}{list; selectMatch() output}
 
-\item{balMeasure}{numeric; balance Diagnostic( 1=original unit balance,
-2=match balance, 3=match success, 4=sub-unit balance)}
+\item{balMeasure}{numeric; balance Diagnostic (1=original unit balance,
+2=match balance, 3=match success percent, 4=sub-unit balance)}
 }
 \value{
 ggplot object

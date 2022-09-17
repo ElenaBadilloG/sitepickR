@@ -37,6 +37,9 @@
     <loc>/reference/makeDF.html</loc>
   </url>
   <url>
+    <loc>/reference/matchBalance.html</loc>
+  </url>
+  <url>
     <loc>/reference/matchBalanceFig.html</loc>
   </url>
   <url>
@@ -68,5 +71,8 @@
   </url>
   <url>
     <loc>/reference/summary.html</loc>
+  </url>
+  <url>
+    <loc>/reference/unitLovePlot.html</loc>
   </url>
 </urlset>

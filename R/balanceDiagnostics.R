@@ -186,7 +186,7 @@ subUnitBalance_ <- function(df_, dfSU, mUnits, subUnitTable, subunitNumVars, nRe
     ggplot2::geom_line(color="#0F3957")  +
     ggplot2::ggtitle("") +
     ggplot2::geom_hline(yintercept = 0, style="dashed", color="grey") +
-    ggplot2::ylab("Standardized Mean Difference") +
+    ggplot2::ylab("SMD") +
     ggplot2::xlab("Unit Group") +
     ggplot2::theme_bw() +
     ggplot2::scale_x_continuous(breaks = unique(dfSub10gPlt$unitGrp),

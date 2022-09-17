@@ -3,14 +3,10 @@
 ################### Robert Olsen, Elizabeth A. Stuart & Elena Badillo-Goicoechea, August 2022 ###############
 ##########################################################################################################
 
-#' @importFrom magrittr "%>%"
-#' 
-#' 
-#' 
 
 # Love plot for sampled units vs. all units in population
 
-# SMD between sampled units and all units in population
+#' SMD between sampled units and all units in population
 #' @name unitLovePlot
 #' @param m.out list; selectMatch() output
 #' @return ggplot object
@@ -29,7 +25,7 @@ unitLovePlot <- function(m.out,
 
 # Balance of sampled vs. replacement units (figure)
 
-# Figure: SMD between sampled units vs. all units in population, for each covariate of interest
+#' Figure: SMD between sampled units vs. all units in population, for each covariate of interest
 #' @name matchBalance
 #' @param m.out list; selectMatch() output
 #' @return ggplot object
@@ -89,8 +85,8 @@ subUnitBalance  <- function(m.out,
 #' Summary tables, with unit/matches/sub-unit balance between initially selected units and all units in population, for each covariate of interest
 #' @name summary
 #' @param m.out list; selectMatch() output
-#' @param balMeasure numeric; balance Diagnostic( 1=original unit balance,
-#'  2=match balance, 3=match success, 4=sub-unit balance)
+#' @param balMeasure numeric; balance Diagnostic (1=original unit balance,
+#'  2=match balance, 3=match success percent, 4=sub-unit balance)
 #' @return ggplot object
 #' @export
 summary  <- function(m.out, balMeasure){

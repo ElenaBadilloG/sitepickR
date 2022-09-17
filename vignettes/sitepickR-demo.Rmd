@@ -171,7 +171,7 @@ unitLovePlot(m.out,
              title="Standardized Mean Difference: \n Initially Selected Units vs. Population")
 ```
 
-We can also take a look at a table with the actual SMD for each covariate of interest applying the summary() function:
+We can also take a look at a table with the actual SMD for each covariate of interest applying the  [summary()](https://sitepickr.github.io/sitepickR-website/reference/summary.html) function:
 ```{r}
 unitBalanceTab = summary(m.out, balMeasure=1)
 unitBalanceTab 
@@ -202,7 +202,7 @@ matchCount(m.out,
              title="Percentage of Successful Matches per Unit Group")
 ```
 
-Similary, use summary() function to obtain balance directly in a table:
+Similarly, we can, use [summary()](https://sitepickr.github.io/sitepickR-website/reference/summary.html)to obtain balance directly in a table:
 
 ```{r}
 matchCountTab = summary(m.out, balMeasure=3)
@@ -211,14 +211,14 @@ matchCountTab
 
 ### 4. Sub-units from original vs. candidate units
 
-Ultimately, the procedure wants to yield not only districts but also schools that are similar to the target population, in terms both of the district level covariates and the school level ones. sitepickR's subUnitBalance() function lets us assess the matching quality precisely on this terms:
+Ultimately, the procedure wants to yield not only districts but also schools that are similar to the target population, in terms both of the district level covariates and the school level ones. sitepickR's [subUnitBalance()](https://sitepickr.github.io/sitepickR-website/reference/subUnitBalance.html) function lets us assess the matching quality precisely on this terms:
 
 ```{r fig.width=9, fig.height=6}
 subUnitBalance(m.out,
-                  title="Subunits from Original and Replacement Unit Groups vs. Population (SMD)")
+                  title="Standardized Mean Difference: \n Sub-units from Original + Replacement Unit Groups vs. Population")
 ```
 
-Similary, use summary() function to obtain balance directly in a table:
+Similary, use [summary()](https://sitepickr.github.io/sitepickR-website/reference/summary.html) function to obtain balance directly in a table:
 
 ```{r}
 subUnitBalanceTab = summary(m.out, balMeasure=4)
