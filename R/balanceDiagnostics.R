@@ -26,7 +26,7 @@ getSMD <- function(df, var){
 #' @param unit_vars
 #' @param exactMatchVars
 #' @return ggplot2::ggplot object
-unitSampBalance <- function(dfSU, unit_vars, exactMatchVars){
+unitSampBalance_ <- function(dfSU, unit_vars, exactMatchVars){
 
   # Get weighted SMD w/r to population for each covariate:
 
@@ -58,7 +58,7 @@ unitSampBalance <- function(dfSU, unit_vars, exactMatchVars){
 #' @param unitNumVars
 #' @param nRepUnits
 #' @return ggplot2::ggplot object
-matchBalance <- function(mUnits, unitNumVars, nRepUnits){
+matchBalance_ <- function(mUnits, unitNumVars, nRepUnits){
 
     dfOrig <- as.data.frame(mUnits %>% dplyr::filter(unitGrp == 0) %>%
                               dplyr::select(c("unitID", "unitSize", dplyr::all_of(unitNumVars))))
@@ -110,7 +110,7 @@ matchBalance <- function(mUnits, unitNumVars, nRepUnits){
 #' @param replacementUnits
 #' @param nRepUnits
 #'@return ggplot2::ggplot object
-matchCount <- function(replacementUnits, nRepUnits){
+matchCount_ <- function(replacementUnits, nRepUnits){
 
   completeUnitGrps <- t(as.data.frame(t(as.data.frame(1 - colMeans(is.na(replacementUnits)))*100)))
   completeUnitGrps <- as.data.frame(completeUnitGrps)
@@ -145,7 +145,7 @@ matchCount <- function(replacementUnits, nRepUnits){
 #' @param subunitNumVars
 #' @param RepUnits
 #' @return ggplot2::ggplot object
-subUnitBalance <- function(df_, dfSU, mUnits, subUnitTable, subunitNumVars, nRepUnits){
+subUnitBalance_ <- function(df_, dfSU, mUnits, subUnitTable, subunitNumVars, nRepUnits){
   selectedSubunits <- reshape2::melt(subUnitTable)
   colnames(selectedSubunits) <- c("ID", "subunitID")
 

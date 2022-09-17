@@ -340,9 +340,10 @@ the initial cube sampling step of the selectMatch procedure) and
 <span>             title<span class="op">=</span><span class="st">"Standardized Mean Difference: \n Initially Selected Units vs. Population"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-14-1.png" width="576"></p>
 <p>We can also take a look at a table with the actual SMD for each
-covariate of interest applying the unitBalanceTab function:</p>
+covariate of interest applying the summary() function:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">unitBalanceTab</span><span class="op">(</span><span class="va">m.out</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">unitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">m.out</span>, balMeasure<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">unitBalanceTab</span> </span>
 <span><span class="co">#&gt;       Covariate           SMD</span></span>
 <span><span class="co">#&gt; 1      unitSize  0.0006001704</span></span>
 <span><span class="co">#&gt; 2 w.pct.frlunch -0.0090978303</span></span>
@@ -359,11 +360,12 @@ districts and each of its K replacement districts groups, where group 1
 is composed of the first closest matches ordered in terms of distance,
 group 2 corresponds to the second-best matches, and so on:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">matchBalanceFig</span><span class="op">(</span><span class="va">m.out</span>, </span>
+<code class="sourceCode R"><span><span class="fu">matchBalance</span><span class="op">(</span><span class="va">m.out</span>, </span>
 <span>                title <span class="op">=</span> <span class="st">"Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-16-1.png" width="864"></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchBalanceTab.html">matchBalanceTab</a></span><span class="op">(</span><span class="va">m.out</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">matchBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">m.out</span>, balMeasure<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">matchBalanceTab</span></span>
 <span><span class="co">#&gt;    unitGrp                                         variable         value</span></span>
 <span><span class="co">#&gt; 1        1                                        unitSize  -0.1501194993</span></span>
 <span><span class="co">#&gt; 2        2                                        unitSize  -0.2943404613</span></span>
@@ -439,9 +441,25 @@ imposed by exact matching, caliper value, and inherent structure and
 size of the data, as well as K, the number of matches (i.e. replacement
 candidates) we want for each of the original districts:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchCountFig.html">matchCountFig</a></span><span class="op">(</span><span class="va">m.out</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchCount.html">matchCount</a></span><span class="op">(</span><span class="va">m.out</span>,</span>
 <span>             title<span class="op">=</span><span class="st">"Percentage of Successful Matches per Unit Group"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-18-1.png" width="672"></p>
+<p>Similary, use summary() function to obtain balance directly in a
+table:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">matchCountTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">m.out</span>, balMeasure<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">matchCountTab</span></span>
+<span><span class="co">#&gt;                     Perc_Matches UnitGroup</span></span>
+<span><span class="co">#&gt; Unit_replacement_1           100         1</span></span>
+<span><span class="co">#&gt; Unit_replacement_2           100         2</span></span>
+<span><span class="co">#&gt; Unit_replacement_3           100         3</span></span>
+<span><span class="co">#&gt; Unit_replacement_4           100         4</span></span>
+<span><span class="co">#&gt; Unit_replacement_5           100         5</span></span>
+<span><span class="co">#&gt; Unit_replacement_6           100         6</span></span>
+<span><span class="co">#&gt; Unit_replacement_7            50         7</span></span>
+<span><span class="co">#&gt; Unit_replacement_8            34         8</span></span>
+<span><span class="co">#&gt; Unit_replacement_9            21         9</span></span>
+<span><span class="co">#&gt; Unit_replacement_10           17        10</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="sub-units-from-original-vs--candidate-units">4. Sub-units from original vs. candidate units<a class="anchor" aria-label="anchor" href="#sub-units-from-original-vs--candidate-units"></a>
@@ -451,10 +469,126 @@ schools that are similar to the target population, in terms both of the
 district level covariates and the school level ones. sitepickR’s
 subUnitBalance() function lets us assess the matching quality precisely
 on this terms:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">subUnitBalanceFig</span><span class="op">(</span><span class="va">m.out</span>,</span>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/subUnitBalance.html">subUnitBalance</a></span><span class="op">(</span><span class="va">m.out</span>,</span>
 <span>                  title<span class="op">=</span><span class="st">"Subunits from Original and Replacement Unit Groups vs. Population (SMD)"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-19-1.png" width="864"></p>
+<p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-20-1.png" width="864"></p>
+<p>Similary, use summary() function to obtain balance directly in a
+table:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">subUnitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">m.out</span>, balMeasure<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span>
+<span><span class="va">subUnitBalanceTab</span></span>
+<span><span class="co">#&gt;     unitGrp                                         variable         value</span></span>
+<span><span class="co">#&gt; 1         0                                        unitSize  -0.1172364047</span></span>
+<span><span class="co">#&gt; 2         1                                        unitSize  -0.2625787631</span></span>
+<span><span class="co">#&gt; 3         2                                        unitSize  -0.3494034453</span></span>
+<span><span class="co">#&gt; 4         3                                        unitSize  -0.4045265839</span></span>
+<span><span class="co">#&gt; 5         4                                        unitSize  -0.4339780517</span></span>
+<span><span class="co">#&gt; 6         5                                        unitSize  -0.4622501174</span></span>
+<span><span class="co">#&gt; 7         6                                        unitSize  -0.4642802427</span></span>
+<span><span class="co">#&gt; 8         7                                        unitSize  -0.4584538914</span></span>
+<span><span class="co">#&gt; 9         8                                        unitSize  -0.4614375116</span></span>
+<span><span class="co">#&gt; 10        9                                        unitSize  -0.4655203603</span></span>
+<span><span class="co">#&gt; 11       10                                        unitSize  -0.4711909835</span></span>
+<span><span class="co">#&gt; 12        0                                   w.pct.frlunch   0.0324414058</span></span>
+<span><span class="co">#&gt; 13        1                                   w.pct.frlunch   0.0397079052</span></span>
+<span><span class="co">#&gt; 14        2                                   w.pct.frlunch  -0.2024191004</span></span>
+<span><span class="co">#&gt; 15        3                                   w.pct.frlunch  -0.1820785137</span></span>
+<span><span class="co">#&gt; 16        4                                   w.pct.frlunch  -0.2449325514</span></span>
+<span><span class="co">#&gt; 17        5                                   w.pct.frlunch  -0.1198340750</span></span>
+<span><span class="co">#&gt; 18        6                                   w.pct.frlunch  -0.1611676620</span></span>
+<span><span class="co">#&gt; 19        7                                   w.pct.frlunch  -0.1279968572</span></span>
+<span><span class="co">#&gt; 20        8                                   w.pct.frlunch  -0.7053528070</span></span>
+<span><span class="co">#&gt; 21        9                                   w.pct.frlunch  -0.5327794614</span></span>
+<span><span class="co">#&gt; 22       10                                   w.pct.frlunch  -0.4170790510</span></span>
+<span><span class="co">#&gt; 23        0                                     w.pct.black   0.0125291104</span></span>
+<span><span class="co">#&gt; 24        1                                     w.pct.black   0.1473213011</span></span>
+<span><span class="co">#&gt; 25        2                                     w.pct.black  -0.1144066925</span></span>
+<span><span class="co">#&gt; 26        3                                     w.pct.black  -0.0267610839</span></span>
+<span><span class="co">#&gt; 27        4                                     w.pct.black  -0.1677871207</span></span>
+<span><span class="co">#&gt; 28        5                                     w.pct.black  -0.6155103084</span></span>
+<span><span class="co">#&gt; 29        6                                     w.pct.black  -0.7090204889</span></span>
+<span><span class="co">#&gt; 30        7                                     w.pct.black  -0.6947913673</span></span>
+<span><span class="co">#&gt; 31        8                                     w.pct.black  -0.7421740856</span></span>
+<span><span class="co">#&gt; 32        9                                     w.pct.black  -0.7020242255</span></span>
+<span><span class="co">#&gt; 33       10                                     w.pct.black  -0.7006807436</span></span>
+<span><span class="co">#&gt; 34        0                                      w.pct.hisp   0.0797792232</span></span>
+<span><span class="co">#&gt; 35        1                                      w.pct.hisp   0.1419596265</span></span>
+<span><span class="co">#&gt; 36        2                                      w.pct.hisp  -0.0254515446</span></span>
+<span><span class="co">#&gt; 37        3                                      w.pct.hisp  -0.1515926535</span></span>
+<span><span class="co">#&gt; 38        4                                      w.pct.hisp  -0.1731308037</span></span>
+<span><span class="co">#&gt; 39        5                                      w.pct.hisp  -0.0432153449</span></span>
+<span><span class="co">#&gt; 40        6                                      w.pct.hisp  -0.3039891862</span></span>
+<span><span class="co">#&gt; 41        7                                      w.pct.hisp  -0.3885415513</span></span>
+<span><span class="co">#&gt; 42        8                                      w.pct.hisp  -0.6140017073</span></span>
+<span><span class="co">#&gt; 43        9                                      w.pct.hisp  -0.7953240044</span></span>
+<span><span class="co">#&gt; 44       10                                      w.pct.hisp  -0.8396110151</span></span>
+<span><span class="co">#&gt; 45        0                                    w.pct.female   0.0505712246</span></span>
+<span><span class="co">#&gt; 46        1                                    w.pct.female   0.0133276241</span></span>
+<span><span class="co">#&gt; 47        2                                    w.pct.female   0.0520636555</span></span>
+<span><span class="co">#&gt; 48        3                                    w.pct.female   0.1926969263</span></span>
+<span><span class="co">#&gt; 49        4                                    w.pct.female   0.1278740414</span></span>
+<span><span class="co">#&gt; 50        5                                    w.pct.female  -0.0038164179</span></span>
+<span><span class="co">#&gt; 51        6                                    w.pct.female  -0.2017726240</span></span>
+<span><span class="co">#&gt; 52        7                                    w.pct.female  -1.0833563309</span></span>
+<span><span class="co">#&gt; 53        8                                    w.pct.female   0.4219308950</span></span>
+<span><span class="co">#&gt; 54        9                                    w.pct.female   0.3519037821</span></span>
+<span><span class="co">#&gt; 55       10                                    w.pct.female   0.0595760053</span></span>
+<span><span class="co">#&gt; 56        0                                 sch.pct.frlunch   0.0205378675</span></span>
+<span><span class="co">#&gt; 57        1                                 sch.pct.frlunch   0.0334419040</span></span>
+<span><span class="co">#&gt; 58        2                                 sch.pct.frlunch  -0.1761498865</span></span>
+<span><span class="co">#&gt; 59        3                                 sch.pct.frlunch  -0.1594917571</span></span>
+<span><span class="co">#&gt; 60        4                                 sch.pct.frlunch  -0.2145487801</span></span>
+<span><span class="co">#&gt; 61        5                                 sch.pct.frlunch  -0.1049687126</span></span>
+<span><span class="co">#&gt; 62        6                                 sch.pct.frlunch  -0.1411748870</span></span>
+<span><span class="co">#&gt; 63        7                                 sch.pct.frlunch  -0.1121189055</span></span>
+<span><span class="co">#&gt; 64        8                                 sch.pct.frlunch  -0.6178541131</span></span>
+<span><span class="co">#&gt; 65        9                                 sch.pct.frlunch  -0.4666884123</span></span>
+<span><span class="co">#&gt; 66       10                                 sch.pct.frlunch  -0.3653405850</span></span>
+<span><span class="co">#&gt; 67        0                                   sch.pct.black  -0.0133518322</span></span>
+<span><span class="co">#&gt; 68        1                                   sch.pct.black   0.1089600917</span></span>
+<span><span class="co">#&gt; 69        2                                   sch.pct.black  -0.0798536997</span></span>
+<span><span class="co">#&gt; 70        3                                   sch.pct.black  -0.0204378307</span></span>
+<span><span class="co">#&gt; 71        4                                   sch.pct.black  -0.1281414748</span></span>
+<span><span class="co">#&gt; 72        5                                   sch.pct.black  -0.4700742128</span></span>
+<span><span class="co">#&gt; 73        6                                   sch.pct.black  -0.5414893035</span></span>
+<span><span class="co">#&gt; 74        7                                   sch.pct.black  -0.5306223154</span></span>
+<span><span class="co">#&gt; 75        8                                   sch.pct.black  -0.5668091895</span></span>
+<span><span class="co">#&gt; 76        9                                   sch.pct.black  -0.5361461549</span></span>
+<span><span class="co">#&gt; 77       10                                   sch.pct.black  -0.5351201182</span></span>
+<span><span class="co">#&gt; 78        0                                    sch.pct.hisp   0.0759932378</span></span>
+<span><span class="co">#&gt; 79        1                                    sch.pct.hisp   0.1339399721</span></span>
+<span><span class="co">#&gt; 80        2                                    sch.pct.hisp  -0.0260682921</span></span>
+<span><span class="co">#&gt; 81        3                                    sch.pct.hisp  -0.1356821502</span></span>
+<span><span class="co">#&gt; 82        4                                    sch.pct.hisp  -0.1549597501</span></span>
+<span><span class="co">#&gt; 83        5                                    sch.pct.hisp  -0.0386796509</span></span>
+<span><span class="co">#&gt; 84        6                                    sch.pct.hisp  -0.2720838080</span></span>
+<span><span class="co">#&gt; 85        7                                    sch.pct.hisp  -0.3477619259</span></span>
+<span><span class="co">#&gt; 86        8                                    sch.pct.hisp  -0.5495587679</span></span>
+<span><span class="co">#&gt; 87        9                                    sch.pct.hisp  -0.7118502681</span></span>
+<span><span class="co">#&gt; 88       10                                    sch.pct.hisp  -0.7514891074</span></span>
+<span><span class="co">#&gt; 89        0                                  sch.pct.female   0.0154784717</span></span>
+<span><span class="co">#&gt; 90        1                                  sch.pct.female   0.0008496193</span></span>
+<span><span class="co">#&gt; 91        2                                  sch.pct.female   0.0327176186</span></span>
+<span><span class="co">#&gt; 92        3                                  sch.pct.female   0.1304002661</span></span>
+<span><span class="co">#&gt; 93        4                                  sch.pct.female   0.0865338609</span></span>
+<span><span class="co">#&gt; 94        5                                  sch.pct.female  -0.0025826147</span></span>
+<span><span class="co">#&gt; 95        6                                  sch.pct.female  -0.1365418969</span></span>
+<span><span class="co">#&gt; 96        7                                  sch.pct.female  -0.7331199127</span></span>
+<span><span class="co">#&gt; 97        8                                  sch.pct.female   0.2855255765</span></span>
+<span><span class="co">#&gt; 98        9                                  sch.pct.female   0.2381374093</span></span>
+<span><span class="co">#&gt; 99       10                                  sch.pct.female   0.0403157803</span></span>
+<span><span class="co">#&gt; 100       0 All Covariates \n (average of the absolute SMDs)  0.0464354198</span></span>
+<span><span class="co">#&gt; 101       1 All Covariates \n (average of the absolute SMDs)  0.0980096452</span></span>
+<span><span class="co">#&gt; 102       2 All Covariates \n (average of the absolute SMDs)  0.1176148817</span></span>
+<span><span class="co">#&gt; 103       3 All Covariates \n (average of the absolute SMDs)  0.1559630850</span></span>
+<span><span class="co">#&gt; 104       4 All Covariates \n (average of the absolute SMDs)  0.1924318261</span></span>
+<span><span class="co">#&gt; 105       5 All Covariates \n (average of the absolute SMDs)  0.2067701616</span></span>
+<span><span class="co">#&gt; 106       6 All Covariates \n (average of the absolute SMDs)  0.3257244555</span></span>
+<span><span class="co">#&gt; 107       7 All Covariates \n (average of the absolute SMDs)  0.4974181175</span></span>
+<span><span class="co">#&gt; 108       8 All Covariates \n (average of the absolute SMDs)  0.5516271837</span></span>
+<span><span class="co">#&gt; 109       9 All Covariates \n (average of the absolute SMDs)  0.5333748976</span></span>
+<span><span class="co">#&gt; 110      10 All Covariates \n (average of the absolute SMDs)  0.4644892655</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

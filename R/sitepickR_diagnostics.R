@@ -7,16 +7,6 @@
 #' 
 #' 
 #' 
-# Balance table for sampled units vs. all units in population
-# Table with average SMD across all covariates of interest between original units and target population
-#' @name unitBalanceTab
-#' @param m.out list; selectMatch() output
-#' @return dataframe
-#' @export
-unitBalanceTab <- function(m.out){
-  
-  return(m.out[[3]])
-}
 
 # Love plot for sampled units vs. all units in population
 
@@ -37,28 +27,14 @@ unitLovePlot <- function(m.out,
 }
 
 
-# Balance between sampled units and all units in population
-
-#' Summary table: SMD between sampled units and population, for each covariate of interest
-#' @name matchBalanceTab 
-#' @param m.out list; selectMatch() output
-#' @return ggplot object
-#' @export
-matchBalanceTab <- function(m.out){
-  
-  return(m.out[[5]][[1]]) ## beautify
-  
-}
-
-
 # Balance of sampled vs. replacement units (figure)
 
 # Figure: SMD between sampled units vs. all units in population, for each covariate of interest
-#' @name matchBalanceFig
+#' @name matchBalance
 #' @param m.out list; selectMatch() output
 #' @return ggplot object
 #' @export
-matchBalanceFig <- function(m.out,
+matchBalance <- function(m.out,
                             title="Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units"){
   
   return(m.out[[5]][[2]] + 
@@ -69,24 +45,14 @@ matchBalanceFig <- function(m.out,
                                                                      axis.text.y=ggplot2::element_text(size=9)))
 }
 
-# Successful unit matches (figure)
-
-#' Table: Percentage of successful matches in each replacement unit group, 1...K
-#' @param m.out list; selectMatch() output
-#' @return dataframe
-#' @export
-matchCountTab  <- function(m.out, title=NULL){
-  
-  gMCt <- m.out[[6]][[1]]
-  
-  return(gMCt)
-}
+# Successful unit matches
 
 #' Percentage of successful matches in each replacement unit group, 1...K
+#' @name matchCount
 #' @param m.out list; selectMatch() output
 #' @return ggplot object
 #' @export
-matchCountFig  <- function(m.out, 
+matchCount  <- function(m.out, 
                            title="Percentage of Successful Matches per Unit Group"){
   
   gMC <- m.out[[6]][[2]] + 
@@ -101,11 +67,12 @@ matchCountFig  <- function(m.out,
 
 
 # Balance of original sub-units vs. sub-units from replacement unit groups (figure)
-# ' Sub-unit balance between initially selected units and all units in population, for each covariate of interest
+#' Sub-unit balance between initially selected units and all units in population, for each covariate of interest
+#' @name subUnitBalance
 #' @param m.out list; selectMatch() output
 #' @return ggplot object
 #' @export
-subUnitBalanceFig  <- function(m.out,
+subUnitBalance  <- function(m.out,
                                title="Subunits from Original and Replacement Unit Groups vs. Population (SMD)"){
   
   return(m.out[[7]][[2]] + 
@@ -118,3 +85,19 @@ subUnitBalanceFig  <- function(m.out,
 }
 
 
+
+#' Summary tables, with unit/matches/sub-unit balance between initially selected units and all units in population, for each covariate of interest
+#' @name summary
+#' @param m.out list; selectMatch() output
+#' @param balMeasure numeric; balance Diagnostic( 1=original unit balance,
+#'  2=match balance, 3=match success, 4=sub-unit balance)
+#' @return ggplot object
+#' @export
+summary  <- function(m.out, balMeasure){
+  
+  if(balMeasure == 1) return(m.out[[3]]) else {
+    if(balMeasure == 2) return(m.out[[5]][[1]]) else {
+      if(balMeasure == 3) return(m.out[[6]][[1]]) else {
+        if(balMeasure == 4) return(m.out[[7]][[1]]) else {
+        }}}}}
+  

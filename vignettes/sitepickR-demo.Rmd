@@ -171,9 +171,10 @@ unitLovePlot(m.out,
              title="Standardized Mean Difference: \n Initially Selected Units vs. Population")
 ```
 
-We can also take a look at a table with the actual SMD for each covariate of interest applying the unitBalanceTab function:
+We can also take a look at a table with the actual SMD for each covariate of interest applying the summary() function:
 ```{r}
-unitBalanceTab(m.out)
+unitBalanceTab = summary(m.out, balMeasure=1)
+unitBalanceTab 
 ```
 
 ### 2. Original units vs. replacement candidates
@@ -181,12 +182,13 @@ unitBalanceTab(m.out)
 To assess the quality of our resulting district matches, we look at the balance  (in terms of SMD) between the group of initially selected districts and each of its K replacement districts groups, where group 1 is composed of the first closest matches ordered in terms of distance, group 2 corresponds to the second-best matches, and so on:
 
 ```{r fig.width=9, fig.height=6}
-matchBalanceFig(m.out, 
+matchBalance(m.out, 
                 title = "Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units")
 ```
 
 ```{r}
-matchBalanceTab(m.out)
+matchBalanceTab = summary(m.out, balMeasure=2)
+matchBalanceTab
 ```
 
 ### 3. Successfully computed unit matches
@@ -196,8 +198,15 @@ We also want to look at the success rate of the matching process between the ori
 This percentage is expected to be inversely related to restrictions imposed by exact matching, caliper value, and inherent structure and size of the data, as well as K, the number of matches (i.e. replacement candidates) we want for each of the original districts:
 
 ```{r fig.width=7, fig.height=6}
-matchCountFig(m.out,
+matchCount(m.out,
              title="Percentage of Successful Matches per Unit Group")
+```
+
+Similary, use summary() function to obtain balance directly in a table:
+
+```{r}
+matchCountTab = summary(m.out, balMeasure=3)
+matchCountTab
 ```
 
 ### 4. Sub-units from original vs. candidate units
@@ -205,6 +214,13 @@ matchCountFig(m.out,
 Ultimately, the procedure wants to yield not only districts but also schools that are similar to the target population, in terms both of the district level covariates and the school level ones. sitepickR's subUnitBalance() function lets us assess the matching quality precisely on this terms:
 
 ```{r fig.width=9, fig.height=6}
-subUnitBalanceFig(m.out,
+subUnitBalance(m.out,
                   title="Subunits from Original and Replacement Unit Groups vs. Population (SMD)")
+```
+
+Similary, use summary() function to obtain balance directly in a table:
+
+```{r}
+subUnitBalanceTab = summary(m.out, balMeasure=4)
+subUnitBalanceTab
 ```

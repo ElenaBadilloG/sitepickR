@@ -301,7 +301,7 @@ selectMatch <- function(df,
 
   dfSU <- sampleUnits(df, unitVars, exactMatchVars, nUnitSamp,  sizeFlag)
 
-  # calculate appropriate weights for unit balance diagnstics :
+  # calculate appropriate weights for unit balance diagnostics :
   if(sizeFlag == TRUE){dfSU$w <- 1 / dfSU$InclusionProb} else {dfSU$w <- 1}
 
   # Create a subunit lookup table of the form: {unit U:[all U sub_units]}:
@@ -360,10 +360,10 @@ selectMatch <- function(df,
 
   #1. Covariate SMD between Units and Population:
 
-  unitBal <- unitSampBalance(dfSU, unitVars, exactMatchVars)
+  unitBal <- unitSampBalance_(dfSU, unitVars, exactMatchVars)
 
   unitSampBalTab <- unitBal[[1]]
-  unitSampBalance_ <- unitBal[[2]]
+  unitSampBalanceFig <- unitBal[[2]]
 
   #2.Covariate SMD between Replacement (1,...,nth) and Initially selected (0) unit groups:
 
@@ -395,12 +395,12 @@ selectMatch <- function(df,
 
   # Calculate difference between each unit replacement group (1,..., n) and initially selected units:
   
-  matchBalance_ <- matchBalance(mUnits, unitNumVars, nRepUnits)
+  matchBal_ <- matchBalance_(mUnits, unitNumVars, nRepUnits)
 
 
   ### 3. % Of successful matches per replacement group:
 
-  matchCount_ <- matchCount(replacementUnits, nRepUnits)
+  matchC_ <- matchCount_(replacementUnits, nRepUnits)
 
   ### 4. Covariate SMD between Sub-units and Population:
   
@@ -409,7 +409,7 @@ selectMatch <- function(df,
                                                  exactMatchVars)))} else{
     subunitNumVars <- c("unitSize", tidyselect::all_of(c(unitVars, subunitSampVars))) }
 
-  subUnitBalance_ <- subUnitBalance(df, dfSU, mUnits, subUnitTable, subunitNumVars, nRepUnits)
+  subUnitBal_ <- subUnitBalance_(df, dfSU, mUnits, subUnitTable, subunitNumVars, nRepUnits)
 
   # 5. PREPARE OUTPUT
 
@@ -426,10 +426,10 @@ selectMatch <- function(df,
 
   # Output objects (7) into list:
   mainRes = list(replacementUnits, subUnitTable, # {selected unit: unit replacements} & {unit:subunits} lookup tables
-                 unitSampBalTab, unitSampBalance_, # balance table & love plot for selected units vs. population
-                 matchBalance_, # SMD for unit groups vs. initial units (table and figure)
-                 matchCount_, # barchart with % of successful matches per unit group
-                 subUnitBalance_ # SMD line charts for subunits from each unit groups vs. population
+                 unitSampBalTab, unitSampBalanceFig, # balance table & love plot for selected units vs. population
+                 matchBal_, # SMD for unit groups vs. initial units (table and figure)
+                 matchC_, # barchart with % of successful matches per unit group
+                 subUnitBal_ # SMD line charts for subunits from each unit groups vs. population
 
                 )
 
