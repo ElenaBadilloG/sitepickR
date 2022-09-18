@@ -163,7 +163,7 @@ matchOut <- selectMatch(df=dfCCD, # user dataset
 )
 ```
 
-At this point, the two main outputs of the selectMatch procedure have been produced for our, and are stored inside the matchOut. In our example, these are: 
+At this point, the two main outputs of the selectMatch procedure have been produced, and are stored inside the 'matchOut' variable we've just defined. In our example, these are: 
 
 1. A table with 10 matches (replacement candidates) for each of the 100 schools district we initially selected. The matches are ordered from the most to the least 'similar' to their original district (where 'similar' is close, in terms of covariate distance).
 
@@ -180,11 +180,11 @@ knitr::kable(head(dplyr::filter(schoolDirectory, !is.na(Sub_unit5_ID))), format 
 
 ```
 
-Each of these two tables can be automatically stored as .csv files in your local computer, by simply setting ```{r writeOut = TRUE}``` in the main function call to selectMatch.
+Each of these two tables can be automatically stored as .csv files in your local computer, by simply setting ```{r writeOut = TRUE}``` in the main function call to selectMatch. In case you use this feature, you can given those two files a specific name, using the ```{r} replacementUnitsFilename``` and ```{r} subUnitTableFilename``` arguments (or keeping just their default values).
 
 ## Assess balance and match quality
 
-Now that we have our potential districts replacements, we'd like to know how 'similar' they really are to both the target population and the originally selected sample. Similarly, we'd like to know how well the schools that belong to each of these districts represent the schools of our target population, in terms of our covariates of interest.
+Now that we have our potential districts replacements, we'd like to know how 'similar' they really are to both the target population and the originally selected sample. Similarly, we'd like to know how well the schools that belong to each of these districts represent the schools of our target population, in terms of our covariates of interest. In the end, what we want is to be able to retain the representativensess in our study design, as much as possible --even when units "self-select".
 
 sitepickR provides the user with several functions to carry out these balance diagnostics. By default --and following the standard literature-- balance diagnostics in sitepickR are expressed in terms of standardized mean difference (SMD) between two comparison groups of interest. In our case, these two comparison groups we'll be: 1) initially selected districts (or schools) against target population; 2) initially selected districts (or schools) against each of the 10 district replacement groups.
 

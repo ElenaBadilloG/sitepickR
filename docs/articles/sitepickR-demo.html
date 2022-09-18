@@ -841,8 +841,8 @@ documentation</a>:</p>
 <span>                       subUnitTableFilename <span class="op">=</span> <span class="st">"schoolsDirectory.csv"</span> <span class="co"># filename for {districtA: [districtA schools]} table</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>At this point, the two main outputs of the selectMatch procedure have
-been produced for our, and are stored inside the matchOut. In our
-example, these are:</p>
+been produced, and are stored inside the ‘matchOut’ variable we’ve just
+defined. In our example, these are:</p>
 <ol style="list-style-type: decimal">
 <li><p>A table with 10 matches (replacement candidates) for each of the
 100 schools district we initially selected. The matches are ordered from
@@ -1276,7 +1276,11 @@ Sub_unit5_ID
 </table>
 <p>Each of these two tables can be automatically stored as .csv files in
 your local computer, by simply setting <code>{r writeOut = TRUE}</code>
-in the main function call to selectMatch.</p>
+in the main function call to selectMatch. In case you use this feature,
+you can given those two files a specific name, using the
+<code>{r} replacementUnitsFilename</code> and
+<code>{r} subUnitTableFilename</code> arguments (or keeping just their
+default values).</p>
 </div>
 <div class="section level2">
 <h2 id="assess-balance-and-match-quality">Assess balance and match quality<a class="anchor" aria-label="anchor" href="#assess-balance-and-match-quality"></a>
@@ -1285,7 +1289,9 @@ in the main function call to selectMatch.</p>
 know how ‘similar’ they really are to both the target population and the
 originally selected sample. Similarly, we’d like to know how well the
 schools that belong to each of these districts represent the schools of
-our target population, in terms of our covariates of interest.</p>
+our target population, in terms of our covariates of interest. In the
+end, what we want is to be able to retain the representativensess in our
+study design, as much as possible –even when units “self-select”.</p>
 <p>sitepickR provides the user with several functions to carry out these
 balance diagnostics. By default –and following the standard literature–
 balance diagnostics in sitepickR are expressed in terms of standardized
