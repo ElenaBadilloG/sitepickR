@@ -19,7 +19,7 @@ selectMatch(
   seedN = NA,
   matchDistance = "mahalanobis",
   sizeFlag = TRUE,
-  replaceFlag = TRUE,
+  repFlag = TRUE,
   writeOut = TRUE,
   replacementUnitsFilename = "replacementUnits.csv",
   subUnitTableFilename = "subUnitTable.csv"
@@ -54,7 +54,7 @@ selectMatch(
 
 \item{sizeFlag}{logical; if TRUE, sampling is made proportional to unit size; default = TRUE}
 
-\item{replaceFlag}{logical; if TRUE, get matches with replacement; default = TRUE}
+\item{repFlag}{logical; if TRUE, pick unit matches with/without repetition; default = TRUE}
 
 \item{writeOut}{logical; if TRUE, writes a .csv file for each output table; default = TRUE}
 

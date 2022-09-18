@@ -85,15 +85,15 @@ subUnitBalance  <- function(m.out,
 #' Build summary tables, with unit/match/sub-unit balance between initially selected units and a target population, for each covariate of interest
 #' @name summary
 #' @param m.out list; selectMatch() output
-#' @param balMeasure numeric; balance Diagnostic (1=original unit balance,
-#'  2=match balance, 3=match success percent, 4=sub-unit balance)
+#' @param diagnostic numeric; balance Diagnostic ("unitBal" = original unit balance,
+#'  "matchBal" = match balance, "matchPerc" = match success percent, "subunitBal" =sub-unit balance)
 #' @return ggplot object
 #' @export
-summary  <- function(m.out, balMeasure){
+summary  <- function(m.out, diagnostic){
   
-  if(balMeasure == 1) return(m.out[[3]]) else {
-    if(balMeasure == 2) return(m.out[[5]][[1]]) else {
-      if(balMeasure == 3) return(m.out[[6]][[1]]) else {
-        if(balMeasure == 4) return(m.out[[7]][[1]]) else {
+  if(diagnostic == "unitBal") return(m.out[[3]]) else {
+    if(diagnostic ==  "matchBal" ) return(m.out[[5]][[1]]) else {
+      if(diagnostic == "matchCount") return(m.out[[6]][[1]]) else {
+        if(diagnostic == "subunitBal") return(m.out[[7]][[1]]) else {
         }}}}}
   

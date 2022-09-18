@@ -4,13 +4,13 @@
 \alias{summary}
 \title{Build summary tables, with unit/match/sub-unit balance between initially selected units and a target population, for each covariate of interest}
 \usage{
-summary(m.out, balMeasure)
+summary(m.out, diagnostic)
 }
 \arguments{
 \item{m.out}{list; selectMatch() output}
 
-\item{balMeasure}{numeric; balance Diagnostic (1=original unit balance,
-2=match balance, 3=match success percent, 4=sub-unit balance)}
+\item{diagnostic}{numeric; balance Diagnostic ("unitBal" = original unit balance,
+"matchBal" = match balance, "matchPerc" = match success percent, "subunitBal" =sub-unit balance)}
 }
 \value{
 ggplot object

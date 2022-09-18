@@ -206,7 +206,7 @@ unitLovePlot(matchOut,
 We can also take a look at a table with the actual SMD for each covariate of interest applying the  [summary()](https://sitepickr.github.io/sitepickR-website/reference/summary.html) function:
 
 ```{r, results='asis'}
-unitBalanceTab = summary(matchOut, balMeasure=1)
+unitBalanceTab = summary(matchOut, diagnostic="unitBal")
 
 knitr::kable(head(unitBalanceTab, 10), format = "html")
 ```
@@ -222,7 +222,7 @@ matchBalance(matchOut,
 ```
 
 ```{r, results='asis'}
-matchBalanceTab = summary(matchOut, balMeasure=2)
+matchBalanceTab = summary(matchOut, diagnostic="matchBal")
 knitr::kable(head(matchBalanceTab, 20), format = "html")
 ```
 
@@ -241,7 +241,7 @@ Similarly, we can, use [summary()](https://sitepickr.github.io/sitepickR-website
 
 
 ```{r, results='asis'}
-matchCountTab = summary(matchOut, balMeasure=3)
+matchCountTab = summary(matchOut, diagnostic="matchCount")
 
 knitr::kable(matchCountTab, format = "html")
 ```
@@ -252,13 +252,13 @@ Ultimately, the procedure wants to yield not just districts, but schools that ar
 
 ```{r fig.width=9, fig.height=6}
 subUnitBalance(matchOut,
-                  title="Standardized Mean Difference: \n Sub-units from Original + Replacement Unit Groups vs. Population")
+     title="Standardized Mean Difference: \n Sub-units from Original + Replacement Unit Groups vs. Population")
 ```
 
 Similary, use [summary()](https://sitepickr.github.io/sitepickR-website/reference/summary.html) function to obtain balance directly in a table:
 
 
 ```{r, results='asis'}
-subUnitBalanceTab = summary(matchOut, balMeasure=4)
+subUnitBalanceTab = summary(matchOut, diagnostic="subunitBal")
 knitr::kable(subUnitBalanceTab, format = "html")
 ```
