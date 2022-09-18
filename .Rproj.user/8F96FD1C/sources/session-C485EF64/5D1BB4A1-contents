@@ -2,7 +2,7 @@ url: ~
 template:
   bootstrap: 5
   code:
-    width: 50
+    width: 75
   bslib:
     base_font: {google: "Nunito"}
     heading_font: {google: "Nunito"}

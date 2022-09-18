@@ -197,7 +197,7 @@ First, we want to look at the overall balance between the initially selected dis
 
 ```{r fig.width=6, fig.height=5}
 unitLovePlot(matchOut,
-             title="Standardized Mean Difference: \n Initially Selected Units vs. Population")
+   title="Standardized Mean Difference: \n Initially Selected Units vs. Population")
 ```
 
 We can also take a look at a table with the actual SMD for each covariate of interest applying the  [summary()](https://sitepickr.github.io/sitepickR-website/reference/summary.html) function:
@@ -215,7 +215,7 @@ To assess the quality of our resulting district matches, we look at the balance 
 
 ```{r fig.width=9, fig.height=6}
 matchBalance(matchOut, 
-                title = "Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units")
+  title = "Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units")
 ```
 
 ```{r, results='asis'}
