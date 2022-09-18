@@ -33,15 +33,22 @@ The main function in this package, [selectMatch()](https://sitepickr.github.io/s
 In selecting units and subunits, sitepickR uses the cube method (e.g., Deville & Tillé, 2004; Tillé 2011). The cube method is a probability sampling method that is designed to satisfy criteria for balance between the sample and the population. Recent research has shown that this method performs well in simulations for studies of educational programs (Fay & Olsen, under review). To implement the cube method, sitepickerR uses the [sampling](https://cran.r-project.org/web/packages/sampling/index.html) R package. Users have the option to select units with equal probabilities or with probabilities proportional to their “size” measured in terms of the number of subunits nested within units.
 
 
-In addition, sitepickR uses statistical matching to select possible replacement units. In education RCTs, the share of selected districts that agrees to participate tends to be low. To address this challenge, sitepickR selects and ranks up to 10 replacement districts for each districts selected using the cube method. Replacement districts are selected using statistical matching based on propensity score methods. To implement statistical matching, sitepickR uses the [MatchIt](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html) R package.
+In addition, sitepickR uses statistical matching to select possible replacement units. In education RCTs, the share of selected districts that agrees to participate tends to be low. To address this challenge, sitepickR selects and ranks up to K replacement districts for each districts selected using the cube method. Replacement districts are selected using statistical matching based on propensity score methods. To implement statistical matching, sitepickR uses the [MatchIt](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html) R package.
 
 
 sitepickR's core sampling + matching procedure, implemented with the selectMatch() function, consists of four main steps:
 
-- Study sample design: identify: 1) a target population that has a nested structure (e.g. [school district:school]); 2) observable covariates on interest at the unit level; 3) observable covariates of interest at the sub-unit level.
-- Randomly select an initial sample of units from the target population.
-- Obtain a list of 'best' matches (e.g. replacement candidates) for each initially selected unit, in terms of the covariates of interest.
-- Assess balance and match quality in terms of the covariates of interest:
+1.  __Study sample design__, where we:
+    - Identify a target population with a nested structure (e.g. [district : school])
+    - Set key parameter values (e.g. initial sample size, number of matches)
+    - Specify a set of observable covariates of interest at the unit level
+    - Specify a set of sub-unit level observable covariates of interest
+
+2. Select a random __sample__ of units from the target population.
+
+3. Obtain a list of __best K matches__ for each initially selected unit, where match #1 is closest to a given original unit, in terms of the covariates of interest and key paramneter values. These K matches will be the potential replacement units for each initially selected unit, in case their corresponding original unit is unable to participate in the study.
+
+4. Assess __balance__ and match quality in terms of the covariates of interest:
     - Balance between initially selected ('original') units and the target population.
     - Balance between original units and each group of matches (1 to K, from closest to further).
     - Balance between sub-units associated to each unit replacement group and the original sub-units in the population, in terms of available covariates of interest, both at the unit and sub-unit level. 
@@ -70,20 +77,19 @@ library(sitepickR)
 
 Now let's load the sample CCD-California 2017-18 dataset that comes installed with the package:
 
-```{r}
-rawCCD <- sitepickR::rawCCD
 
-head(rawCCD)
+```{r, results='asis'}
+rawCCD <- sitepickR::rawCCD
+knitr::kable(head(rawCCD), format = "html")
 ```
 
-Process the raw aggregate dataset in order for it to be in the format expected by selectMatch by using sitepckr [makeDF()](https://sitepickr.github.io/sitepickR-website/reference/buildDF.html) function. This will re-define key variables and create a new variable, 'unitSize', that will be used in the step of the selectMatch procedure where units are initially sampled. Specifically, cube sampling allows us to (optionally) select units in a way that is not biased by its number of sub-units:
+Process the raw aggregate dataset in order for it to be in the format expected by selectMatch by using sitepckr [makeDF()](https://sitepickr.github.io/sitepickR-website/reference/makeDF.html) function. This will re-define some key variables and create a new variable, 'unitSize', that will be used in the step of the selectMatch procedure where units are initially sampled. Specifically, cube sampling allows us to (optionally) select units in a way that is not biased by its number of sub-units:
 
-```{r}
+```{r, results='asis'}
 dfCCD <- makeDF(rawCCD,
                  unitID="LEAID", subunitID="NCESSCH")
-head(dfCCD)
+knitr::kable(dfCCD[1:10,(ncol(dfCCD)-5-1):ncol(dfCCD)], format = "html")
 ```
-
 
 ## Study sample design
 
@@ -136,19 +142,19 @@ calipMatchVars <-  c("w.pct.black", "w.pct.hisp", "w.pct.female")
 We'll now leverage sampling + MatchIt packages joint functionality, and match districts with their candidate replacements among the non-initially selected units using [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance). We can also do this using propensity scores, as specified on [MatchIt's documentation](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html#trying-a-different-matching-specification):
 
 ```{r}
-m.out <- selectMatch(df=dfCCD, # dataset
-                       unitID="LEAID", # column name of district ID
-                       subunitID="NCESSCH", # column name of school ID
-                       unitVars=uSampVarsCCD,
-                       subunitSampVars=suSampVarsCCD,
-                       exactMatchVars= exactMatchVars,
-                       calipMatchVars=calipMatchVars, 
-                       nUnitSamp = Nu, # original district sample size
-                       nRepUnits = K, # number of desired matches per selected district
-                       nsubUnits = Ns, # number of schools to sample from each candidate district
-                       calipValue = calip, # 
-                       seedN = seed,
-                       matchDistance = "mahalanobis",
+matchOut <- selectMatch(df=dfCCD, # user dataset
+                       unitID="LEAID", # column name of unit ID in user dataset
+                       subunitID="NCESSCH", # column name of sub-unit ID in user dataset
+                       unitVars=uSampVarsCCD, # name of unit level covariate columns
+                       subunitSampVars=suSampVarsCCD, # name of sub-unit level covariate columns
+                       exactMatchVars= exactMatchVars, # unit level categorical covariates on which to match exactly
+                       calipMatchVars=calipMatchVars, # unit level numeric covariates on which to match within a radius
+                       nUnitSamp = Nu, # original unit sample size
+                       nRepUnits = K, # number of desired matches per initially selected unit
+                       nsubUnits = Ns, # number of sub-units to sample from each candidate unit
+                       calipValue = calip, # maximum distance on which to match specified unit level covariates (calipMatchVars)
+                       seedN = seed, # random seed number
+                       matchDistance = "mahalanobis", # metric used for matching units
                        sizeFlag = TRUE,
                        replaceFlag = FALSE, #match without replacement
                        writeOut = FALSE, # write out a csv file for: 1) matched units and 2) selected schools
@@ -157,9 +163,32 @@ m.out <- selectMatch(df=dfCCD, # dataset
 )
 ```
 
+At this point, the two main outputs of the selectMatch procedure have been produced for our, and are stored inside the matchOut. In our example, these are: 
+
+1. A table with 10 matches (replacement candidates) for each of the 100 schools district we initially selected. The matches are ordered from the most to the least 'similar' to their original district (where 'similar' is close, in terms of covariate distance).
+
+2. A table with 5 (or less, when there are less than 5 schools available for a given district) randomly (if applicable) selected schools for each of the 100 original __and__ each of the 100 x 10 candidate districts. Of course, each of these 5 schools  are sampled exclusively from those that belong to each school district:
+
+```{r, results='asis'}
+districtReplTable = matchOut[[1]]
+knitr::kable(head(districtReplTable), format = "html")
+```
+
+```{r, results='asis'}
+schoolDirectory = matchOut[[2]]
+knitr::kable(head(dplyr::filter(schoolDirectory, !is.na(Sub_unit5_ID))), format = "html")
+
+```
+
+Each of these two tables can be automatically stored as .csv files in your local computer, by simply setting ```{r writeOut = TRUE}``` in the main function call to selectMatch.
+
 ## Assess balance and match quality
 
-By default, balance diagnostics in sitepickR are expressed in terms of standardized mean difference (SMD) between some two comparison groups of interest: initially selected districts (or schools) against target population (or against each of the K distrcit replacement groups).
+Now that we have our potential districts replacements, we'd like to know how 'similar' they really are to both the target population and the originally selected sample. Similarly, we'd like to know how well the schools that belong to each of these districts represent the schools of our target population, in terms of our covariates of interest.
+
+sitepickR provides the user with several functions to carry out these balance diagnostics. By default --and following the standard literature-- balance diagnostics in sitepickR are expressed in terms of standardized mean difference (SMD) between two comparison groups of interest. In our case, these two comparison groups we'll be: 1) initially selected districts (or schools) against target population; 2) initially selected districts (or schools) against each of the 10 district replacement groups.
+
+In addition, sitepickR has functions to find out how 'successful' the matching procedure was, to identify how often it was not possible to find all 10 matches for some units (perhaps because we are asking for 'too much' in terms of maximum distance, or exact matching constraints).
 
 
 ### 1. Original units vs. target population
@@ -167,28 +196,31 @@ By default, balance diagnostics in sitepickR are expressed in terms of standardi
 First, we want to look at the overall balance between the initially selected districts (i.e. the group of districts that were selected in the initial cube sampling step of the selectMatch procedure) and __all__ the districts in the population:
 
 ```{r fig.width=6, fig.height=5}
-unitLovePlot(m.out,
+unitLovePlot(matchOut,
              title="Standardized Mean Difference: \n Initially Selected Units vs. Population")
 ```
 
 We can also take a look at a table with the actual SMD for each covariate of interest applying the  [summary()](https://sitepickr.github.io/sitepickR-website/reference/summary.html) function:
-```{r}
-unitBalanceTab = summary(m.out, balMeasure=1)
-unitBalanceTab 
+
+```{r, results='asis'}
+unitBalanceTab = summary(matchOut, balMeasure=1)
+
+knitr::kable(head(unitBalanceTab, 10), format = "html")
 ```
+
 
 ### 2. Original units vs. replacement candidates
 
 To assess the quality of our resulting district matches, we look at the balance  (in terms of SMD) between the group of initially selected districts and each of its K replacement districts groups, where group 1 is composed of the first closest matches ordered in terms of distance, group 2 corresponds to the second-best matches, and so on:
 
 ```{r fig.width=9, fig.height=6}
-matchBalance(m.out, 
+matchBalance(matchOut, 
                 title = "Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units")
 ```
 
-```{r}
-matchBalanceTab = summary(m.out, balMeasure=2)
-matchBalanceTab
+```{r, results='asis'}
+matchBalanceTab = summary(matchOut, balMeasure=2)
+knitr::kable(head(matchBalanceTab, 20), format = "html")
 ```
 
 ### 3. Successfully computed unit matches
@@ -198,29 +230,32 @@ We also want to look at the success rate of the matching process between the ori
 This percentage is expected to be inversely related to restrictions imposed by exact matching, caliper value, and inherent structure and size of the data, as well as K, the number of matches (i.e. replacement candidates) we want for each of the original districts:
 
 ```{r fig.width=7, fig.height=6}
-matchCount(m.out,
+matchCount(matchOut,
              title="Percentage of Successful Matches per Unit Group")
 ```
 
 Similarly, we can, use [summary()](https://sitepickr.github.io/sitepickR-website/reference/summary.html)to obtain balance directly in a table:
 
-```{r}
-matchCountTab = summary(m.out, balMeasure=3)
-matchCountTab
+
+```{r, results='asis'}
+matchCountTab = summary(matchOut, balMeasure=3)
+
+knitr::kable(matchCountTab, format = "html")
 ```
 
 ### 4. Sub-units from original vs. candidate units
 
-Ultimately, the procedure wants to yield not only districts but also schools that are similar to the target population, in terms both of the district level covariates and the school level ones. sitepickR's [subUnitBalance()](https://sitepickr.github.io/sitepickR-website/reference/subUnitBalance.html) function lets us assess the matching quality precisely on this terms:
+Ultimately, the procedure wants to yield not just districts, but schools that are similar to the target population, in terms of all specified covariates of interest (both the district and school level ones). sitepickR's [subUnitBalance()](https://sitepickr.github.io/sitepickR-website/reference/subUnitBalance.html) function lets us assess the matching quality precisely on this terms:
 
 ```{r fig.width=9, fig.height=6}
-subUnitBalance(m.out,
+subUnitBalance(matchOut,
                   title="Standardized Mean Difference: \n Sub-units from Original + Replacement Unit Groups vs. Population")
 ```
 
 Similary, use [summary()](https://sitepickr.github.io/sitepickR-website/reference/summary.html) function to obtain balance directly in a table:
 
-```{r}
-subUnitBalanceTab = summary(m.out, balMeasure=4)
-subUnitBalanceTab
+
+```{r, results='asis'}
+subUnitBalanceTab = summary(matchOut, balMeasure=4)
+knitr::kable(subUnitBalanceTab, format = "html")
 ```

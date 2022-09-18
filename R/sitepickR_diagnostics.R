@@ -82,7 +82,7 @@ subUnitBalance  <- function(m.out,
 
 
 
-#' Summary tables, with unit/matches/sub-unit balance between initially selected units and all units in population, for each covariate of interest
+#' Build summary tables, with unit/match/sub-unit balance between initially selected units and a target population, for each covariate of interest
 #' @name summary
 #' @param m.out list; selectMatch() output
 #' @param balMeasure numeric; balance Diagnostic (1=original unit balance,

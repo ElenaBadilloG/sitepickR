@@ -2,7 +2,7 @@
 % Please edit documentation in R/sitepickR_diagnostics.R
 \name{summary}
 \alias{summary}
-\title{Summary tables, with unit/matches/sub-unit balance between initially selected units and all units in population, for each covariate of interest}
+\title{Build summary tables, with unit/match/sub-unit balance between initially selected units and a target population, for each covariate of interest}
 \usage{
 summary(m.out, balMeasure)
 }
@@ -16,5 +16,5 @@ summary(m.out, balMeasure)
 ggplot object
 }
 \description{
-Summary tables, with unit/matches/sub-unit balance between initially selected units and all units in population, for each covariate of interest
+Build summary tables, with unit/match/sub-unit balance between initially selected units and a target population, for each covariate of interest
 }

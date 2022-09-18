@@ -148,7 +148,7 @@ getMatches <- function(dfSU, sizeFlag, unitVars, exactMatchVars,
 
 
 # Helper 2. Recover a unit ID from its assiged unit index after matching
-
+#' @noRd
 #' @param idxCol integer; index of a given unit in output matrix after matching
 #' @param units dataframe; unit level dataframe with all unit level covariates  relevant for selection and matching.
 #' @return vector of original IDs
@@ -352,7 +352,7 @@ selectMatch <- function(df,
     tidyr::spread(key, sub_units)
 
   colnames(subUnitTable) <- c("unitID", sapply(colnames(subUnitTable)[2:ncol(subUnitTable)],
-                                                function (x) paste("Sub_unit", x, "_ID", "")))
+                                                function (x) paste("Sub_unit", x, "_ID", sep = "")))
   subUnitTable <- subUnitTable[,c(1:(nsubUnits+1))]
 
 
@@ -382,12 +382,12 @@ selectMatch <- function(df,
 
   mUnits <- dplyr::inner_join(dfMatch, dplyr::select(matches, c("unitID", "subclass", "weights")), by ="unitID")
 
-  mUnits$unitGrp <- NA
+  mUnits$unitGroup <- NA
   for(i in 1:nrow(mUnits)){
-    if(is.na(mUnits$unitGrp[i])){
+    if(is.na(mUnits$unitGroup[i])){
       for(j in 0:nRepUnits){
         if(mUnits$unitID[i] %in% replacementUnits[,(j+1)]){
-          mUnits$unitGrp[i] = j}
+          mUnits$unitGroup[i] = j}
 
       }} else{next}
   }

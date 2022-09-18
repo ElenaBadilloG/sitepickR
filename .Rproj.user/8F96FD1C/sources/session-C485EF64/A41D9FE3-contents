@@ -7,9 +7,9 @@
 #' Prepare nested dataset
 #' @name makeDF
 #' @param df dataframe
-#' @param unitID character; unit column name
-#' @param subunitID character; unit column name
-#' @return processed df
+#' @param unitID character; unit column name in original dataset
+#' @param subunitID character; sub-unit column name in original dataset
+#' @return processed dataframe
 #' @export
 makeDF <- function(df, unitID, subunitID){
   

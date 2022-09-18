@@ -15,7 +15,9 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><link href="../deps/Nunito-0.4.2/font.css" rel="stylesheet">
+<link href="../deps/Source_Code_Pro-0.4.2/font.css" rel="stylesheet">
+<!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="sitePickR: Getting Started">
 <meta property="og:description" content="sitepickR">
@@ -121,25 +123,38 @@ measured in terms of the number of subunits nested within units.</p>
 <p>In addition, sitepickR uses statistical matching to select possible
 replacement units. In education RCTs, the share of selected districts
 that agrees to participate tends to be low. To address this challenge,
-sitepickR selects and ranks up to 10 replacement districts for each
+sitepickR selects and ranks up to K replacement districts for each
 districts selected using the cube method. Replacement districts are
 selected using statistical matching based on propensity score methods.
 To implement statistical matching, sitepickR uses the <a href="https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html" class="external-link">MatchIt</a>
 R package.</p>
 <p>sitepickR’s core sampling + matching procedure, implemented with the
 selectMatch() function, consists of four main steps:</p>
+<ol style="list-style-type: decimal">
+<li>
+<p><strong>Study sample design</strong>, where we:</p>
 <ul>
-<li>Study sample design: identify: 1) a target population that has a
-nested structure (e.g. [school district:school]); 2) observable
-covariates on interest at the unit level; 3) observable covariates of
-interest at the sub-unit level.</li>
-<li>Randomly select an initial sample of units from the target
-population.</li>
-<li>Obtain a list of ‘best’ matches (e.g. replacement candidates) for
-each initially selected unit, in terms of the covariates of
-interest.</li>
-<li>Assess balance and match quality in terms of the covariates of
-interest:
+<li>Identify a target population with a nested structure (e.g. [district
+: school])</li>
+<li>Set key parameter values (e.g. initial sample size, number of
+matches)</li>
+<li>Specify a set of observable covariates of interest at the unit
+level</li>
+<li>Specify a set of sub-unit level observable covariates of
+interest</li>
+</ul>
+</li>
+<li><p>Select a random <strong>sample</strong> of units from the target
+population.</p></li>
+<li><p>Obtain a list of <strong>best K matches</strong> for each
+initially selected unit, where match #1 is closest to a given original
+unit, in terms of the covariates of interest and key paramneter values.
+These K matches will be the potential replacement units for each
+initially selected unit, in case their corresponding original unit is
+unable to participate in the study.</p></li>
+<li>
+<p>Assess <strong>balance</strong> and match quality in terms of the
+covariates of interest:</p>
 <ul>
 <li>Balance between initially selected (‘original’) units and the target
 population.</li>
@@ -150,7 +165,7 @@ and the original sub-units in the population, in terms of available
 covariates of interest, both at the unit and sub-unit level.</li>
 </ul>
 </li>
-</ul>
+</ol>
 <p>This vignette will guide the reader, step-by-step, on sitepickR’s
 basic functionalities, with data from the <a href="https://sitepickr.github.io/sitepickR-website/reference/rwCCD.html" class="external-link">Common
 Core of Data (CCD)</a> for California schools (2017-18), using a
@@ -178,61 +193,566 @@ devtools:</p>
 installed with the package:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rawCCD</span> <span class="op">&lt;-</span> <span class="fu">sitepickR</span><span class="fu">::</span><span class="va"><a href="../reference/rawCCD.html">rawCCD</a></span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">rawCCD</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    LEAID     NCESSCH w.pct.frlunch w.pct.black w.pct.hisp w.pct.female</span></span>
-<span><span class="co">#&gt; 1 600001 60000109444      54.67626   0.7194245  43.165468     48.92086</span></span>
-<span><span class="co">#&gt; 2 600006 60000608774      11.13861   0.8663366   9.282178     48.39109</span></span>
-<span><span class="co">#&gt; 3 600009 60000908780      78.28947   0.0000000  78.289474     46.71053</span></span>
-<span><span class="co">#&gt; 4 600013 60001308257      18.13563   1.7587074  13.126080     46.91478</span></span>
-<span><span class="co">#&gt; 5 600013 60001308553      18.13563   1.7587074  13.126080     46.91478</span></span>
-<span><span class="co">#&gt; 6 600014 60001409077      81.88847   5.5068437  67.853079     47.56987</span></span>
-<span><span class="co">#&gt;   sch.pct.frlunch sch.pct.black sch.pct.hisp sch.pct.female dtrct_size unitSize</span></span>
-<span><span class="co">#&gt; 1        54.67626     0.7194245    43.165468       48.92086        278        1</span></span>
-<span><span class="co">#&gt; 2        11.13861     0.8663366     9.282178       48.39109        808        1</span></span>
-<span><span class="co">#&gt; 3        78.28947     0.0000000    78.289474       46.71053        152        1</span></span>
-<span><span class="co">#&gt; 4        11.32597     1.6574586    10.497238       45.58011       1086        2</span></span>
-<span><span class="co">#&gt; 5        24.94530     1.8599562    15.754923       48.24945        914        2</span></span>
-<span><span class="co">#&gt; 6        90.60465     7.0697674    76.837209       47.62791       1075        3</span></span>
-<span><span class="co">#&gt;   distr.type</span></span>
-<span><span class="co">#&gt; 1          C</span></span>
-<span><span class="co">#&gt; 2          D</span></span>
-<span><span class="co">#&gt; 3          A</span></span>
-<span><span class="co">#&gt; 4          B</span></span>
-<span><span class="co">#&gt; 5          B</span></span>
-<span><span class="co">#&gt; 6          B</span></span></code></pre></div>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">rawCCD</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr>
+<th style="text-align:right;">
+LEAID
+</th>
+<th style="text-align:right;">
+NCESSCH
+</th>
+<th style="text-align:right;">
+w.pct.frlunch
+</th>
+<th style="text-align:right;">
+w.pct.black
+</th>
+<th style="text-align:right;">
+w.pct.hisp
+</th>
+<th style="text-align:right;">
+w.pct.female
+</th>
+<th style="text-align:right;">
+sch.pct.frlunch
+</th>
+<th style="text-align:right;">
+sch.pct.black
+</th>
+<th style="text-align:right;">
+sch.pct.hisp
+</th>
+<th style="text-align:right;">
+sch.pct.female
+</th>
+<th style="text-align:right;">
+dtrct_size
+</th>
+<th style="text-align:right;">
+unitSize
+</th>
+<th style="text-align:left;">
+distr.type
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+600001
+</td>
+<td style="text-align:right;">
+60000109444
+</td>
+<td style="text-align:right;">
+54.67626
+</td>
+<td style="text-align:right;">
+0.7194245
+</td>
+<td style="text-align:right;">
+43.165468
+</td>
+<td style="text-align:right;">
+48.92086
+</td>
+<td style="text-align:right;">
+54.67626
+</td>
+<td style="text-align:right;">
+0.7194245
+</td>
+<td style="text-align:right;">
+43.165468
+</td>
+<td style="text-align:right;">
+48.92086
+</td>
+<td style="text-align:right;">
+278
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+C
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+600006
+</td>
+<td style="text-align:right;">
+60000608774
+</td>
+<td style="text-align:right;">
+11.13861
+</td>
+<td style="text-align:right;">
+0.8663366
+</td>
+<td style="text-align:right;">
+9.282178
+</td>
+<td style="text-align:right;">
+48.39109
+</td>
+<td style="text-align:right;">
+11.13861
+</td>
+<td style="text-align:right;">
+0.8663366
+</td>
+<td style="text-align:right;">
+9.282178
+</td>
+<td style="text-align:right;">
+48.39109
+</td>
+<td style="text-align:right;">
+808
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+D
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+600009
+</td>
+<td style="text-align:right;">
+60000908780
+</td>
+<td style="text-align:right;">
+78.28947
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+78.289474
+</td>
+<td style="text-align:right;">
+46.71053
+</td>
+<td style="text-align:right;">
+78.28947
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+78.289474
+</td>
+<td style="text-align:right;">
+46.71053
+</td>
+<td style="text-align:right;">
+152
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+A
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+600013
+</td>
+<td style="text-align:right;">
+60001308257
+</td>
+<td style="text-align:right;">
+18.13563
+</td>
+<td style="text-align:right;">
+1.7587074
+</td>
+<td style="text-align:right;">
+13.126081
+</td>
+<td style="text-align:right;">
+46.91478
+</td>
+<td style="text-align:right;">
+11.32597
+</td>
+<td style="text-align:right;">
+1.6574586
+</td>
+<td style="text-align:right;">
+10.497238
+</td>
+<td style="text-align:right;">
+45.58011
+</td>
+<td style="text-align:right;">
+1086
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+B
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+600013
+</td>
+<td style="text-align:right;">
+60001308553
+</td>
+<td style="text-align:right;">
+18.13563
+</td>
+<td style="text-align:right;">
+1.7587074
+</td>
+<td style="text-align:right;">
+13.126081
+</td>
+<td style="text-align:right;">
+46.91478
+</td>
+<td style="text-align:right;">
+24.94530
+</td>
+<td style="text-align:right;">
+1.8599562
+</td>
+<td style="text-align:right;">
+15.754923
+</td>
+<td style="text-align:right;">
+48.24945
+</td>
+<td style="text-align:right;">
+914
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+B
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+600014
+</td>
+<td style="text-align:right;">
+60001409077
+</td>
+<td style="text-align:right;">
+81.88847
+</td>
+<td style="text-align:right;">
+5.5068437
+</td>
+<td style="text-align:right;">
+67.853079
+</td>
+<td style="text-align:right;">
+47.56987
+</td>
+<td style="text-align:right;">
+90.60465
+</td>
+<td style="text-align:right;">
+7.0697674
+</td>
+<td style="text-align:right;">
+76.837209
+</td>
+<td style="text-align:right;">
+47.62791
+</td>
+<td style="text-align:right;">
+1075
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+B
+</td>
+</tr>
+</tbody>
+</table>
 <p>Process the raw aggregate dataset in order for it to be in the format
-expected by selectMatch by using sitepckr <a href="https://sitepickr.github.io/sitepickR-website/reference/buildDF.html" class="external-link">makeDF()</a>
-function. This will re-define key variables and create a new variable,
-‘unitSize’, that will be used in the step of the selectMatch procedure
-where units are initially sampled. Specifically, cube sampling allows us
-to (optionally) select units in a way that is not biased by its number
-of sub-units:</p>
+expected by selectMatch by using sitepckr <a href="https://sitepickr.github.io/sitepickR-website/reference/makeDF.html" class="external-link">makeDF()</a>
+function. This will re-define some key variables and create a new
+variable, ‘unitSize’, that will be used in the step of the selectMatch
+procedure where units are initially sampled. Specifically, cube sampling
+allows us to (optionally) select units in a way that is not biased by
+its number of sub-units:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dfCCD</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makeDF.html">makeDF</a></span><span class="op">(</span><span class="va">rawCCD</span>,</span>
 <span>                 unitID<span class="op">=</span><span class="st">"LEAID"</span>, subunitID<span class="op">=</span><span class="st">"NCESSCH"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dfCCD</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    LEAID     NCESSCH w.pct.frlunch w.pct.black w.pct.hisp w.pct.female</span></span>
-<span><span class="co">#&gt; 1 600001 60000109444      54.67626   0.7194245  43.165468     48.92086</span></span>
-<span><span class="co">#&gt; 2 600006 60000608774      11.13861   0.8663366   9.282178     48.39109</span></span>
-<span><span class="co">#&gt; 3 600009 60000908780      78.28947   0.0000000  78.289474     46.71053</span></span>
-<span><span class="co">#&gt; 4 600013 60001308257      18.13563   1.7587074  13.126080     46.91478</span></span>
-<span><span class="co">#&gt; 5 600013 60001308553      18.13563   1.7587074  13.126080     46.91478</span></span>
-<span><span class="co">#&gt; 6 600014 60001409077      81.88847   5.5068437  67.853079     47.56987</span></span>
-<span><span class="co">#&gt;   sch.pct.frlunch sch.pct.black sch.pct.hisp sch.pct.female dtrct_size unitSize</span></span>
-<span><span class="co">#&gt; 1        54.67626     0.7194245    43.165468       48.92086        278        1</span></span>
-<span><span class="co">#&gt; 2        11.13861     0.8663366     9.282178       48.39109        808        1</span></span>
-<span><span class="co">#&gt; 3        78.28947     0.0000000    78.289474       46.71053        152        1</span></span>
-<span><span class="co">#&gt; 4        11.32597     1.6574586    10.497238       45.58011       1086        2</span></span>
-<span><span class="co">#&gt; 5        24.94530     1.8599562    15.754923       48.24945        914        2</span></span>
-<span><span class="co">#&gt; 6        90.60465     7.0697674    76.837209       47.62791       1075        3</span></span>
-<span><span class="co">#&gt;   distr.type unitID   subunitID</span></span>
-<span><span class="co">#&gt; 1          C 600001 60000109444</span></span>
-<span><span class="co">#&gt; 2          D 600006 60000608774</span></span>
-<span><span class="co">#&gt; 3          A 600009 60000908780</span></span>
-<span><span class="co">#&gt; 4          B 600013 60001308257</span></span>
-<span><span class="co">#&gt; 5          B 600013 60001308553</span></span>
-<span><span class="co">#&gt; 6          B 600014 60001409077</span></span></code></pre></div>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">dfCCD</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">dfCCD</span><span class="op">)</span><span class="op">-</span><span class="fl">5</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">dfCCD</span><span class="op">)</span><span class="op">]</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr>
+<th style="text-align:right;">
+sch.pct.hisp
+</th>
+<th style="text-align:right;">
+sch.pct.female
+</th>
+<th style="text-align:right;">
+dtrct_size
+</th>
+<th style="text-align:right;">
+unitSize
+</th>
+<th style="text-align:left;">
+distr.type
+</th>
+<th style="text-align:right;">
+unitID
+</th>
+<th style="text-align:right;">
+subunitID
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+43.165468
+</td>
+<td style="text-align:right;">
+48.92086
+</td>
+<td style="text-align:right;">
+278
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:right;">
+600001
+</td>
+<td style="text-align:right;">
+60000109444
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9.282178
+</td>
+<td style="text-align:right;">
+48.39109
+</td>
+<td style="text-align:right;">
+808
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+D
+</td>
+<td style="text-align:right;">
+600006
+</td>
+<td style="text-align:right;">
+60000608774
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+78.289474
+</td>
+<td style="text-align:right;">
+46.71053
+</td>
+<td style="text-align:right;">
+152
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:right;">
+600009
+</td>
+<td style="text-align:right;">
+60000908780
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10.497238
+</td>
+<td style="text-align:right;">
+45.58011
+</td>
+<td style="text-align:right;">
+1086
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+600013
+</td>
+<td style="text-align:right;">
+60001308257
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15.754923
+</td>
+<td style="text-align:right;">
+48.24945
+</td>
+<td style="text-align:right;">
+914
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+600013
+</td>
+<td style="text-align:right;">
+60001308553
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+76.837209
+</td>
+<td style="text-align:right;">
+47.62791
+</td>
+<td style="text-align:right;">
+1075
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+600014
+</td>
+<td style="text-align:right;">
+60001409077
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+61.365762
+</td>
+<td style="text-align:right;">
+47.33396
+</td>
+<td style="text-align:right;">
+1069
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+600014
+</td>
+<td style="text-align:right;">
+60001409676
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+65.356265
+</td>
+<td style="text-align:right;">
+47.74775
+</td>
+<td style="text-align:right;">
+1221
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+B
+</td>
+<td style="text-align:right;">
+600014
+</td>
+<td style="text-align:right;">
+60001412103
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+50.000000
+</td>
+<td style="text-align:right;">
+46.29630
+</td>
+<td style="text-align:right;">
+108
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+D
+</td>
+<td style="text-align:right;">
+600015
+</td>
+<td style="text-align:right;">
+60001509084
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+58.833619
+</td>
+<td style="text-align:right;">
+44.93997
+</td>
+<td style="text-align:right;">
+583
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+A
+</td>
+<td style="text-align:right;">
+600016
+</td>
+<td style="text-align:right;">
+60001609090
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="study-sample-design">Study sample design<a class="anchor" aria-label="anchor" href="#study-sample-design"></a>
@@ -301,33 +821,484 @@ distance</a>. We can also do this using propensity scores, as specified
 on <a href="https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html#trying-a-different-matching-specification" class="external-link">MatchIt’s
 documentation</a>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectMatch.html">selectMatch</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">dfCCD</span>, <span class="co"># dataset</span></span>
-<span>                       unitID<span class="op">=</span><span class="st">"LEAID"</span>, <span class="co"># column name of district ID</span></span>
-<span>                       subunitID<span class="op">=</span><span class="st">"NCESSCH"</span>, <span class="co"># column name of school ID</span></span>
-<span>                       unitVars<span class="op">=</span><span class="va">uSampVarsCCD</span>,</span>
-<span>                       subunitSampVars<span class="op">=</span><span class="va">suSampVarsCCD</span>,</span>
-<span>                       exactMatchVars<span class="op">=</span> <span class="va">exactMatchVars</span>,</span>
-<span>                       calipMatchVars<span class="op">=</span><span class="va">calipMatchVars</span>, </span>
-<span>                       nUnitSamp <span class="op">=</span> <span class="va">Nu</span>, <span class="co"># original district sample size</span></span>
-<span>                       nRepUnits <span class="op">=</span> <span class="va">K</span>, <span class="co"># number of desired matches per selected district</span></span>
-<span>                       nsubUnits <span class="op">=</span> <span class="va">Ns</span>, <span class="co"># number of schools to sample from each candidate district</span></span>
-<span>                       calipValue <span class="op">=</span> <span class="va">calip</span>, <span class="co"># </span></span>
-<span>                       seedN <span class="op">=</span> <span class="va">seed</span>,</span>
-<span>                       matchDistance <span class="op">=</span> <span class="st">"mahalanobis"</span>,</span>
+<code class="sourceCode R"><span><span class="va">matchOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectMatch.html">selectMatch</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">dfCCD</span>, <span class="co"># user dataset</span></span>
+<span>                       unitID<span class="op">=</span><span class="st">"LEAID"</span>, <span class="co"># column name of unit ID in user dataset</span></span>
+<span>                       subunitID<span class="op">=</span><span class="st">"NCESSCH"</span>, <span class="co"># column name of sub-unit ID in user dataset</span></span>
+<span>                       unitVars<span class="op">=</span><span class="va">uSampVarsCCD</span>, <span class="co"># name of unit level covariate columns</span></span>
+<span>                       subunitSampVars<span class="op">=</span><span class="va">suSampVarsCCD</span>, <span class="co"># name of sub-unit level covariate columns</span></span>
+<span>                       exactMatchVars<span class="op">=</span> <span class="va">exactMatchVars</span>, <span class="co"># unit level categorical covariates on which to match exactly</span></span>
+<span>                       calipMatchVars<span class="op">=</span><span class="va">calipMatchVars</span>, <span class="co"># unit level numeric covariates on which to match within a radius</span></span>
+<span>                       nUnitSamp <span class="op">=</span> <span class="va">Nu</span>, <span class="co"># original unit sample size</span></span>
+<span>                       nRepUnits <span class="op">=</span> <span class="va">K</span>, <span class="co"># number of desired matches per initially selected unit</span></span>
+<span>                       nsubUnits <span class="op">=</span> <span class="va">Ns</span>, <span class="co"># number of sub-units to sample from each candidate unit</span></span>
+<span>                       calipValue <span class="op">=</span> <span class="va">calip</span>, <span class="co"># maximum distance on which to match specified unit level covariates (calipMatchVars)</span></span>
+<span>                       seedN <span class="op">=</span> <span class="va">seed</span>, <span class="co"># random seed number</span></span>
+<span>                       matchDistance <span class="op">=</span> <span class="st">"mahalanobis"</span>, <span class="co"># metric used for matching units</span></span>
 <span>                       sizeFlag <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                       replaceFlag <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co">#match without replacement</span></span>
 <span>                       writeOut <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># write out a csv file for: 1) matched units and 2) selected schools</span></span>
 <span>                       replacementUnitsFilename <span class="op">=</span> <span class="st">"replacementsTable.csv"</span>, <span class="co"># filename for {districtA: [districtA replacement list]} table</span></span>
 <span>                       subUnitTableFilename <span class="op">=</span> <span class="st">"schoolsDirectory.csv"</span> <span class="co"># filename for {districtA: [districtA schools]} table</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>At this point, the two main outputs of the selectMatch procedure have
+been produced for our, and are stored inside the matchOut. In our
+example, these are:</p>
+<ol style="list-style-type: decimal">
+<li><p>A table with 10 matches (replacement candidates) for each of the
+100 schools district we initially selected. The matches are ordered from
+the most to the least ‘similar’ to their original district (where
+‘similar’ is close, in terms of covariate distance).</p></li>
+<li><p>A table with 5 (or less, when there are less than 5 schools
+available for a given district) randomly (if applicable) selected
+schools for each of the 100 original <strong>and</strong> each of the
+100 x 10 candidate districts. Of course, each of these 5 schools are
+sampled exclusively from those that belong to each school
+district:</p></li>
+</ol>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">districtReplTable</span> <span class="op">=</span> <span class="va">matchOut</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">districtReplTable</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+unitID
+</th>
+<th style="text-align:right;">
+Unit_replacement_1
+</th>
+<th style="text-align:right;">
+Unit_replacement_2
+</th>
+<th style="text-align:right;">
+Unit_replacement_3
+</th>
+<th style="text-align:right;">
+Unit_replacement_4
+</th>
+<th style="text-align:right;">
+Unit_replacement_5
+</th>
+<th style="text-align:right;">
+Unit_replacement_6
+</th>
+<th style="text-align:right;">
+Unit_replacement_7
+</th>
+<th style="text-align:right;">
+Unit_replacement_8
+</th>
+<th style="text-align:right;">
+Unit_replacement_9
+</th>
+<th style="text-align:right;">
+Unit_replacement_10
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+600013
+</td>
+<td style="text-align:right;">
+629610
+</td>
+<td style="text-align:right;">
+624870
+</td>
+<td style="text-align:right;">
+631470
+</td>
+<td style="text-align:right;">
+607140
+</td>
+<td style="text-align:right;">
+618030
+</td>
+<td style="text-align:right;">
+621000
+</td>
+<td style="text-align:right;">
+629370
+</td>
+<td style="text-align:right;">
+629610
+</td>
+<td style="text-align:right;">
+643140
+</td>
+<td style="text-align:right;">
+628860
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:right;">
+600014
+</td>
+<td style="text-align:right;">
+625530
+</td>
+<td style="text-align:right;">
+624600
+</td>
+<td style="text-align:right;">
+603420
+</td>
+<td style="text-align:right;">
+633900
+</td>
+<td style="text-align:right;">
+626400
+</td>
+<td style="text-align:right;">
+628530
+</td>
+<td style="text-align:right;">
+639180
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:right;">
+600016
+</td>
+<td style="text-align:right;">
+607970
+</td>
+<td style="text-align:right;">
+607970
+</td>
+<td style="text-align:right;">
+625320
+</td>
+<td style="text-align:right;">
+627060
+</td>
+<td style="text-align:right;">
+621360
+</td>
+<td style="text-align:right;">
+609330
+</td>
+<td style="text-align:right;">
+606990
+</td>
+<td style="text-align:right;">
+624690
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+17
+</td>
+<td style="text-align:right;">
+600028
+</td>
+<td style="text-align:right;">
+630990
+</td>
+<td style="text-align:right;">
+630990
+</td>
+<td style="text-align:right;">
+633860
+</td>
+<td style="text-align:right;">
+635700
+</td>
+<td style="text-align:right;">
+626280
+</td>
+<td style="text-align:right;">
+620370
+</td>
+<td style="text-align:right;">
+634290
+</td>
+<td style="text-align:right;">
+627750
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+45
+</td>
+<td style="text-align:right;">
+600069
+</td>
+<td style="text-align:right;">
+609570
+</td>
+<td style="text-align:right;">
+600063
+</td>
+<td style="text-align:right;">
+609570
+</td>
+<td style="text-align:right;">
+606570
+</td>
+<td style="text-align:right;">
+637140
+</td>
+<td style="text-align:right;">
+611280
+</td>
+<td style="text-align:right;">
+622440
+</td>
+<td style="text-align:right;">
+631050
+</td>
+<td style="text-align:right;">
+619950
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+47
+</td>
+<td style="text-align:right;">
+600153
+</td>
+<td style="text-align:right;">
+643470
+</td>
+<td style="text-align:right;">
+633750
+</td>
+<td style="text-align:right;">
+610770
+</td>
+<td style="text-align:right;">
+622050
+</td>
+<td style="text-align:right;">
+615600
+</td>
+<td style="text-align:right;">
+607170
+</td>
+<td style="text-align:right;">
+605700
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">schoolDirectory</span> <span class="op">=</span> <span class="va">matchOut</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">schoolDirectory</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Sub_unit5_ID</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr>
+<th style="text-align:right;">
+unitID
+</th>
+<th style="text-align:right;">
+Sub_unit1_ID
+</th>
+<th style="text-align:right;">
+Sub_unit2_ID
+</th>
+<th style="text-align:right;">
+Sub_unit3_ID
+</th>
+<th style="text-align:right;">
+Sub_unit4_ID
+</th>
+<th style="text-align:right;">
+Sub_unit5_ID
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+600017
+</td>
+<td style="text-align:right;">
+60001709100
+</td>
+<td style="text-align:right;">
+60001709272
+</td>
+<td style="text-align:right;">
+60001711122
+</td>
+<td style="text-align:right;">
+60001711747
+</td>
+<td style="text-align:right;">
+60001712663
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+600027
+</td>
+<td style="text-align:right;">
+60002705011
+</td>
+<td style="text-align:right;">
+60002709493
+</td>
+<td style="text-align:right;">
+60002709496
+</td>
+<td style="text-align:right;">
+60002710281
+</td>
+<td style="text-align:right;">
+60002710588
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+600028
+</td>
+<td style="text-align:right;">
+60002808272
+</td>
+<td style="text-align:right;">
+60002809501
+</td>
+<td style="text-align:right;">
+60002809505
+</td>
+<td style="text-align:right;">
+60002811040
+</td>
+<td style="text-align:right;">
+60002811187
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+600047
+</td>
+<td style="text-align:right;">
+60004707384
+</td>
+<td style="text-align:right;">
+60004707390
+</td>
+<td style="text-align:right;">
+60004707398
+</td>
+<td style="text-align:right;">
+60004707399
+</td>
+<td style="text-align:right;">
+60004711784
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+600153
+</td>
+<td style="text-align:right;">
+60015310936
+</td>
+<td style="text-align:right;">
+60015310939
+</td>
+<td style="text-align:right;">
+60015310941
+</td>
+<td style="text-align:right;">
+60015310942
+</td>
+<td style="text-align:right;">
+60015310946
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+601332
+</td>
+<td style="text-align:right;">
+60133201993
+</td>
+<td style="text-align:right;">
+60133205100
+</td>
+<td style="text-align:right;">
+60133205103
+</td>
+<td style="text-align:right;">
+60133205104
+</td>
+<td style="text-align:right;">
+60133205105
+</td>
+</tr>
+</tbody>
+</table>
+<p>Each of these two tables can be automatically stored as .csv files in
+your local computer, by simply setting <code>{r writeOut = TRUE}</code>
+in the main function call to selectMatch.</p>
 </div>
 <div class="section level2">
 <h2 id="assess-balance-and-match-quality">Assess balance and match quality<a class="anchor" aria-label="anchor" href="#assess-balance-and-match-quality"></a>
 </h2>
-<p>By default, balance diagnostics in sitepickR are expressed in terms
-of standardized mean difference (SMD) between some two comparison groups
-of interest: initially selected districts (or schools) against target
-population (or against each of the K distrcit replacement groups).</p>
+<p>Now that we have our potential districts replacements, we’d like to
+know how ‘similar’ they really are to both the target population and the
+originally selected sample. Similarly, we’d like to know how well the
+schools that belong to each of these districts represent the schools of
+our target population, in terms of our covariates of interest.</p>
+<p>sitepickR provides the user with several functions to carry out these
+balance diagnostics. By default –and following the standard literature–
+balance diagnostics in sitepickR are expressed in terms of standardized
+mean difference (SMD) between two comparison groups of interest. In our
+case, these two comparison groups we’ll be: 1) initially selected
+districts (or schools) against target population; 2) initially selected
+districts (or schools) against each of the 10 district replacement
+groups.</p>
+<p>In addition, sitepickR has functions to find out how ‘successful’ the
+matching procedure was, to identify how often it was not possible to
+find all 10 matches for some units (perhaps because we are asking for
+‘too much’ in terms of maximum distance, or exact matching
+constraints).</p>
 <div class="section level3">
 <h3 id="original-units-vs--target-population">1. Original units vs. target population<a class="anchor" aria-label="anchor" href="#original-units-vs--target-population"></a>
 </h3>
@@ -335,22 +1306,69 @@ population (or against each of the K distrcit replacement groups).</p>
 selected districts (i.e. the group of districts that were selected in
 the initial cube sampling step of the selectMatch procedure) and
 <strong>all</strong> the districts in the population:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/unitLovePlot.html">unitLovePlot</a></span><span class="op">(</span><span class="va">m.out</span>,</span>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/unitLovePlot.html">unitLovePlot</a></span><span class="op">(</span><span class="va">matchOut</span>,</span>
 <span>             title<span class="op">=</span><span class="st">"Standardized Mean Difference: \n Initially Selected Units vs. Population"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-14-1.png" width="576"></p>
+<p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-16-1.png" width="576"></p>
 <p>We can also take a look at a table with the actual SMD for each
 covariate of interest applying the <a href="https://sitepickr.github.io/sitepickR-website/reference/summary.html" class="external-link">summary()</a>
 function:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">unitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">m.out</span>, balMeasure<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">unitBalanceTab</span> </span>
-<span><span class="co">#&gt;       Covariate           SMD</span></span>
-<span><span class="co">#&gt; 1      unitSize  0.0006001704</span></span>
-<span><span class="co">#&gt; 2 w.pct.frlunch -0.0090978303</span></span>
-<span><span class="co">#&gt; 3   w.pct.black  0.1846243001</span></span>
-<span><span class="co">#&gt; 4    w.pct.hisp -0.0393681705</span></span>
-<span><span class="co">#&gt; 5  w.pct.female -0.0015679560</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">unitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">matchOut</span>, balMeasure<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">unitBalanceTab</span>, <span class="fl">10</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr>
+<th style="text-align:left;">
+Covariate
+</th>
+<th style="text-align:right;">
+SMD
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+0.0006002
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.0090978
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+w.pct.black
+</td>
+<td style="text-align:right;">
+0.1846243
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+w.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.0393682
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+w.pct.female
+</td>
+<td style="text-align:right;">
+-0.0015680
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level3">
 <h3 id="original-units-vs--replacement-candidates">2. Original units vs. replacement candidates<a class="anchor" aria-label="anchor" href="#original-units-vs--replacement-candidates"></a>
@@ -360,74 +1378,248 @@ the balance (in terms of SMD) between the group of initially selected
 districts and each of its K replacement districts groups, where group 1
 is composed of the first closest matches ordered in terms of distance,
 group 2 corresponds to the second-best matches, and so on:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchBalance.html">matchBalance</a></span><span class="op">(</span><span class="va">m.out</span>, </span>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchBalance.html">matchBalance</a></span><span class="op">(</span><span class="va">matchOut</span>, </span>
 <span>                title <span class="op">=</span> <span class="st">"Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-16-1.png" width="864"></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">matchBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">m.out</span>, balMeasure<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
-<span><span class="va">matchBalanceTab</span></span>
-<span><span class="co">#&gt;    unitGrp                                         variable         value</span></span>
-<span><span class="co">#&gt; 1        1                                        unitSize  -0.1501194993</span></span>
-<span><span class="co">#&gt; 2        2                                        unitSize  -0.2943404613</span></span>
-<span><span class="co">#&gt; 3        3                                        unitSize  -0.4113216272</span></span>
-<span><span class="co">#&gt; 4        4                                        unitSize  -0.4520049408</span></span>
-<span><span class="co">#&gt; 5        5                                        unitSize  -0.4901019169</span></span>
-<span><span class="co">#&gt; 6        6                                        unitSize  -0.4945457863</span></span>
-<span><span class="co">#&gt; 7        7                                        unitSize  -0.4960980329</span></span>
-<span><span class="co">#&gt; 8        8                                        unitSize  -0.4866504082</span></span>
-<span><span class="co">#&gt; 9        9                                        unitSize  -0.4935704282</span></span>
-<span><span class="co">#&gt; 10      10                                        unitSize  -0.5014734056</span></span>
-<span><span class="co">#&gt; 11       1                                   w.pct.frlunch   0.0879801040</span></span>
-<span><span class="co">#&gt; 12       2                                   w.pct.frlunch  -0.0863747566</span></span>
-<span><span class="co">#&gt; 13       3                                   w.pct.frlunch  -0.0650728324</span></span>
-<span><span class="co">#&gt; 14       4                                   w.pct.frlunch  -0.0484471826</span></span>
-<span><span class="co">#&gt; 15       5                                   w.pct.frlunch  -0.0262339044</span></span>
-<span><span class="co">#&gt; 16       6                                   w.pct.frlunch  -0.1963502086</span></span>
-<span><span class="co">#&gt; 17       7                                   w.pct.frlunch  -0.1319417977</span></span>
-<span><span class="co">#&gt; 18       8                                   w.pct.frlunch  -0.6980170761</span></span>
-<span><span class="co">#&gt; 19       9                                   w.pct.frlunch  -0.7402887400</span></span>
-<span><span class="co">#&gt; 20      10                                   w.pct.frlunch  -0.6972089792</span></span>
-<span><span class="co">#&gt; 21       1                                     w.pct.black   0.1682255909</span></span>
-<span><span class="co">#&gt; 22       2                                     w.pct.black  -0.0430881721</span></span>
-<span><span class="co">#&gt; 23       3                                     w.pct.black  -0.1993472929</span></span>
-<span><span class="co">#&gt; 24       4                                     w.pct.black  -0.2012090115</span></span>
-<span><span class="co">#&gt; 25       5                                     w.pct.black  -0.5035391793</span></span>
-<span><span class="co">#&gt; 26       6                                     w.pct.black  -0.5723369054</span></span>
-<span><span class="co">#&gt; 27       7                                     w.pct.black  -0.5609717087</span></span>
-<span><span class="co">#&gt; 28       8                                     w.pct.black  -0.6102003529</span></span>
-<span><span class="co">#&gt; 29       9                                     w.pct.black  -0.5877537932</span></span>
-<span><span class="co">#&gt; 30      10                                     w.pct.black  -0.5801386754</span></span>
-<span><span class="co">#&gt; 31       1                                      w.pct.hisp   0.0719424308</span></span>
-<span><span class="co">#&gt; 32       2                                      w.pct.hisp   0.0245306448</span></span>
-<span><span class="co">#&gt; 33       3                                      w.pct.hisp   0.0009155396</span></span>
-<span><span class="co">#&gt; 34       4                                      w.pct.hisp  -0.0054160961</span></span>
-<span><span class="co">#&gt; 35       5                                      w.pct.hisp  -0.0417689714</span></span>
-<span><span class="co">#&gt; 36       6                                      w.pct.hisp  -0.3651088809</span></span>
-<span><span class="co">#&gt; 37       7                                      w.pct.hisp  -0.2984523158</span></span>
-<span><span class="co">#&gt; 38       8                                      w.pct.hisp  -0.6309042284</span></span>
-<span><span class="co">#&gt; 39       9                                      w.pct.hisp  -0.7890350101</span></span>
-<span><span class="co">#&gt; 40      10                                      w.pct.hisp  -0.8190817790</span></span>
-<span><span class="co">#&gt; 41       1                                    w.pct.female  -0.0783469655</span></span>
-<span><span class="co">#&gt; 42       2                                    w.pct.female  -0.0039776552</span></span>
-<span><span class="co">#&gt; 43       3                                    w.pct.female   0.1950476332</span></span>
-<span><span class="co">#&gt; 44       4                                    w.pct.female   0.1310553552</span></span>
-<span><span class="co">#&gt; 45       5                                    w.pct.female  -0.0419758693</span></span>
-<span><span class="co">#&gt; 46       6                                    w.pct.female  -0.2616450819</span></span>
-<span><span class="co">#&gt; 47       7                                    w.pct.female   0.0213040748</span></span>
-<span><span class="co">#&gt; 48       8                                    w.pct.female   0.2410818190</span></span>
-<span><span class="co">#&gt; 49       9                                    w.pct.female   0.2204414257</span></span>
-<span><span class="co">#&gt; 50      10                                    w.pct.female   0.0453215909</span></span>
-<span><span class="co">#&gt; 51       1 All Covariates \n (average of the absolute SMDs)  0.1113229181</span></span>
-<span><span class="co">#&gt; 52       2 All Covariates \n (average of the absolute SMDs)  0.0904623380</span></span>
-<span><span class="co">#&gt; 53       3 All Covariates \n (average of the absolute SMDs)  0.1743409850</span></span>
-<span><span class="co">#&gt; 54       4 All Covariates \n (average of the absolute SMDs)  0.1676265173</span></span>
-<span><span class="co">#&gt; 55       5 All Covariates \n (average of the absolute SMDs)  0.2207239683</span></span>
-<span><span class="co">#&gt; 56       6 All Covariates \n (average of the absolute SMDs)  0.3779973726</span></span>
-<span><span class="co">#&gt; 57       7 All Covariates \n (average of the absolute SMDs)  0.3017535860</span></span>
-<span><span class="co">#&gt; 58       8 All Covariates \n (average of the absolute SMDs)  0.5333707769</span></span>
-<span><span class="co">#&gt; 59       9 All Covariates \n (average of the absolute SMDs)  0.5662178794</span></span>
-<span><span class="co">#&gt; 60      10 All Covariates \n (average of the absolute SMDs)  0.5286448860</span></span></code></pre></div>
+<p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-18-1.png" width="864"></p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">matchBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">matchOut</span>, balMeasure<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">matchBalanceTab</span>, <span class="fl">20</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr>
+<th style="text-align:right;">
+unitGroup
+</th>
+<th style="text-align:left;">
+variable
+</th>
+<th style="text-align:right;">
+value
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.1501195
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.2943405
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4113216
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4520049
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4901019
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4945458
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4960980
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4866504
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4935704
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.5014734
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+0.0879801
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.0863748
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.0650728
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.0484472
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.0262339
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.1963502
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.1319418
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.6980171
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.7402887
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.6972090
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level3">
 <h3 id="successfully-computed-unit-matches">3. Successfully computed unit matches<a class="anchor" aria-label="anchor" href="#successfully-computed-unit-matches"></a>
@@ -441,155 +1633,1384 @@ look at the percentage of replacements.</p>
 imposed by exact matching, caliper value, and inherent structure and
 size of the data, as well as K, the number of matches (i.e. replacement
 candidates) we want for each of the original districts:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchCount.html">matchCount</a></span><span class="op">(</span><span class="va">m.out</span>,</span>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchCount.html">matchCount</a></span><span class="op">(</span><span class="va">matchOut</span>,</span>
 <span>             title<span class="op">=</span><span class="st">"Percentage of Successful Matches per Unit Group"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-18-1.png" width="672"></p>
+<p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-20-1.png" width="672"></p>
 <p>Similarly, we can, use <a href="https://sitepickr.github.io/sitepickR-website/reference/summary.html" class="external-link">summary()</a>to
 obtain balance directly in a table:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">matchCountTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">m.out</span>, balMeasure<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
-<span><span class="va">matchCountTab</span></span>
-<span><span class="co">#&gt;                     Perc_Matches UnitGroup</span></span>
-<span><span class="co">#&gt; Unit_replacement_1           100         1</span></span>
-<span><span class="co">#&gt; Unit_replacement_2           100         2</span></span>
-<span><span class="co">#&gt; Unit_replacement_3           100         3</span></span>
-<span><span class="co">#&gt; Unit_replacement_4           100         4</span></span>
-<span><span class="co">#&gt; Unit_replacement_5           100         5</span></span>
-<span><span class="co">#&gt; Unit_replacement_6           100         6</span></span>
-<span><span class="co">#&gt; Unit_replacement_7            50         7</span></span>
-<span><span class="co">#&gt; Unit_replacement_8            34         8</span></span>
-<span><span class="co">#&gt; Unit_replacement_9            21         9</span></span>
-<span><span class="co">#&gt; Unit_replacement_10           17        10</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">matchCountTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">matchOut</span>, balMeasure<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">matchCountTab</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Perc_Matches
+</th>
+<th style="text-align:left;">
+UnitGroup
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Unit_replacement_1
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:left;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Unit_replacement_2
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:left;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Unit_replacement_3
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:left;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Unit_replacement_4
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:left;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Unit_replacement_5
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:left;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Unit_replacement_6
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:left;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Unit_replacement_7
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:left;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Unit_replacement_8
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:left;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Unit_replacement_9
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:left;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Unit_replacement_10
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:left;">
+10
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level3">
 <h3 id="sub-units-from-original-vs--candidate-units">4. Sub-units from original vs. candidate units<a class="anchor" aria-label="anchor" href="#sub-units-from-original-vs--candidate-units"></a>
 </h3>
-<p>Ultimately, the procedure wants to yield not only districts but also
-schools that are similar to the target population, in terms both of the
-district level covariates and the school level ones. sitepickR’s <a href="https://sitepickr.github.io/sitepickR-website/reference/subUnitBalance.html" class="external-link">subUnitBalance()</a>
+<p>Ultimately, the procedure wants to yield not just districts, but
+schools that are similar to the target population, in terms of all
+specified covariates of interest (both the district and school level
+ones). sitepickR’s <a href="https://sitepickr.github.io/sitepickR-website/reference/subUnitBalance.html" class="external-link">subUnitBalance()</a>
 function lets us assess the matching quality precisely on this
 terms:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/subUnitBalance.html">subUnitBalance</a></span><span class="op">(</span><span class="va">m.out</span>,</span>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/subUnitBalance.html">subUnitBalance</a></span><span class="op">(</span><span class="va">matchOut</span>,</span>
 <span>                  title<span class="op">=</span><span class="st">"Standardized Mean Difference: \n Sub-units from Original + Replacement Unit Groups vs. Population"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-20-1.png" width="864"></p>
+<p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-22-1.png" width="864"></p>
 <p>Similary, use <a href="https://sitepickr.github.io/sitepickR-website/reference/summary.html" class="external-link">summary()</a>
 function to obtain balance directly in a table:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">subUnitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">m.out</span>, balMeasure<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span>
-<span><span class="va">subUnitBalanceTab</span></span>
-<span><span class="co">#&gt;     unitGrp                                         variable         value</span></span>
-<span><span class="co">#&gt; 1         0                                        unitSize  -0.1172364047</span></span>
-<span><span class="co">#&gt; 2         1                                        unitSize  -0.2625787631</span></span>
-<span><span class="co">#&gt; 3         2                                        unitSize  -0.3494034453</span></span>
-<span><span class="co">#&gt; 4         3                                        unitSize  -0.4045265839</span></span>
-<span><span class="co">#&gt; 5         4                                        unitSize  -0.4339780517</span></span>
-<span><span class="co">#&gt; 6         5                                        unitSize  -0.4622501174</span></span>
-<span><span class="co">#&gt; 7         6                                        unitSize  -0.4642802427</span></span>
-<span><span class="co">#&gt; 8         7                                        unitSize  -0.4584538914</span></span>
-<span><span class="co">#&gt; 9         8                                        unitSize  -0.4614375116</span></span>
-<span><span class="co">#&gt; 10        9                                        unitSize  -0.4655203603</span></span>
-<span><span class="co">#&gt; 11       10                                        unitSize  -0.4711909835</span></span>
-<span><span class="co">#&gt; 12        0                                   w.pct.frlunch   0.0324414058</span></span>
-<span><span class="co">#&gt; 13        1                                   w.pct.frlunch   0.0397079052</span></span>
-<span><span class="co">#&gt; 14        2                                   w.pct.frlunch  -0.2024191004</span></span>
-<span><span class="co">#&gt; 15        3                                   w.pct.frlunch  -0.1820785137</span></span>
-<span><span class="co">#&gt; 16        4                                   w.pct.frlunch  -0.2449325514</span></span>
-<span><span class="co">#&gt; 17        5                                   w.pct.frlunch  -0.1198340750</span></span>
-<span><span class="co">#&gt; 18        6                                   w.pct.frlunch  -0.1611676620</span></span>
-<span><span class="co">#&gt; 19        7                                   w.pct.frlunch  -0.1279968572</span></span>
-<span><span class="co">#&gt; 20        8                                   w.pct.frlunch  -0.7053528070</span></span>
-<span><span class="co">#&gt; 21        9                                   w.pct.frlunch  -0.5327794614</span></span>
-<span><span class="co">#&gt; 22       10                                   w.pct.frlunch  -0.4170790510</span></span>
-<span><span class="co">#&gt; 23        0                                     w.pct.black   0.0125291104</span></span>
-<span><span class="co">#&gt; 24        1                                     w.pct.black   0.1473213011</span></span>
-<span><span class="co">#&gt; 25        2                                     w.pct.black  -0.1144066925</span></span>
-<span><span class="co">#&gt; 26        3                                     w.pct.black  -0.0267610839</span></span>
-<span><span class="co">#&gt; 27        4                                     w.pct.black  -0.1677871207</span></span>
-<span><span class="co">#&gt; 28        5                                     w.pct.black  -0.6155103084</span></span>
-<span><span class="co">#&gt; 29        6                                     w.pct.black  -0.7090204889</span></span>
-<span><span class="co">#&gt; 30        7                                     w.pct.black  -0.6947913673</span></span>
-<span><span class="co">#&gt; 31        8                                     w.pct.black  -0.7421740856</span></span>
-<span><span class="co">#&gt; 32        9                                     w.pct.black  -0.7020242255</span></span>
-<span><span class="co">#&gt; 33       10                                     w.pct.black  -0.7006807436</span></span>
-<span><span class="co">#&gt; 34        0                                      w.pct.hisp   0.0797792232</span></span>
-<span><span class="co">#&gt; 35        1                                      w.pct.hisp   0.1419596265</span></span>
-<span><span class="co">#&gt; 36        2                                      w.pct.hisp  -0.0254515446</span></span>
-<span><span class="co">#&gt; 37        3                                      w.pct.hisp  -0.1515926535</span></span>
-<span><span class="co">#&gt; 38        4                                      w.pct.hisp  -0.1731308037</span></span>
-<span><span class="co">#&gt; 39        5                                      w.pct.hisp  -0.0432153449</span></span>
-<span><span class="co">#&gt; 40        6                                      w.pct.hisp  -0.3039891862</span></span>
-<span><span class="co">#&gt; 41        7                                      w.pct.hisp  -0.3885415513</span></span>
-<span><span class="co">#&gt; 42        8                                      w.pct.hisp  -0.6140017073</span></span>
-<span><span class="co">#&gt; 43        9                                      w.pct.hisp  -0.7953240044</span></span>
-<span><span class="co">#&gt; 44       10                                      w.pct.hisp  -0.8396110151</span></span>
-<span><span class="co">#&gt; 45        0                                    w.pct.female   0.0505712246</span></span>
-<span><span class="co">#&gt; 46        1                                    w.pct.female   0.0133276241</span></span>
-<span><span class="co">#&gt; 47        2                                    w.pct.female   0.0520636555</span></span>
-<span><span class="co">#&gt; 48        3                                    w.pct.female   0.1926969263</span></span>
-<span><span class="co">#&gt; 49        4                                    w.pct.female   0.1278740414</span></span>
-<span><span class="co">#&gt; 50        5                                    w.pct.female  -0.0038164179</span></span>
-<span><span class="co">#&gt; 51        6                                    w.pct.female  -0.2017726240</span></span>
-<span><span class="co">#&gt; 52        7                                    w.pct.female  -1.0833563309</span></span>
-<span><span class="co">#&gt; 53        8                                    w.pct.female   0.4219308950</span></span>
-<span><span class="co">#&gt; 54        9                                    w.pct.female   0.3519037821</span></span>
-<span><span class="co">#&gt; 55       10                                    w.pct.female   0.0595760053</span></span>
-<span><span class="co">#&gt; 56        0                                 sch.pct.frlunch   0.0205378675</span></span>
-<span><span class="co">#&gt; 57        1                                 sch.pct.frlunch   0.0334419040</span></span>
-<span><span class="co">#&gt; 58        2                                 sch.pct.frlunch  -0.1761498865</span></span>
-<span><span class="co">#&gt; 59        3                                 sch.pct.frlunch  -0.1594917571</span></span>
-<span><span class="co">#&gt; 60        4                                 sch.pct.frlunch  -0.2145487801</span></span>
-<span><span class="co">#&gt; 61        5                                 sch.pct.frlunch  -0.1049687126</span></span>
-<span><span class="co">#&gt; 62        6                                 sch.pct.frlunch  -0.1411748870</span></span>
-<span><span class="co">#&gt; 63        7                                 sch.pct.frlunch  -0.1121189055</span></span>
-<span><span class="co">#&gt; 64        8                                 sch.pct.frlunch  -0.6178541131</span></span>
-<span><span class="co">#&gt; 65        9                                 sch.pct.frlunch  -0.4666884123</span></span>
-<span><span class="co">#&gt; 66       10                                 sch.pct.frlunch  -0.3653405850</span></span>
-<span><span class="co">#&gt; 67        0                                   sch.pct.black  -0.0133518322</span></span>
-<span><span class="co">#&gt; 68        1                                   sch.pct.black   0.1089600917</span></span>
-<span><span class="co">#&gt; 69        2                                   sch.pct.black  -0.0798536997</span></span>
-<span><span class="co">#&gt; 70        3                                   sch.pct.black  -0.0204378307</span></span>
-<span><span class="co">#&gt; 71        4                                   sch.pct.black  -0.1281414748</span></span>
-<span><span class="co">#&gt; 72        5                                   sch.pct.black  -0.4700742128</span></span>
-<span><span class="co">#&gt; 73        6                                   sch.pct.black  -0.5414893035</span></span>
-<span><span class="co">#&gt; 74        7                                   sch.pct.black  -0.5306223154</span></span>
-<span><span class="co">#&gt; 75        8                                   sch.pct.black  -0.5668091895</span></span>
-<span><span class="co">#&gt; 76        9                                   sch.pct.black  -0.5361461549</span></span>
-<span><span class="co">#&gt; 77       10                                   sch.pct.black  -0.5351201182</span></span>
-<span><span class="co">#&gt; 78        0                                    sch.pct.hisp   0.0759932378</span></span>
-<span><span class="co">#&gt; 79        1                                    sch.pct.hisp   0.1339399721</span></span>
-<span><span class="co">#&gt; 80        2                                    sch.pct.hisp  -0.0260682921</span></span>
-<span><span class="co">#&gt; 81        3                                    sch.pct.hisp  -0.1356821502</span></span>
-<span><span class="co">#&gt; 82        4                                    sch.pct.hisp  -0.1549597501</span></span>
-<span><span class="co">#&gt; 83        5                                    sch.pct.hisp  -0.0386796509</span></span>
-<span><span class="co">#&gt; 84        6                                    sch.pct.hisp  -0.2720838080</span></span>
-<span><span class="co">#&gt; 85        7                                    sch.pct.hisp  -0.3477619259</span></span>
-<span><span class="co">#&gt; 86        8                                    sch.pct.hisp  -0.5495587679</span></span>
-<span><span class="co">#&gt; 87        9                                    sch.pct.hisp  -0.7118502681</span></span>
-<span><span class="co">#&gt; 88       10                                    sch.pct.hisp  -0.7514891074</span></span>
-<span><span class="co">#&gt; 89        0                                  sch.pct.female   0.0154784717</span></span>
-<span><span class="co">#&gt; 90        1                                  sch.pct.female   0.0008496193</span></span>
-<span><span class="co">#&gt; 91        2                                  sch.pct.female   0.0327176186</span></span>
-<span><span class="co">#&gt; 92        3                                  sch.pct.female   0.1304002661</span></span>
-<span><span class="co">#&gt; 93        4                                  sch.pct.female   0.0865338609</span></span>
-<span><span class="co">#&gt; 94        5                                  sch.pct.female  -0.0025826147</span></span>
-<span><span class="co">#&gt; 95        6                                  sch.pct.female  -0.1365418969</span></span>
-<span><span class="co">#&gt; 96        7                                  sch.pct.female  -0.7331199127</span></span>
-<span><span class="co">#&gt; 97        8                                  sch.pct.female   0.2855255765</span></span>
-<span><span class="co">#&gt; 98        9                                  sch.pct.female   0.2381374093</span></span>
-<span><span class="co">#&gt; 99       10                                  sch.pct.female   0.0403157803</span></span>
-<span><span class="co">#&gt; 100       0 All Covariates \n (average of the absolute SMDs)  0.0464354198</span></span>
-<span><span class="co">#&gt; 101       1 All Covariates \n (average of the absolute SMDs)  0.0980096452</span></span>
-<span><span class="co">#&gt; 102       2 All Covariates \n (average of the absolute SMDs)  0.1176148817</span></span>
-<span><span class="co">#&gt; 103       3 All Covariates \n (average of the absolute SMDs)  0.1559630850</span></span>
-<span><span class="co">#&gt; 104       4 All Covariates \n (average of the absolute SMDs)  0.1924318261</span></span>
-<span><span class="co">#&gt; 105       5 All Covariates \n (average of the absolute SMDs)  0.2067701616</span></span>
-<span><span class="co">#&gt; 106       6 All Covariates \n (average of the absolute SMDs)  0.3257244555</span></span>
-<span><span class="co">#&gt; 107       7 All Covariates \n (average of the absolute SMDs)  0.4974181175</span></span>
-<span><span class="co">#&gt; 108       8 All Covariates \n (average of the absolute SMDs)  0.5516271837</span></span>
-<span><span class="co">#&gt; 109       9 All Covariates \n (average of the absolute SMDs)  0.5333748976</span></span>
-<span><span class="co">#&gt; 110      10 All Covariates \n (average of the absolute SMDs)  0.4644892655</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">subUnitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">matchOut</span>, balMeasure<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">subUnitBalanceTab</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr>
+<th style="text-align:right;">
+unitGroup
+</th>
+<th style="text-align:left;">
+variable
+</th>
+<th style="text-align:right;">
+value
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.1172364
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.2625788
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.3494034
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4045266
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4339781
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4622501
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4642802
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4584539
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4614375
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4655204
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+unitSize
+</td>
+<td style="text-align:right;">
+-0.4711910
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+0.0324414
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+0.0397079
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.2024191
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.1820785
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.2449326
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.1198341
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.1611677
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.1279969
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.7053528
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.5327795
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+w.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.4170791
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+w.pct.black
+</td>
+<td style="text-align:right;">
+0.0125291
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+w.pct.black
+</td>
+<td style="text-align:right;">
+0.1473213
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+w.pct.black
+</td>
+<td style="text-align:right;">
+-0.1144067
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+w.pct.black
+</td>
+<td style="text-align:right;">
+-0.0267611
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+w.pct.black
+</td>
+<td style="text-align:right;">
+-0.1677871
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+w.pct.black
+</td>
+<td style="text-align:right;">
+-0.6155103
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+w.pct.black
+</td>
+<td style="text-align:right;">
+-0.7090205
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+w.pct.black
+</td>
+<td style="text-align:right;">
+-0.6947914
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+w.pct.black
+</td>
+<td style="text-align:right;">
+-0.7421741
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+w.pct.black
+</td>
+<td style="text-align:right;">
+-0.7020242
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+w.pct.black
+</td>
+<td style="text-align:right;">
+-0.7006807
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+w.pct.hisp
+</td>
+<td style="text-align:right;">
+0.0797792
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+w.pct.hisp
+</td>
+<td style="text-align:right;">
+0.1419596
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+w.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.0254515
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+w.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.1515927
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+w.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.1731308
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+w.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.0432153
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+w.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.3039892
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+w.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.3885416
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+w.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.6140017
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+w.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.7953240
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+w.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.8396110
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+w.pct.female
+</td>
+<td style="text-align:right;">
+0.0505712
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+w.pct.female
+</td>
+<td style="text-align:right;">
+0.0133276
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+w.pct.female
+</td>
+<td style="text-align:right;">
+0.0520637
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+w.pct.female
+</td>
+<td style="text-align:right;">
+0.1926969
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+w.pct.female
+</td>
+<td style="text-align:right;">
+0.1278740
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+w.pct.female
+</td>
+<td style="text-align:right;">
+-0.0038164
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+w.pct.female
+</td>
+<td style="text-align:right;">
+-0.2017726
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+w.pct.female
+</td>
+<td style="text-align:right;">
+-1.0833563
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+w.pct.female
+</td>
+<td style="text-align:right;">
+0.4219309
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+w.pct.female
+</td>
+<td style="text-align:right;">
+0.3519038
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+w.pct.female
+</td>
+<td style="text-align:right;">
+0.0595760
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+sch.pct.frlunch
+</td>
+<td style="text-align:right;">
+0.0205379
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+sch.pct.frlunch
+</td>
+<td style="text-align:right;">
+0.0334419
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+sch.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.1761499
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+sch.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.1594918
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+sch.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.2145488
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+sch.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.1049687
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+sch.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.1411749
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+sch.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.1121189
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+sch.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.6178541
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+sch.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.4666884
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+sch.pct.frlunch
+</td>
+<td style="text-align:right;">
+-0.3653406
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+sch.pct.black
+</td>
+<td style="text-align:right;">
+-0.0133518
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+sch.pct.black
+</td>
+<td style="text-align:right;">
+0.1089601
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+sch.pct.black
+</td>
+<td style="text-align:right;">
+-0.0798537
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+sch.pct.black
+</td>
+<td style="text-align:right;">
+-0.0204378
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+sch.pct.black
+</td>
+<td style="text-align:right;">
+-0.1281415
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+sch.pct.black
+</td>
+<td style="text-align:right;">
+-0.4700742
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+sch.pct.black
+</td>
+<td style="text-align:right;">
+-0.5414893
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+sch.pct.black
+</td>
+<td style="text-align:right;">
+-0.5306223
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+sch.pct.black
+</td>
+<td style="text-align:right;">
+-0.5668092
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+sch.pct.black
+</td>
+<td style="text-align:right;">
+-0.5361462
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+sch.pct.black
+</td>
+<td style="text-align:right;">
+-0.5351201
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+sch.pct.hisp
+</td>
+<td style="text-align:right;">
+0.0759932
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+sch.pct.hisp
+</td>
+<td style="text-align:right;">
+0.1339400
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+sch.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.0260683
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+sch.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.1356822
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+sch.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.1549598
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+sch.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.0386797
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+sch.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.2720838
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+sch.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.3477619
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+sch.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.5495588
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+sch.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.7118503
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+sch.pct.hisp
+</td>
+<td style="text-align:right;">
+-0.7514891
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+sch.pct.female
+</td>
+<td style="text-align:right;">
+0.0154785
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+sch.pct.female
+</td>
+<td style="text-align:right;">
+0.0008496
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+sch.pct.female
+</td>
+<td style="text-align:right;">
+0.0327176
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+sch.pct.female
+</td>
+<td style="text-align:right;">
+0.1304003
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+sch.pct.female
+</td>
+<td style="text-align:right;">
+0.0865339
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+sch.pct.female
+</td>
+<td style="text-align:right;">
+-0.0025826
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+sch.pct.female
+</td>
+<td style="text-align:right;">
+-0.1365419
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+sch.pct.female
+</td>
+<td style="text-align:right;">
+-0.7331199
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+sch.pct.female
+</td>
+<td style="text-align:right;">
+0.2855256
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+sch.pct.female
+</td>
+<td style="text-align:right;">
+0.2381374
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+sch.pct.female
+</td>
+<td style="text-align:right;">
+0.0403158
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+All Covariates (average of the absolute SMDs)
+</td>
+<td style="text-align:right;">
+0.0464354
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+All Covariates (average of the absolute SMDs)
+</td>
+<td style="text-align:right;">
+0.0980096
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+All Covariates (average of the absolute SMDs)
+</td>
+<td style="text-align:right;">
+0.1176149
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+All Covariates (average of the absolute SMDs)
+</td>
+<td style="text-align:right;">
+0.1559631
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+All Covariates (average of the absolute SMDs)
+</td>
+<td style="text-align:right;">
+0.1924318
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+All Covariates (average of the absolute SMDs)
+</td>
+<td style="text-align:right;">
+0.2067702
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+All Covariates (average of the absolute SMDs)
+</td>
+<td style="text-align:right;">
+0.3257245
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+All Covariates (average of the absolute SMDs)
+</td>
+<td style="text-align:right;">
+0.4974181
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+All Covariates (average of the absolute SMDs)
+</td>
+<td style="text-align:right;">
+0.5516272
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+All Covariates (average of the absolute SMDs)
+</td>
+<td style="text-align:right;">
+0.5333749
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+All Covariates (average of the absolute SMDs)
+</td>
+<td style="text-align:right;">
+0.4644893
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -9,12 +9,12 @@ makeDF(df, unitID, subunitID)
 \arguments{
 \item{df}{dataframe}
 
-\item{unitID}{character; unit column name}
+\item{unitID}{character; unit column name in original dataset}
 
-\item{subunitID}{character; unit column name}
+\item{subunitID}{character; sub-unit column name in original dataset}
 }
 \value{
-processed df
+processed dataframe
 }
 \description{
 Prepare nested dataset
