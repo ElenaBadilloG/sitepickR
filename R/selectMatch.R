@@ -17,12 +17,12 @@
 #' @param calipValue character; unit column name
 #' @param matchDistance character; unit column name
 #' @param nRepUnits character; unit column name
-#' @param replaceFlag character; unit column name
+#' @param repFlag character; unit column name
 #' @param calipers character; unit column name
 #' @return list: matches matrix, df used to run match
 getMatches <- function(dfSU, sizeFlag, unitVars, exactMatchVars,
                        calipMatchVars, calipValue, matchDistance, nRepUnits, 
-                       replaceFlag, calipers){
+                       repFlag, calipers){
   
   # Prepare dataset for matching:
   if(sizeFlag==TRUE){
@@ -64,19 +64,19 @@ getMatches <- function(dfSU, sizeFlag, unitVars, exactMatchVars,
                          data = dfMatch,
                          distance = matchDistance,
                          ratio = nRepUnits,
-                         replace = replaceFlag)
+                         replace = repFlag)
   } else {
     
     ## Case 2: Callipers  & repeating units after matching is allowed:
     
-    if(!is.null(calipers) & replaceFlag == TRUE){ # Match with calipers (case NULL/numeric vector):
+    if(!is.null(calipers) & repFlag == TRUE){ # Match with calipers (case NULL/numeric vector):
       
       #Do matching with replacement with the caliper:
       m1 <- MatchIt::matchit(as.formula(paste("Selected ~ ", paste(unitVars, collapse= "+"))),
                     data = dfMatch,
                     distance = matchDistance,
                     ratio = nRepUnits,
-                    replace = replaceFlag,
+                    replace = repFlag,
                     caliper = calipers,
                     std.caliper = rep(TRUE,length(calipers)))
       
@@ -85,7 +85,7 @@ getMatches <- function(dfSU, sizeFlag, unitVars, exactMatchVars,
                     data = dfMatch,
                     distance = matchDistance,
                     ratio = nRepUnits,
-                    replace = replaceFlag)
+                    replace = repFlag)
       
       #For each treated unit, fill in match matrix with matches from
       #match without caliper to get 10 matches total; avoid repeating matches:
@@ -105,14 +105,14 @@ getMatches <- function(dfSU, sizeFlag, unitVars, exactMatchVars,
       unitMatch <- m1} else {
         
         ## Case 3: Callipers & repeating units after matching is not allowed:
-        if(!is.null(calipers) & replaceFlag==FALSE) {
+        if(!is.null(calipers) & repFlag==FALSE) {
           
           #Do matching with replacement with the caliper:
           m1 <- MatchIt::matchit(as.formula(paste("Selected ~ ", paste(unitVars, collapse= "+"))),
                         data = dfMatch,
                         distance = matchDistance,
                         ratio = nRepUnits,
-                        replace = replaceFlag,
+                        replace = repFlag,
                         caliper = calipers,
                         std.caliper = rep(TRUE,length(calipers)))
           
@@ -121,7 +121,7 @@ getMatches <- function(dfSU, sizeFlag, unitVars, exactMatchVars,
                         data = dfMatch,
                         distance = matchDistance,
                         ratio = nRepUnits,
-                        replace = replaceFlag)
+                        replace = repFlag)
           #discard = m1$treat == 0 & m1$weights > 0) # Unnecessary restriction?
           
           #For each treated unit, fill in match matrix with matches from
@@ -266,7 +266,7 @@ sampleSubUnits <- function(df_, subUnitLookup, replacementUnits, subunitSampVars
 #' @param calipMatchVars vector; column names of continuous variables on which units must be matched within a specified caliper. Must be present in 'unitVars'; default = NULL
 #' @param matchDistance character; MatchIt::matchit distance parameter to obtain optimal matches (nearest neigboors); default = "mahalanois"
 #' @param sizeFlag logical; if TRUE, sampling is made proportional to unit size; default = TRUE
-#' @param replaceFlag logical; if TRUE, get matches with replacement; default = TRUE
+#' @param repFlag logical; if TRUE, pick unit matches with/without repetition; default = TRUE
 #' @param writeOut logical; if TRUE, writes a .csv file for each output table; default = TRUE
 #' @param replacementUnitsFilename character; csv filename for saving {unit:replacement} directory when writeOut == TRUE; default = "replacementUnits.csv"
 #' @param subUnitTableFilename character; csv filename for saving {unit:replacement} directory when writeOut == TRUE; default = "subUnitTable.csv"
@@ -285,7 +285,7 @@ selectMatch <- function(df,
                         seedN = NA,
                         matchDistance = "mahalanobis",
                         sizeFlag = TRUE,
-                        replaceFlag = TRUE,
+                        repFlag = TRUE,
                         writeOut = TRUE,
                         replacementUnitsFilename = "replacementUnits.csv",
                         subUnitTableFilename = "subUnitTable.csv"
@@ -316,7 +316,7 @@ selectMatch <- function(df,
   ### 2. FIND BEST MATCHES FOR ALL INITIALLY SELECTED UNITS
 
   rmatches <- getMatches(dfSU, sizeFlag, unitVars, exactMatchVars,
-                          calipMatchVars, calipValue, matchDistance, nRepUnits, replaceFlag, calipers)
+                          calipMatchVars, calipValue, matchDistance, nRepUnits, repFlag, calipers)
 
   unitMatch <- rmatches[[1]]
   dfMatch <- rmatches[[2]]

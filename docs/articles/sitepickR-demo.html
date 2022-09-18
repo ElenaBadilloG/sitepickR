@@ -100,17 +100,16 @@ any type of site defined by geography or administrative responsibility
 sitepicker is designed to select sites in two stages —first “units” that
 contain multiple sites located nearby and/or under the same
 administration and then “subunits” containing individual sites.
-Two-stage sampling may be necessary when the cost of the study depend on
-the number of units (e.g., school districts), and a one-stage sample of
-subunits (e.g., schools) would likely contain more units than the study
-can afford.</p>
+Two-stage sampling may be necessary when the cost of the study depends
+on the number of units (e.g., school districts), and a one-stage sample
+of sub-units (e.g., schools) would likely contain more units than the
+study can afford.</p>
 <p>The main function in this package, <a href="https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html" class="external-link">selectMatch()</a>
 lets the user carry out a two-level sample selection where the
-possibility of an initially selected participant not wanting to
-participate is anticipated. The procedure aims to reduce the bias
-(and/or loss of generalizability to the population) this could
-introduce.</p>
-<p>In selecting units and subunits, sitepickR uses the cube method
+possibility of an initially selected unit not wanting to participate is
+anticipated. The procedure aims to reduce the bias (and/or loss of
+generalizability to the target population) this could introduce.</p>
+<p>In selecting units and sub-units, sitepickR uses the cube method
 (e.g., Deville &amp; Tillé, 2004; Tillé 2011). The cube method is a
 probability sampling method that is designed to satisfy criteria for
 balance between the sample and the population. Recent research has shown
@@ -119,7 +118,7 @@ programs (Fay &amp; Olsen, under review). To implement the cube method,
 sitepickerR uses the <a href="https://cran.r-project.org/web/packages/sampling/index.html" class="external-link">sampling</a>
 R package. Users have the option to select units with equal
 probabilities or with probabilities proportional to their “size”
-measured in terms of the number of subunits nested within units.</p>
+measured in terms of the number of sub-units nested within units.</p>
 <p>In addition, sitepickR uses statistical matching to select possible
 replacement units. In education RCTs, the share of selected districts
 that agrees to participate tends to be low. To address this challenge,
@@ -134,10 +133,10 @@ selectMatch() function, consists of four main steps:</p>
 <li>
 <p><strong>Study sample design</strong>, where we:</p>
 <ul>
-<li>Identify a target population with a nested structure (e.g. [district
-: school])</li>
-<li>Set key parameter values (e.g. initial sample size, number of
-matches)</li>
+<li>Identify a target population with a unit : sub-unit nested structure
+(e.g. [district A : schools in district A])</li>
+<li>Set key parameter values (e.g. initial sample size, desired number
+of matches per unit)</li>
 <li>Specify a set of observable covariates of interest at the unit
 level</li>
 <li>Specify a set of sub-unit level observable covariates of
@@ -147,14 +146,19 @@ interest</li>
 <li><p>Select a random <strong>sample</strong> of units from the target
 population.</p></li>
 <li><p>Obtain a list of <strong>best K matches</strong> for each
-initially selected unit, where match #1 is closest to a given original
-unit, in terms of the covariates of interest and key paramneter values.
-These K matches will be the potential replacement units for each
+initially selected unit, where match no. 1 is closest to a given
+original unit and match no. K is furthest, in terms of the covariates of
+interest and key parameter values.</p></li>
+</ol>
+<p>These K matches will be the potential replacement units for each
 initially selected unit, in case their corresponding original unit is
-unable to participate in the study.</p></li>
-<li>
-<p>Assess <strong>balance</strong> and match quality in terms of the
-covariates of interest:</p>
+unable to participate in the study, and they are taken (with or without
+repetition, which you can set with the <a href="https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html" class="external-link">repFlag</a>
+argument) from the pool of units that <em>did not</em> get selected in
+the initial random sampling procedure.</p>
+<ol start="4" style="list-style-type: decimal">
+<li>Assess <strong>balance</strong> and match quality in terms of the
+covariates of interest:
 <ul>
 <li>Balance between initially selected (‘original’) units and the target
 population.</li>
@@ -835,7 +839,7 @@ documentation</a>:</p>
 <span>                       seedN <span class="op">=</span> <span class="va">seed</span>, <span class="co"># random seed number</span></span>
 <span>                       matchDistance <span class="op">=</span> <span class="st">"mahalanobis"</span>, <span class="co"># metric used for matching units</span></span>
 <span>                       sizeFlag <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                       replaceFlag <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co">#match without replacement</span></span>
+<span>                       repFlag <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># pick matches without repetition</span></span>
 <span>                       writeOut <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># write out a csv file for: 1) matched units and 2) selected schools</span></span>
 <span>                       replacementUnitsFilename <span class="op">=</span> <span class="st">"replacementsTable.csv"</span>, <span class="co"># filename for {districtA: [districtA replacement list]} table</span></span>
 <span>                       subUnitTableFilename <span class="op">=</span> <span class="st">"schoolsDirectory.csv"</span> <span class="co"># filename for {districtA: [districtA schools]} table</span></span>
@@ -1275,12 +1279,12 @@ Sub_unit5_ID
 </tbody>
 </table>
 <p>Each of these two tables can be automatically stored as .csv files in
-your local computer, by simply setting <code>{r writeOut = TRUE}</code>
-in the main function call to selectMatch. In case you use this feature,
-you can given those two files a specific name, using the
-<code>{r} replacementUnitsFilename</code> and
-<code>{r} subUnitTableFilename</code> arguments (or keeping just their
-default values).</p>
+your local computer, by simply settin writeOut = TRUE in the main
+function call to selectMatch. In case you use this feature, you can
+given those two files a specific name, using the
+[replacementUnitsFilename][repFlag](<a href="https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html" class="external-link uri">https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html</a>)
+and [subUnitTableFilename][repFlag](<a href="https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html" class="external-link uri">https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html</a>)
+selectMatch arguments (or just keeping their default values).</p>
 </div>
 <div class="section level2">
 <h2 id="assess-balance-and-match-quality">Assess balance and match quality<a class="anchor" aria-label="anchor" href="#assess-balance-and-match-quality"></a>
@@ -1290,8 +1294,9 @@ know how ‘similar’ they really are to both the target population and the
 originally selected sample. Similarly, we’d like to know how well the
 schools that belong to each of these districts represent the schools of
 our target population, in terms of our covariates of interest. In the
-end, what we want is to be able to retain the representativensess in our
-study design, as much as possible –even when units “self-select”.</p>
+end, what we want is to be able to retain the original
+representativensess (imposed by our initial random sampling step) in our
+study design as much as possible, even when units “self-select”.</p>
 <p>sitepickR provides the user with several functions to carry out these
 balance diagnostics. By default –and following the standard literature–
 balance diagnostics in sitepickR are expressed in terms of standardized
