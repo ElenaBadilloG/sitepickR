@@ -43,6 +43,7 @@ sitepickR's core sampling + matching procedure, implemented with the selectMatch
     - Set key parameter values (e.g. initial sample size, desired number of matches per unit)
     - Specify a set of observable covariates of interest at the unit level
     - Specify a set of sub-unit level observable covariates of interest
+    
 
 2. Select a random __sample__ of units from the target population.
 
@@ -52,7 +53,7 @@ These K matches will be the potential replacement units for each initially selec
 
 4. Assess __balance__ and match quality in terms of the covariates of interest:
     - Balance between initially selected ('original') units and the target population.
-    - Balance between original units and each group of matches (1 to K, from closest to further).
+    - Balance between original units and each group of matches (1 to K, from closest to furthest).
     - Balance between sub-units associated to each unit replacement group and the original sub-units in the population, in terms of available covariates of interest, both at the unit and sub-unit level. 
 
 This vignette will guide the reader, step-by-step, on sitepickR's basic functionalities, with data from the [Common Core of Data (CCD)](https://sitepickr.github.io/sitepickR-website/reference/rwCCD.html) for California schools (2017-18), using a pre-processed dataset that comes with the package installation. Further technical details on each of the package's main functions and on the sample dataset is included in the documentation.

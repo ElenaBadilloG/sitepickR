@@ -3,7 +3,7 @@
     "path": "~/sitepickR/vignettes/sitepickR-demo.Rmd",
     "project_path": "vignettes/sitepickR-demo.Rmd",
     "type": "r_markdown",
-    "hash": "632948055",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1662155924530.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "87,72",
-        "scrollLine": "76"
+        "cursorPosition": "55,96",
+        "scrollLine": "45"
     },
     "folds": "",
-    "lastKnownWriteTime": 1663524857,
+    "lastKnownWriteTime": 1663525516,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1663524857150,
+    "last_content_update": 1663525516341,
     "read_only": false,
     "read_only_alternatives": []
 }
