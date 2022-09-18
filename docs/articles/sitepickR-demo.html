@@ -233,9 +233,6 @@ sch.pct.female
 <th style="text-align:right;">
 dtrct_size
 </th>
-<th style="text-align:right;">
-unitSize
-</th>
 <th style="text-align:left;">
 distr.type
 </th>
@@ -275,11 +272,8 @@ distr.type
 <td style="text-align:right;">
 278
 </td>
-<td style="text-align:right;">
-1
-</td>
 <td style="text-align:left;">
-C
+B
 </td>
 </tr>
 <tr>
@@ -316,11 +310,8 @@ C
 <td style="text-align:right;">
 808
 </td>
-<td style="text-align:right;">
-1
-</td>
 <td style="text-align:left;">
-D
+A
 </td>
 </tr>
 <tr>
@@ -357,11 +348,8 @@ D
 <td style="text-align:right;">
 152
 </td>
-<td style="text-align:right;">
-1
-</td>
 <td style="text-align:left;">
-A
+D
 </td>
 </tr>
 <tr>
@@ -398,11 +386,8 @@ A
 <td style="text-align:right;">
 1086
 </td>
-<td style="text-align:right;">
-2
-</td>
 <td style="text-align:left;">
-B
+A
 </td>
 </tr>
 <tr>
@@ -439,11 +424,8 @@ B
 <td style="text-align:right;">
 914
 </td>
-<td style="text-align:right;">
-2
-</td>
 <td style="text-align:left;">
-B
+A
 </td>
 </tr>
 <tr>
@@ -480,17 +462,14 @@ B
 <td style="text-align:right;">
 1075
 </td>
-<td style="text-align:right;">
-3
-</td>
 <td style="text-align:left;">
-B
+D
 </td>
 </tr>
 </tbody>
 </table>
-<p>Process the raw aggregate dataset in order for it to be in the format
-expected by selectMatch by using sitepckr <a href="https://sitepickr.github.io/sitepickR-website/reference/makeDF.html" class="external-link">makeDF()</a>
+<p>Process the sample aggregate dataset in order for it to be in the
+exact format expected by selectMatch by using sitepckr <a href="https://sitepickr.github.io/sitepickR-website/reference/makeDF.html" class="external-link">makeDF()</a>
 function. This will re-define some key variables and create a new
 variable, ‘unitSize’, that will be used in the step of the selectMatch
 procedure where units are initially sampled. Specifically, cube sampling
@@ -511,9 +490,6 @@ sch.pct.female
 <th style="text-align:right;">
 dtrct_size
 </th>
-<th style="text-align:right;">
-unitSize
-</th>
 <th style="text-align:left;">
 distr.type
 </th>
@@ -522,6 +498,9 @@ unitID
 </th>
 <th style="text-align:right;">
 subunitID
+</th>
+<th style="text-align:right;">
+unitSize
 </th>
 </tr></thead>
 <tbody>
@@ -535,17 +514,17 @@ subunitID
 <td style="text-align:right;">
 278
 </td>
-<td style="text-align:right;">
-1
-</td>
 <td style="text-align:left;">
-C
+B
 </td>
 <td style="text-align:right;">
 600001
 </td>
 <td style="text-align:right;">
 60000109444
+</td>
+<td style="text-align:right;">
+1
 </td>
 </tr>
 <tr>
@@ -558,17 +537,17 @@ C
 <td style="text-align:right;">
 808
 </td>
-<td style="text-align:right;">
-1
-</td>
 <td style="text-align:left;">
-D
+A
 </td>
 <td style="text-align:right;">
 600006
 </td>
 <td style="text-align:right;">
 60000608774
+</td>
+<td style="text-align:right;">
+1
 </td>
 </tr>
 <tr>
@@ -581,17 +560,17 @@ D
 <td style="text-align:right;">
 152
 </td>
-<td style="text-align:right;">
-1
-</td>
 <td style="text-align:left;">
-A
+D
 </td>
 <td style="text-align:right;">
 600009
 </td>
 <td style="text-align:right;">
 60000908780
+</td>
+<td style="text-align:right;">
+1
 </td>
 </tr>
 <tr>
@@ -604,17 +583,17 @@ A
 <td style="text-align:right;">
 1086
 </td>
-<td style="text-align:right;">
-2
-</td>
 <td style="text-align:left;">
-B
+A
 </td>
 <td style="text-align:right;">
 600013
 </td>
 <td style="text-align:right;">
 60001308257
+</td>
+<td style="text-align:right;">
+2
 </td>
 </tr>
 <tr>
@@ -627,17 +606,17 @@ B
 <td style="text-align:right;">
 914
 </td>
-<td style="text-align:right;">
-2
-</td>
 <td style="text-align:left;">
-B
+A
 </td>
 <td style="text-align:right;">
 600013
 </td>
 <td style="text-align:right;">
 60001308553
+</td>
+<td style="text-align:right;">
+2
 </td>
 </tr>
 <tr>
@@ -650,17 +629,17 @@ B
 <td style="text-align:right;">
 1075
 </td>
-<td style="text-align:right;">
-3
-</td>
 <td style="text-align:left;">
-B
+D
 </td>
 <td style="text-align:right;">
 600014
 </td>
 <td style="text-align:right;">
 60001409077
+</td>
+<td style="text-align:right;">
+3
 </td>
 </tr>
 <tr>
@@ -673,17 +652,17 @@ B
 <td style="text-align:right;">
 1069
 </td>
-<td style="text-align:right;">
-3
-</td>
 <td style="text-align:left;">
-B
+D
 </td>
 <td style="text-align:right;">
 600014
 </td>
 <td style="text-align:right;">
 60001409676
+</td>
+<td style="text-align:right;">
+3
 </td>
 </tr>
 <tr>
@@ -696,17 +675,17 @@ B
 <td style="text-align:right;">
 1221
 </td>
-<td style="text-align:right;">
-3
-</td>
 <td style="text-align:left;">
-B
+D
 </td>
 <td style="text-align:right;">
 600014
 </td>
 <td style="text-align:right;">
 60001412103
+</td>
+<td style="text-align:right;">
+3
 </td>
 </tr>
 <tr>
@@ -719,17 +698,17 @@ B
 <td style="text-align:right;">
 108
 </td>
-<td style="text-align:right;">
-1
-</td>
 <td style="text-align:left;">
-D
+A
 </td>
 <td style="text-align:right;">
 600015
 </td>
 <td style="text-align:right;">
 60001509084
+</td>
+<td style="text-align:right;">
+1
 </td>
 </tr>
 <tr>
@@ -742,9 +721,6 @@ D
 <td style="text-align:right;">
 583
 </td>
-<td style="text-align:right;">
-3
-</td>
 <td style="text-align:left;">
 A
 </td>
@@ -753,6 +729,9 @@ A
 </td>
 <td style="text-align:right;">
 60001609090
+</td>
+<td style="text-align:right;">
+3
 </td>
 </tr>
 </tbody>

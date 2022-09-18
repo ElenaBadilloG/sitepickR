@@ -14,6 +14,6 @@ dfG$distr.type <- sample(dummy_dtrct_types,
                          prob = rep(1/length(dummy_dtrct_types), length(dummy_dtrct_types)), replace = TRUE)
 
 rawCCD <- suppressMessages(dplyr::left_join(rawCCD, dfG))[,-1]
-
+rawCCD <- dplyr::select(rawCCD, unlist(lapply(colnames(rawCCD), function (x) {if(x!= "unitSize") {return(x)}})))
 usethis::use_data(rawCCD, rawCCD, overwrite = TRUE)
 
