@@ -16,6 +16,9 @@
     <loc>/index.html</loc>
   </url>
   <url>
+    <loc>/reference/getSummary.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
@@ -26,6 +29,9 @@
   </url>
   <url>
     <loc>/reference/matchCount.html</loc>
+  </url>
+  <url>
+    <loc>/reference/matchFreq.html</loc>
   </url>
   <url>
     <loc>/reference/rawCCD.html</loc>

@@ -1302,10 +1302,10 @@ the initial cube sampling step of the selectMatch procedure) and
 <span>   title<span class="op">=</span><span class="st">"Standardized Mean Difference: \n Initially Selected Units vs. Population"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-16-1.png" width="576"></p>
 <p>We can also take a look at a table with the actual SMD for each
-covariate of interest applying the <a href="https://sitepickr.github.io/sitepickR-website/reference/summary.html" class="external-link">summary()</a>
+covariate of interest applying the <a href="https://sitepickr.github.io/sitepickR-website/reference/getSummary.html" class="external-link">getSummary()</a>
 function:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">unitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"unitBal"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">unitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"unitBal"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">unitBalanceTab</span>, <span class="fl">10</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -1374,7 +1374,7 @@ group 2 corresponds to the second-best matches, and so on:</p>
 <span>  title <span class="op">=</span> <span class="st">"Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-18-1.png" width="864"></p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">matchBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"matchBal"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">matchBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"matchBal"</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">matchBalanceTab</span>, <span class="fl">20</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr>
@@ -1645,7 +1645,7 @@ data.</p></li>
 <p>First, let’s look at the overall match frequency the original units
 got, overall:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">matchFreq</span><span class="op">(</span><span class="va">matchOut</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchFreq.html">matchFreq</a></span><span class="op">(</span><span class="va">matchOut</span>,</span>
 <span>             title<span class="op">=</span><span class="st">"Match Frequency per Original Unit"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-20-1.png" width="672"></p>
 </div>
@@ -1661,10 +1661,10 @@ best match, and so on:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/matchCount.html">matchCount</a></span><span class="op">(</span><span class="va">matchOut</span>,</span>
 <span>             title<span class="op">=</span><span class="st">"% of Successful Matches per Unit Group"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-21-1.png" width="672"></p>
-<p>Again, we can, use <a href="https://sitepickr.github.io/sitepickR-website/reference/summary.html" class="external-link">summary()</a>
+<p>Again, we can, use <a href="https://sitepickr.github.io/sitepickR-website/reference/getSummary.html" class="external-link">getSummary()</a>
 to access each of these stats directly in a table:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">matchFreqTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"matchFreq"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">matchFreqTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"matchFreq"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">matchFreqTab</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -2782,7 +2782,7 @@ matchN
 </tbody>
 </table>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">matchCountTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"matchCount"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">matchCountTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"matchCount"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">matchCountTab</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -2924,10 +2924,10 @@ terms:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/subUnitBalance.html">subUnitBalance</a></span><span class="op">(</span><span class="va">matchOut</span>,</span>
 <span>     title<span class="op">=</span><span class="st">"Standardized Mean Difference: \n Sub-units from Original + Replacement Unit Groups vs. Population"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-24-1.png" width="864"></p>
-<p>Similary, use <a href="https://sitepickr.github.io/sitepickR-website/reference/summary.html" class="external-link">summary()</a>
+<p>Similary, use <a href="https://sitepickr.github.io/sitepickR-website/reference/getSummary.html" class="external-link">getSummary()</a>
 function to obtain balance directly in a table:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">subUnitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"subunitBal"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">subUnitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"subunitBal"</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">subUnitBalanceTab</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr>

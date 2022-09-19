@@ -10,10 +10,10 @@ summary(m.out, diagnostic)
 \item{m.out}{list; selectMatch() output}
 
 \item{diagnostic}{numeric; balance Diagnostic:
- "unitBal" = original unit balance,
+"unitBal" = original unit balance,
 "matchBal" = match balance,
 "matchFreq" = sucessful match frequency,
- matchCount" = match success count by replacement group,
+"matchCount" = match success count by replacement group,
 "subunitBal" =sub-unit balance}
 }
 \value{

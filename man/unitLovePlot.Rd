@@ -11,6 +11,8 @@ unitLovePlot(
 }
 \arguments{
 \item{m.out}{list; selectMatch() output}
+
+\item{title}{character; user-specified figure title}
 }
 \value{
 ggplot object

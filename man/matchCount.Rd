@@ -8,6 +8,8 @@ matchCount(m.out, title = "Percentage of Successful Matches per Unit Group")
 }
 \arguments{
 \item{m.out}{list; selectMatch() output}
+
+\item{title}{character; user-specified figure title}
 }
 \value{
 ggplot object

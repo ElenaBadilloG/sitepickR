@@ -203,10 +203,10 @@ unitLovePlot(matchOut,
    title="Standardized Mean Difference: \n Initially Selected Units vs. Population")
 ```
 
-We can also take a look at a table with the actual SMD for each covariate of interest applying the  [summary()](https://sitepickr.github.io/sitepickR-website/reference/summary.html) function:
+We can also take a look at a table with the actual SMD for each covariate of interest applying the  [getSummary()](https://sitepickr.github.io/sitepickR-website/reference/getSummary.html) function:
 
 ```{r, results='asis'}
-unitBalanceTab = summary(matchOut, diagnostic="unitBal")
+unitBalanceTab = getSummary(matchOut, diagnostic="unitBal")
 
 knitr::kable(head(unitBalanceTab, 10), format = "html")
 ```
@@ -222,7 +222,7 @@ matchBalance(matchOut,
 ```
 
 ```{r, results='asis'}
-matchBalanceTab = summary(matchOut, diagnostic="matchBal")
+matchBalanceTab = getSummary(matchOut, diagnostic="matchBal")
 knitr::kable(head(matchBalanceTab, 20), format = "html")
 ```
 
@@ -253,15 +253,15 @@ matchCount(matchOut,
              title="% of Successful Matches per Unit Group")
 ```
 
-Again, we can, use [summary()](https://sitepickr.github.io/sitepickR-website/reference/summary.html) to access each of these stats directly in a table:
+Again, we can, use [getSummary()](https://sitepickr.github.io/sitepickR-website/reference/getSummary.html) to access each of these stats directly in a table:
 ```{r, results='asis'}
-matchFreqTab = summary(matchOut, diagnostic="matchFreq")
+matchFreqTab = getSummary(matchOut, diagnostic="matchFreq")
 
 knitr::kable(matchFreqTab, format = "html")
 ```
 
 ```{r, results='asis'}
-matchCountTab = summary(matchOut, diagnostic="matchCount")
+matchCountTab = getSummary(matchOut, diagnostic="matchCount")
 
 knitr::kable(matchCountTab, format = "html")
 ```
@@ -275,10 +275,10 @@ subUnitBalance(matchOut,
      title="Standardized Mean Difference: \n Sub-units from Original + Replacement Unit Groups vs. Population")
 ```
 
-Similary, use [summary()](https://sitepickr.github.io/sitepickR-website/reference/summary.html) function to obtain balance directly in a table:
+Similary, use [getSummary()](https://sitepickr.github.io/sitepickR-website/reference/getSummary.html) function to obtain balance directly in a table:
 
 
 ```{r, results='asis'}
-subUnitBalanceTab = summary(matchOut, diagnostic="subunitBal")
+subUnitBalanceTab = getSummary(matchOut, diagnostic="subunitBal")
 knitr::kable(subUnitBalanceTab, format = "html")
 ```
