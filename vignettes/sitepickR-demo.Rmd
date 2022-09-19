@@ -290,7 +290,7 @@ knitr::kable(matchCountTab, format = "html")
 
 ### 4. Sub-units from original vs. candidate units
 
-Ultimately, the procedure wants to yield not just districts, but schools that are similar to the target population, in terms of all specified covariates of interest (both the district and school level ones). sitepickR's [subUnitBalance()](https://sitepickr.github.io/sitepickR-website/reference/subUnitBalance.html) function lets us assess the matching quality precisely on this terms:
+Ultimately, the procedure wants to yield not just districts, but schools that are similar to the target population, in terms of all specified covariates of interest (both the district and school level ones). sitepickR's [subUnitBalance()](https://sitepickr.github.io/sitepickR-website/reference/subUnitBalance.html) function lets us assess balance precisely on this terms:
 
 ```{r fig.width=9, fig.height=6}
 subUnitBalance(smOut,
