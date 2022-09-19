@@ -2,8 +2,7 @@
 % Please edit documentation in R/sitepickR_diagnostics.R
 \name{unitLovePlot}
 \alias{unitLovePlot}
-\title{unitLovePlot
-SMD between sampled units and all units in population}
+\title{Original units balance}
 \usage{
 unitLovePlot(
   smOut,
@@ -19,6 +18,5 @@ unitLovePlot(
 ggplot object
 }
 \description{
-unitLovePlot
-SMD between sampled units and all units in population
+Balance between initially sampled units and all units in the population
 }

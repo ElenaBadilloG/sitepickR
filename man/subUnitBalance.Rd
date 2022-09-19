@@ -2,8 +2,7 @@
 % Please edit documentation in R/sitepickR_diagnostics.R
 \name{subUnitBalance}
 \alias{subUnitBalance}
-\title{subUnitBalance
-Sub-unit balance between initially selected units and all units in population, for each covariate of interest}
+\title{Sub-unit balance}
 \usage{
 subUnitBalance(
   smOut,
@@ -19,6 +18,5 @@ subUnitBalance(
 ggplot object
 }
 \description{
-subUnitBalance
 Sub-unit balance between initially selected units and all units in population, for each covariate of interest
 }

@@ -2,8 +2,7 @@
 % Please edit documentation in R/sitepickR_diagnostics.R
 \name{getSummary}
 \alias{getSummary}
-\title{getSummary
-Build summary tables, with unit/match/sub-unit balance between initially selected units and a target population, for each covariate of interest}
+\title{Summary tables}
 \usage{
 getSummary(smOut, diagnostic)
 }
@@ -21,6 +20,5 @@ getSummary(smOut, diagnostic)
 ggplot object
 }
 \description{
-getSummary
 Build summary tables, with unit/match/sub-unit balance between initially selected units and a target population, for each covariate of interest
 }

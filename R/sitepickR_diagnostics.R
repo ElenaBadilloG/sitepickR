@@ -6,8 +6,8 @@
 
 # Love plot for sampled units vs. all units in population
 
-#' @title unitLovePlot
-#' SMD between sampled units and all units in population
+#' @title Original units balance
+#' @description Balance between initially sampled units and all units in the population
 #' @name unitLovePlot
 #' @param smOut list; selectMatch() output
 #' @param title character; user-specified figure title
@@ -25,10 +25,8 @@ unitLovePlot <- function(smOut,
 }
 
 
-# Balance of sampled vs. replacement units (figure)
-
-#' @title matchBalance
-#' Balance between sampled units vs. all units in population, for each covariate of interest
+#' @title Match balance
+#' @description Balance between initially sampled units and their K matches, for each covariate of interest
 #' @name matchBalance
 #' @param smOut list; selectMatch() output
 #' @param title character; user-specified figure title
@@ -45,8 +43,8 @@ matchBalance <- function(smOut,
                                                                      axis.text.y=ggplot2::element_text(size=9)))
 }
 
-#' @title matchFreq
-#' Distribution of successful matches among original units
+#' @title Match frequency
+#' @description Distribution of successful matches among original units
 #' @name matchFreq
 #' @param smOut list; selectMatch() output
 #' @param title character; user-specified figure title
@@ -65,14 +63,14 @@ matchFreq <- function(smOut,
 }
   
   
-#' @title matchCount
-#' Percentage of successful matches in each replacement unit group, 1...K
+#' @title Successful matches for each replacement group
+#' @description Percentage of successful matches in each unit replacement group, 1...K
 #' @name matchCount
 #' @param smOut list; selectMatch() output
 #' @param title character; user-specified figure title
 #' @return ggplot object
 #' @export
-matchCount  <- function(smOut, 
+matchCount  <- function(smtchOut, 
                            title="Percentage of Successful Matches per Unit Group"){
   
   gMC <- smOut[[7]][[2]] + 
@@ -86,8 +84,8 @@ matchCount  <- function(smOut,
 }
 
 
-#' @title subUnitBalance
-#' Sub-unit balance between initially selected units and all units in population, for each covariate of interest
+#' @title Sub-unit balance
+#' @description Sub-unit balance between initially selected units and all units in population, for each covariate of interest
 #' @name subUnitBalance
 #' @param smOut list; selectMatch() output
 #' @param title character; user-specified figure title
@@ -107,8 +105,8 @@ subUnitBalance  <- function(smOut,
 
 
 
-#' @title getSummary
-#' Build summary tables, with unit/match/sub-unit balance between initially selected units and a target population, for each covariate of interest
+#' @title Summary tables
+#' @description Build summary tables, with unit/match/sub-unit balance between initially selected units and a target population, for each covariate of interest
 #' @name getSummary
 #' @param smOut list; selectMatch() output
 #' @param diagnostic numeric; balance Diagnostic:

@@ -2,8 +2,7 @@
 % Please edit documentation in R/sitepickR_diagnostics.R
 \name{matchBalance}
 \alias{matchBalance}
-\title{matchBalance
-Balance between sampled units vs. all units in population, for each covariate of interest}
+\title{Match balance}
 \usage{
 matchBalance(
   smOut,
@@ -20,6 +19,5 @@ matchBalance(
 ggplot object
 }
 \description{
-matchBalance
-Balance between sampled units vs. all units in population, for each covariate of interest
+Balance between initially sampled units and their K matches, for each covariate of interest
 }
