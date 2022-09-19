@@ -2,12 +2,13 @@
 % Please edit documentation in R/sitepickR_diagnostics.R
 \name{matchFreq}
 \alias{matchFreq}
-\title{Successful unit match distribution among original units}
+\title{matchFreq
+Distribution of successful matches among original units}
 \usage{
-matchFreq(m.out, title = "Match Frequency per Original Unit")
+matchFreq(smOut, title = "Match Frequency per Original Unit")
 }
 \arguments{
-\item{m.out}{list; selectMatch() output}
+\item{smOut}{list; selectMatch() output}
 
 \item{title}{character; user-specified figure title}
 }
@@ -15,5 +16,6 @@ matchFreq(m.out, title = "Match Frequency per Original Unit")
 ggplot object
 }
 \description{
-Successful unit match distribution among original units
+matchFreq
+Distribution of successful matches among original units
 }

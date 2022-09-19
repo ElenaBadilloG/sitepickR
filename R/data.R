@@ -6,7 +6,7 @@
 #' @docType data
 #' @usage data(rawCCD)
 #' @keywords datasets
-#' @format A data frame with 1890 rows and 13 variables.
+#' @format A data frame with 1890 rows and 11 variables.
 #' \describe{
 #'   \item{LEAID}{school district unique identifier}
 #'   \item{NCESSCH}{school unique identifier}
@@ -20,5 +20,5 @@
 #'   \item{sch.pct.female}{percentage of students in the school who are female.}
 #'   \item{distr.type}{categorical  district type (artificially created for illustration purposes; (values={"A", "B", "C", "D"})).}
 #' }
-#' @source \url{https://nces.ed.gov/ccd//}
+#' @source \url{https://nces.ed.gov/ccd/files.asp#FileNameId:15,VersionId:10,FileSchoolYearId:33,Page:1}
 "rawCCD"

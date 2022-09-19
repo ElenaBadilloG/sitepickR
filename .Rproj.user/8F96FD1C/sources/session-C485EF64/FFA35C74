@@ -3,7 +3,7 @@
     "path": "~/sitepickR/R/data.R",
     "project_path": "R/data.R",
     "type": "r_source",
-    "hash": "1206042636",
+    "hash": "3751099870",
     "contents": "",
     "dirty": false,
     "created": 1663384981100.0,
@@ -11,14 +11,16 @@
     "relative_order": 15,
     "properties": {
         "source_window_id": "",
-        "Source": "Source"
+        "Source": "Source",
+        "cursorPosition": "2,96",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1663384995,
+    "lastKnownWriteTime": 1663587887,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1663384995404,
+    "last_content_update": 1663587887537,
     "read_only": false,
     "read_only_alternatives": []
 }

@@ -5,7 +5,7 @@
 \alias{rawCCD}
 \title{Common Core of Data (CCD) data for California schools (2017-18).}
 \format{
-A data frame with 1890 rows and 13 variables.
+A data frame with 1890 rows and 11 variables.
 \describe{
   \item{LEAID}{school district unique identifier}
   \item{NCESSCH}{school unique identifier}
@@ -21,7 +21,7 @@ A data frame with 1890 rows and 13 variables.
 }
 }
 \source{
-\url{https://nces.ed.gov/ccd//}
+\url{https://nces.ed.gov/ccd/files.asp#FileNameId:15,VersionId:10,FileSchoolYearId:33,Page:1}
 }
 \usage{
 data(rawCCD)

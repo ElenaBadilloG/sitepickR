@@ -2,15 +2,16 @@
 % Please edit documentation in R/sitepickR_diagnostics.R
 \name{subUnitBalance}
 \alias{subUnitBalance}
-\title{Sub-unit balance between initially selected units and all units in population, for each covariate of interest}
+\title{subUnitBalance
+Sub-unit balance between initially selected units and all units in population, for each covariate of interest}
 \usage{
 subUnitBalance(
-  m.out,
+  smOut,
   title = "Subunits from Original and Replacement Unit Groups vs. Population (SMD)"
 )
 }
 \arguments{
-\item{m.out}{list; selectMatch() output}
+\item{smOut}{list; selectMatch() output}
 
 \item{title}{character; user-specified figure title}
 }
@@ -18,5 +19,6 @@ subUnitBalance(
 ggplot object
 }
 \description{
+subUnitBalance
 Sub-unit balance between initially selected units and all units in population, for each covariate of interest
 }

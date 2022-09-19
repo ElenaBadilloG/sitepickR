@@ -6,16 +6,17 @@
 
 # Love plot for sampled units vs. all units in population
 
+#' @title unitLovePlot
 #' SMD between sampled units and all units in population
 #' @name unitLovePlot
-#' @param m.out list; selectMatch() output
+#' @param smOut list; selectMatch() output
 #' @param title character; user-specified figure title
 #' @return ggplot object
 #' @export
-unitLovePlot <- function(m.out,
+unitLovePlot <- function(smOut,
                          title="Standardized Mean Difference: \n Initially Selected Units vs. Population"){
   
-  return(m.out[[4]] +
+  return(smOut[[4]] +
            ggplot2::xlim(-1, 1) +
            ggplot2::ggtitle(title) +
            ggplot2::theme(title=ggplot2::element_text(size=10),
@@ -26,16 +27,17 @@ unitLovePlot <- function(m.out,
 
 # Balance of sampled vs. replacement units (figure)
 
-#' Figure: SMD between sampled units vs. all units in population, for each covariate of interest
+#' @title matchBalance
+#' Balance between sampled units vs. all units in population, for each covariate of interest
 #' @name matchBalance
-#' @param m.out list; selectMatch() output
+#' @param smOut list; selectMatch() output
 #' @param title character; user-specified figure title
 #' @return ggplot object
 #' @export
-matchBalance <- function(m.out,
+matchBalance <- function(smOut,
                             title="Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units"){
   
-  return(m.out[[5]][[2]] + 
+  return(smOut[[5]][[2]] + 
            ggplot2::ylim(-2, 2) +
            ggplot2::ggtitle(title) +
            ggplot2::theme(title=ggplot2::element_text(size=10),
@@ -43,16 +45,17 @@ matchBalance <- function(m.out,
                                                                      axis.text.y=ggplot2::element_text(size=9)))
 }
 
-#' Successful unit match distribution among original units
+#' @title matchFreq
+#' Distribution of successful matches among original units
 #' @name matchFreq
-#' @param m.out list; selectMatch() output
+#' @param smOut list; selectMatch() output
 #' @param title character; user-specified figure title
 #' @return ggplot object
 #' @export
-matchFreq <- function(m.out, 
+matchFreq <- function(smOut, 
                       title="Match Frequency per Original Unit"){
   
-  gMF <- m.out[[6]][[2]] + 
+  gMF <- smOut[[6]][[2]] + 
     ggplot2::ggtitle(title) +
     ggplot2::theme(title=ggplot2::element_text(size=10),
                    axis.text.x=ggplot2::element_text(size=9),
@@ -62,16 +65,17 @@ matchFreq <- function(m.out,
 }
   
   
+#' @title matchCount
 #' Percentage of successful matches in each replacement unit group, 1...K
 #' @name matchCount
-#' @param m.out list; selectMatch() output
+#' @param smOut list; selectMatch() output
 #' @param title character; user-specified figure title
 #' @return ggplot object
 #' @export
-matchCount  <- function(m.out, 
+matchCount  <- function(smOut, 
                            title="Percentage of Successful Matches per Unit Group"){
   
-  gMC <- m.out[[7]][[2]] + 
+  gMC <- smOut[[7]][[2]] + 
     ggplot2::ylim(0, 110) + 
     ggplot2::ggtitle(title) +
     ggplot2::theme(title=ggplot2::element_text(size=10),
@@ -82,17 +86,17 @@ matchCount  <- function(m.out,
 }
 
 
-# Balance of original sub-units vs. sub-units from replacement unit groups (figure)
+#' @title subUnitBalance
 #' Sub-unit balance between initially selected units and all units in population, for each covariate of interest
 #' @name subUnitBalance
-#' @param m.out list; selectMatch() output
+#' @param smOut list; selectMatch() output
 #' @param title character; user-specified figure title
 #' @return ggplot object
 #' @export
-subUnitBalance  <- function(m.out,
+subUnitBalance  <- function(smOut,
                                title="Subunits from Original and Replacement Unit Groups vs. Population (SMD)"){
   
-  return(m.out[[8]][[2]] + 
+  return(smOut[[8]][[2]] + 
            ggplot2::ylim(-2, 2) +
            ggplot2::ggtitle(title) +
            ggplot2::theme(title=ggplot2::element_text(size=10),
@@ -103,9 +107,10 @@ subUnitBalance  <- function(m.out,
 
 
 
+#' @title getSummary
 #' Build summary tables, with unit/match/sub-unit balance between initially selected units and a target population, for each covariate of interest
 #' @name getSummary
-#' @param m.out list; selectMatch() output
+#' @param smOut list; selectMatch() output
 #' @param diagnostic numeric; balance Diagnostic:
 #'   "unitBal" = original unit balance,
 #'   "matchBal" = match balance,
@@ -114,12 +119,12 @@ subUnitBalance  <- function(m.out,
 #'   "subunitBal" =sub-unit balance
 #' @return ggplot object
 #' @export
-getSummary  <- function(m.out, diagnostic){
+getSummary  <- function(smOut, diagnostic){
   
-  if(diagnostic == "unitBal") return(m.out[[3]]) else {
-    if(diagnostic ==  "matchBal" ) return(m.out[[5]][[1]]) else {
-      if(diagnostic == "matchFreq") return(m.out[[6]][[1]]) else {
-        if(diagnostic == "matchCount") return(m.out[[7]][[1]]) else {
-         if(diagnostic == "subunitBal") return(m.out[[8]][[1]]) else {
+  if(diagnostic == "unitBal") return(smOut[[3]]) else {
+    if(diagnostic ==  "matchBal" ) return(smOut[[5]][[1]]) else {
+      if(diagnostic == "matchFreq") return(smOut[[6]][[1]]) else {
+        if(diagnostic == "matchCount") return(smOut[[7]][[1]]) else {
+         if(diagnostic == "subunitBal") return(smOut[[8]][[1]]) else {
         }}}}}}
   

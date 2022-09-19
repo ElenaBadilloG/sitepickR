@@ -2,16 +2,17 @@
 % Please edit documentation in R/sitepickR_diagnostics.R
 \name{matchBalance}
 \alias{matchBalance}
-\title{Figure: SMD between sampled units vs. all units in population, for each covariate of interest}
+\title{matchBalance
+Balance between sampled units vs. all units in population, for each covariate of interest}
 \usage{
 matchBalance(
-  m.out,
+  smOut,
   title =
     "Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units"
 )
 }
 \arguments{
-\item{m.out}{list; selectMatch() output}
+\item{smOut}{list; selectMatch() output}
 
 \item{title}{character; user-specified figure title}
 }
@@ -19,5 +20,6 @@ matchBalance(
 ggplot object
 }
 \description{
-Figure: SMD between sampled units vs. all units in population, for each covariate of interest
+matchBalance
+Balance between sampled units vs. all units in population, for each covariate of interest
 }

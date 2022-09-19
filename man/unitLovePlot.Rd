@@ -2,15 +2,16 @@
 % Please edit documentation in R/sitepickR_diagnostics.R
 \name{unitLovePlot}
 \alias{unitLovePlot}
-\title{SMD between sampled units and all units in population}
+\title{unitLovePlot
+SMD between sampled units and all units in population}
 \usage{
 unitLovePlot(
-  m.out,
+  smOut,
   title = "Standardized Mean Difference: \\n Initially Selected Units vs. Population"
 )
 }
 \arguments{
-\item{m.out}{list; selectMatch() output}
+\item{smOut}{list; selectMatch() output}
 
 \item{title}{character; user-specified figure title}
 }
@@ -18,5 +19,6 @@ unitLovePlot(
 ggplot object
 }
 \description{
+unitLovePlot
 SMD between sampled units and all units in population
 }

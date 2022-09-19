@@ -2,12 +2,13 @@
 % Please edit documentation in R/sitepickR_diagnostics.R
 \name{getSummary}
 \alias{getSummary}
-\title{Build summary tables, with unit/match/sub-unit balance between initially selected units and a target population, for each covariate of interest}
+\title{getSummary
+Build summary tables, with unit/match/sub-unit balance between initially selected units and a target population, for each covariate of interest}
 \usage{
-getSummary(m.out, diagnostic)
+getSummary(smOut, diagnostic)
 }
 \arguments{
-\item{m.out}{list; selectMatch() output}
+\item{smOut}{list; selectMatch() output}
 
 \item{diagnostic}{numeric; balance Diagnostic:
 "unitBal" = original unit balance,
@@ -20,5 +21,6 @@ getSummary(m.out, diagnostic)
 ggplot object
 }
 \description{
+getSummary
 Build summary tables, with unit/match/sub-unit balance between initially selected units and a target population, for each covariate of interest
 }

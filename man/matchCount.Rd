@@ -2,12 +2,13 @@
 % Please edit documentation in R/sitepickR_diagnostics.R
 \name{matchCount}
 \alias{matchCount}
-\title{Percentage of successful matches in each replacement unit group, 1...K}
+\title{matchCount
+Percentage of successful matches in each replacement unit group, 1...K}
 \usage{
-matchCount(m.out, title = "Percentage of Successful Matches per Unit Group")
+matchCount(smOut, title = "Percentage of Successful Matches per Unit Group")
 }
 \arguments{
-\item{m.out}{list; selectMatch() output}
+\item{smOut}{list; selectMatch() output}
 
 \item{title}{character; user-specified figure title}
 }
@@ -15,5 +16,6 @@ matchCount(m.out, title = "Percentage of Successful Matches per Unit Group")
 ggplot object
 }
 \description{
+matchCount
 Percentage of successful matches in each replacement unit group, 1...K
 }

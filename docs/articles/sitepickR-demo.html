@@ -93,17 +93,6 @@ Stuart</strong></p>
 <p>sitepickR is designed to select a representative sample of sites for
 a prospective impact evaluation, such as a randomized controlled trial
 (RCT).</p>
-<p>Like <a href="https://nustat.github.io/generalizeR/" class="external-link">generalizeR</a>,
-this package is designed for selecting schools but can be used to select
-any type of site defined by geography or administrative responsibility
-(e.g., county, job training center, health clinic). Unlike generalizeR,
-sitepicker is designed to select sites in two stages —first “units” that
-contain multiple sites located nearby and/or under the same
-administration and then “subunits” containing individual sites.
-Two-stage sampling may be necessary when the cost of the study depends
-on the number of units (e.g., school districts), and a one-stage sample
-of sub-units (e.g., schools) would likely contain more units than the
-study can afford.</p>
 <p>The main function in this package, <a href="https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html" class="external-link">selectMatch()</a>
 lets the user carry out a two-level sample selection where the
 possibility of an initially selected unit not wanting to participate is
@@ -157,13 +146,15 @@ repetition, which you can set with the <a href="https://sitepickr.github.io/site
 argument) from the pool of units that <em>did not</em> get selected in
 the initial random sampling procedure.</p>
 <ol start="4" style="list-style-type: decimal">
-<li>Assess <strong>balance</strong> and match quality in terms of the
-covariates of interest:
+<li>Assess <strong>balance</strong> and <strong>match quality</strong>
+in terms of the covariates of interest:
 <ul>
 <li>Balance between initially selected (‘original’) units and the target
 population.</li>
 <li>Balance between original units and each group of matches (1 to K,
 from closest to furthest).</li>
+<li>Number of successful matches obtained by the procedure, given the
+restrictions imposed.</li>
 <li>Balance between sub-units associated to each unit replacement group
 and the original sub-units in the population, in terms of available
 covariates of interest, both at the unit and sub-unit level.</li>
@@ -171,11 +162,25 @@ covariates of interest, both at the unit and sub-unit level.</li>
 </li>
 </ol>
 <p>This vignette will guide the reader, step-by-step, on sitepickR’s
-basic functionalities, with data from the <a href="https://sitepickr.github.io/sitepickR-website/reference/rwCCD.html" class="external-link">Common
-Core of Data (CCD)</a> for California schools (2017-18), using a
-pre-processed dataset that comes with the package installation. Further
-technical details on each of the package’s main functions and on the
-sample dataset is included in the documentation.</p>
+basic functionalities, with data from the Common Core of Data (CCD) for
+California schools (2017-18), using a <a href="https://sitepickr.github.io/sitepickR-website/reference/rawCCD.html" class="external-link">pre-processed
+dataset</a> that is included with the package installation.</p>
+<p>Technical details on each of the package’s main functions and on the
+sample dataset is included in the documentation, which the reader is
+encouraged to consult, if necessary.</p>
+</div>
+<div class="section level2">
+<h2 id="common-core-of-data">Common Core of Data<a class="anchor" aria-label="anchor" href="#common-core-of-data"></a>
+</h2>
+<p>The <a href="https://nces.ed.gov/ccd" class="external-link">CCD</a> is the U.S. Department
+of Education’s primary database on public elementary and secondary
+education in the United States. CCD is a comprehensive, annual, national
+database of all public elementary and secondary schools and school
+districts.</p>
+<p>In addition to administrative data, it provides relevant information
+about schools and districts, disaggregated by demographics (grade,
+race/ethnicity, and sex) and socioeconomic factors (school-level counts
+of student eligible for free and reduced-price lunches).</p>
 </div>
 <div class="section level2">
 <h2 id="package-and-data-set-up">Package and data set up<a class="anchor" aria-label="anchor" href="#package-and-data-set-up"></a>
@@ -190,11 +195,11 @@ devtools:</p>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">sitepickR</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
 <span>    <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ElenaBadilloG/sitepickR"</span><span class="op">)</span></span>
 <span>    <span class="op">}</span></span></code></pre></div>
-<p>Now load the package by calling its library:</p>
+<p>And load the package by calling its library:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">sitepickR</span><span class="op">)</span></span></code></pre></div>
 <p>Now let’s load the sample CCD-California 2017-18 dataset that comes
-installed with the package:</p>
+with the package:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rawCCD</span> <span class="op">&lt;-</span> <span class="fu">sitepickR</span><span class="fu">::</span><span class="va"><a href="../reference/rawCCD.html">rawCCD</a></span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">rawCCD</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
@@ -474,7 +479,7 @@ function.</p>
 <p>This simple step will re-define some key variables, and will create a
 new variable, ‘unitSize’, that will be used in the step of the
 selectMatch procedure where units are initially selected. Specifically,
-the cube sampling method implicit in electMatch allows us to select
+the cube sampling method implicit in selectMatch allows us to select
 units in a way that is not biased by its number of sub-units (which we
 would usually want to impose). This is explained in more detail in this
 section of the <a href="https://rdrr.io/cran/sampling/man/balancedcluster.html" class="external-link">sampling</a>
@@ -818,7 +823,7 @@ specified on <a href="https://cran.r-project.org/web/packages/MatchIt/vignettes/
 documentation</a>, and the output structure will be exacrtly the
 same:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">matchOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectMatch.html">selectMatch</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">dfCCD</span>, <span class="co"># user dataset</span></span>
+<code class="sourceCode R"><span><span class="va">smOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selectMatch.html">selectMatch</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">dfCCD</span>, <span class="co"># user dataset</span></span>
 <span>                       unitID<span class="op">=</span><span class="st">"LEAID"</span>, <span class="co"># column name of unit ID in user dataset</span></span>
 <span>                       subunitID<span class="op">=</span><span class="st">"NCESSCH"</span>, <span class="co"># column name of sub-unit ID in user dataset</span></span>
 <span>                       unitVars<span class="op">=</span><span class="va">uSampVarsCCD</span>, <span class="co"># name of unit level covariate columns</span></span>
@@ -833,17 +838,17 @@ same:</p>
 <span>                       matchDistance <span class="op">=</span> <span class="st">"mahalanobis"</span>, <span class="co"># metric used for matching units</span></span>
 <span>                       sizeFlag <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                       repFlag <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># pick matches without repetition</span></span>
-<span>                       writeOut <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># write out a csv file for: 1) matched units and 2) selected schools</span></span>
+<span>                       writeOut <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># write out a csv file for: 1) matched units and 2) selected sub-units</span></span>
 <span>                       replacementUnitsFilename <span class="op">=</span> <span class="st">"replacementsTable.csv"</span>, <span class="co"># filename for {districtA: [districtA replacement list]} table</span></span>
 <span>                       subUnitTableFilename <span class="op">=</span> <span class="st">"schoolsDirectory.csv"</span> <span class="co"># filename for {districtA: [districtA schools]} table</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>At this point, the two main outputs of the selectMatch procedure have
 been produced, and are stored inside the object we’ have ‘ve just
-defined as ’matchOut’. In our example, these two main outputs are:</p>
+defined as ’smOut’. In our example, these two main outputs are:</p>
 <ol style="list-style-type: decimal">
 <li><p>A table with 10 matches (replacement candidates) for each of the
-100 schools districts we initially selected. The matches are ordered
-from the most to the least ‘similar’ to their original district (where
+100 school districts we initially selected. The matches are ordered from
+the most to the least ‘similar’ to their original district (where
 ‘similar’ is close, in terms of covariate distance).</p></li>
 <li><p>A table with 5 (or less, when there are less than 5 schools
 available for a given district) randomly (if applicable) selected
@@ -853,7 +858,7 @@ sampled exclusively from those that belong to each school
 district:</p></li>
 </ol>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">districtReplTable</span> <span class="op">=</span> <span class="va">matchOut</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">districtReplTable</span> <span class="op">=</span> <span class="va">smOut</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">districtReplTable</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr>
@@ -1125,7 +1130,7 @@ NA
 </tbody>
 </table>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">schoolDirectory</span> <span class="op">=</span> <span class="va">matchOut</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
+<code class="sourceCode R"><span><span class="va">schoolDirectory</span> <span class="op">=</span> <span class="va">smOut</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">schoolDirectory</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Sub_unit5_ID</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr>
@@ -1316,14 +1321,14 @@ selectMatch has not done its job yet), it might still be of interest to
 look at this initial balance, in order to have a benchmark for the
 quality of the subsequent matches:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/unitLovePlot.html">unitLovePlot</a></span><span class="op">(</span><span class="va">matchOut</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/unitLovePlot.html">unitLovePlot</a></span><span class="op">(</span><span class="va">smOut</span>,</span>
 <span>   title<span class="op">=</span><span class="st">"Standardized Mean Difference: \n Initially Selected Units vs. Population"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-16-1.png" width="576"></p>
 <p>We can also take a look at a table with the actual SMD for each
 covariate of interest applying the <a href="https://sitepickr.github.io/sitepickR-website/reference/getSummary.html" class="external-link">getSummary()</a>
 function, which takes the :</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">unitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"unitBal"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">unitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">smOut</span>, diagnostic<span class="op">=</span><span class="st">"unitBal"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">unitBalanceTab</span>, <span class="fl">10</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -1388,7 +1393,7 @@ districts and each of its K replacement districts groups, where group 1
 is composed of the first closest matches ordered in terms of distance,
 group 2 corresponds to the second-best matches, and so on:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchBalance.html">matchBalance</a></span><span class="op">(</span><span class="va">matchOut</span>, </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchBalance.html">matchBalance</a></span><span class="op">(</span><span class="va">smOut</span>, </span>
 <span>  title <span class="op">=</span> <span class="st">"Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-18-1.png" width="864"></p>
 <p>Overall, we expect the SMD to increase from 1 to K. However, the
@@ -1404,7 +1409,7 @@ rapidly match quality is rapidly deteriorating as we go from the K-1 to
 the K best replacement, while a flatter one would indicate that pretty
 much all of our candidate matches are similarly good.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">matchBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"matchBal"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">matchBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">smOut</span>, diagnostic<span class="op">=</span><span class="st">"matchBal"</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">matchBalanceTab</span>, <span class="fl">20</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr>
@@ -1675,7 +1680,7 @@ data.</p></li>
 <p>First, let’s look at the overall match frequency the original units
 got, overall:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchFreq.html">matchFreq</a></span><span class="op">(</span><span class="va">matchOut</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchFreq.html">matchFreq</a></span><span class="op">(</span><span class="va">smOut</span>,</span>
 <span>             title<span class="op">=</span><span class="st">"Match Frequency per Original Unit"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-20-1.png" width="672"></p>
 </div>
@@ -1688,13 +1693,13 @@ sorted from closest to furthest units. Here, 100% for replacement group
 replacement group 2 means that only half of all original units got a 2nd
 best match, and so on:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchCount.html">matchCount</a></span><span class="op">(</span><span class="va">matchOut</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchCount.html">matchCount</a></span><span class="op">(</span><span class="va">smOut</span>,</span>
 <span>             title<span class="op">=</span><span class="st">"% of Successful Matches per Unit Group"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-21-1.png" width="672"></p>
 <p>Again, we can, use <a href="https://sitepickr.github.io/sitepickR-website/reference/getSummary.html" class="external-link">getSummary()</a>
 to access each of these stats directly in a table:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">matchFreqTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"matchFreq"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">matchFreqTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">smOut</span>, diagnostic<span class="op">=</span><span class="st">"matchFreq"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">matchFreqTab</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -2812,7 +2817,7 @@ matchN
 </tbody>
 </table>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">matchCountTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"matchCount"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">matchCountTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">smOut</span>, diagnostic<span class="op">=</span><span class="st">"matchCount"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">matchCountTab</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -2951,13 +2956,13 @@ ones). sitepickR’s <a href="https://sitepickr.github.io/sitepickR-website/refe
 function lets us assess the matching quality precisely on this
 terms:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/subUnitBalance.html">subUnitBalance</a></span><span class="op">(</span><span class="va">matchOut</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/subUnitBalance.html">subUnitBalance</a></span><span class="op">(</span><span class="va">smOut</span>,</span>
 <span>     title<span class="op">=</span><span class="st">"Standardized Mean Difference: \n Sub-units from Original + Replacement Unit Groups vs. Population"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-24-1.png" width="864"></p>
 <p>Similary, use <a href="https://sitepickr.github.io/sitepickR-website/reference/getSummary.html" class="external-link">getSummary()</a>
 function to obtain balance directly in a table:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">subUnitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"subunitBal"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">subUnitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/getSummary.html">getSummary</a></span><span class="op">(</span><span class="va">smOut</span>, diagnostic<span class="op">=</span><span class="st">"subunitBal"</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">subUnitBalanceTab</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr>
