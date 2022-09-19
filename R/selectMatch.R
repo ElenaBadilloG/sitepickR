@@ -19,7 +19,7 @@
 #' @param nRepUnits character; unit column name
 #' @param repFlag character; unit column name
 #' @param calipers character; unit column name
-#' @return list: matches matrix, df used to run match
+#' @return list: match matrix, df used to run match
 getMatches <- function(dfSU, sizeFlag, unitVars, exactMatchVars,
                        calipMatchVars, calipValue, matchDistance, nRepUnits, 
                        repFlag, calipers){
@@ -264,7 +264,7 @@ sampleSubUnits <- function(df_, subUnitLookup, replacementUnits, subunitSampVars
 #' @param seedN numeric; seed number to be used for sampling. If NA, calls set.seed(); default = NA
 #' @param exactMatchVars vector; column names of categorical variables on which units must be matched exactly. Must be present in 'unitVars'; default = NULL
 #' @param calipMatchVars vector; column names of continuous variables on which units must be matched within a specified caliper. Must be present in 'unitVars'; default = NULL
-#' @param matchDistance character; MatchIt::matchit distance parameter to obtain optimal matches (nearest neigboors); default = "mahalanois"
+#' @param matchDistance character; MatchIt distance parameter to obtain optimal matches (nearest neigboors); default = "mahalanois"
 #' @param sizeFlag logical; if TRUE, sampling is made proportional to unit size; default = TRUE
 #' @param repFlag logical; if TRUE, pick unit matches with/without repetition; default = TRUE
 #' @param writeOut logical; if TRUE, writes a .csv file for each output table; default = TRUE
@@ -396,9 +396,12 @@ selectMatch <- function(df,
   # Calculate difference between each unit replacement group (1,..., n) and initially selected units:
   
   matchBal_ <- matchBalance_(mUnits, unitNumVars, nRepUnits)
+  
+  ### 3. 1 Successful matches:
+  
+  matchF_ <- matchFreq_(replacementUnits, nRepUnits)
 
-
-  ### 3. % Of successful matches per replacement group:
+  ### 3. 2 successful matches per replacement group:
 
   matchC_ <- matchCount_(replacementUnits, nRepUnits)
 
@@ -428,6 +431,7 @@ selectMatch <- function(df,
   mainRes = list(replacementUnits, subUnitTable, # {selected unit: unit replacements} & {unit:subunits} lookup tables
                  unitSampBalTab, unitSampBalanceFig, # balance table & love plot for selected units vs. population
                  matchBal_, # SMD for unit groups vs. initial units (table and figure)
+                 matchF_, # histogram of successful matches overall
                  matchC_, # barchart with % of successful matches per unit group
                  subUnitBal_ # SMD line charts for subunits from each unit groups vs. population
 

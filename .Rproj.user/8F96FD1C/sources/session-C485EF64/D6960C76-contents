@@ -191,7 +191,7 @@ Now that we have our potential districts replacements, we'd like to know how 'si
 
 sitepickR provides the user with several functions to carry out these balance diagnostics. By default --and following the standard literature-- balance diagnostics in sitepickR are expressed in terms of standardized mean difference (SMD) between two comparison groups of interest. In our case, these two comparison groups we'll be: 1) initially selected districts (or schools) against target population; 2) initially selected districts (or schools) against each of the 10 district replacement groups.
 
-In addition, sitepickR has functions to find out how 'successful' the matching procedure was, to identify how often it was not possible to find all 10 matches for some units (perhaps because we are asking for 'too much' in terms of maximum distance, or exact matching constraints).
+In addition, sitepickR has functions to find out how 'successful' the matching procedure was, in terms of how often was it possible to find exactly K, K-1, ..., 1, and 0 matches for the original units --possibly indicating  we are asking for 'too much' in terms of maximum distance, or exact matching constraints, and thus, letting us re-adjust our parameters accordingly.
 
 
 ### 1. Original units vs. target population
@@ -226,19 +226,39 @@ matchBalanceTab = summary(matchOut, diagnostic="matchBal")
 knitr::kable(head(matchBalanceTab, 20), format = "html")
 ```
 
-### 3. Successfully computed unit matches
+### 3. Successful  matches
 
-We also want to look at the success rate of the matching process between the original districts and the replacement candidate groups from the non-select pool: for each of their K replacements groups (ordered from most to least similar, in terms of all specified covariates), we look at the percentage of replacements. 
+Besides inspecting balance metrics, we might want to look at how many matches were actually computed for our original units. sitepickR lets us do this in both ways: 
 
-This percentage is expected to be inversely related to restrictions imposed by exact matching, caliper value, and inherent structure and size of the data, as well as K, the number of matches (i.e. replacement candidates) we want for each of the original districts:
+1.  [matchFreq()](https://sitepickr.github.io/sitepickR-website/reference/matchFreq.html): distribution of successful matches across all original units. So this is the frequency (from 1 to K) of computed matches for the initially selected sub-population. This gives us an idea of how successful our matching procedure was, overall.
+
+2. [matchCount()](https://sitepickr.github.io/sitepickR-website/reference/matchCount.html): The number of successful matches between the original districts and replacement candidate districts from the non-selected pool, __for each of their K replacements groups__ (which are by default sorted from most to least similar 1...K).  So for the group of best matches (i.e. Replacement group 1), how many matches were computed by selectMatch, how many for the group of second-best matches, and so on. This gives us an idea of how restrictive our parameter settings were, taken together, and given our dataset structure. More specifically, the number of matches for each replacement group is expected to be: 1)  decreasing in K, the number of matches (i.e. replacement candidates) we are asking for, and inversely related to restrictions imposed by exact matching, caliper value, and inherent structure and size of the data.
+
+
+#### 3.1 Match histogram
+
+First, let's look at the overall match frequency the original units got, overall:
+
+```{r fig.width=7, fig.height=6}
+matchFreq(matchOut,
+             title="Match Frequency per Original Unit")
+```
+
+#### 3.2 Successfully computed unit matches per unit group (1...K)
+
+Now let's examine the percent of matches for each replacement group, sorted from closest to furthest units. Here, 100% for replacement group 1 means that all units got a best-match matches were successful, 50% for replacement group 2 means that only half of all original units got a 2nd best match, and so on:
 
 ```{r fig.width=7, fig.height=6}
 matchCount(matchOut,
-             title="Percentage of Successful Matches per Unit Group")
+             title="% of Successful Matches per Unit Group")
 ```
 
-Similarly, we can, use [summary()](https://sitepickr.github.io/sitepickR-website/reference/summary.html)to obtain balance directly in a table:
+Again, we can, use [summary()](https://sitepickr.github.io/sitepickR-website/reference/summary.html) to access each of these stats directly in a table:
+```{r, results='asis'}
+matchFreqTab = summary(matchOut, diagnostic="matchFreq")
 
+knitr::kable(matchFreqTab, format = "html")
+```
 
 ```{r, results='asis'}
 matchCountTab = summary(matchOut, diagnostic="matchCount")

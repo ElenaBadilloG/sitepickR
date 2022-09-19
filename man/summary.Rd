@@ -9,8 +9,12 @@ summary(m.out, diagnostic)
 \arguments{
 \item{m.out}{list; selectMatch() output}
 
-\item{diagnostic}{numeric; balance Diagnostic ("unitBal" = original unit balance,
-"matchBal" = match balance, "matchPerc" = match success percent, "subunitBal" =sub-unit balance)}
+\item{diagnostic}{numeric; balance Diagnostic:
+ "unitBal" = original unit balance,
+"matchBal" = match balance,
+"matchFreq" = sucessful match frequency,
+ matchCount" = match success count by replacement group,
+"subunitBal" =sub-unit balance}
 }
 \value{
 ggplot object

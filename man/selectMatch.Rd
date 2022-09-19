@@ -50,7 +50,7 @@ selectMatch(
 
 \item{seedN}{numeric; seed number to be used for sampling. If NA, calls set.seed(); default = NA}
 
-\item{matchDistance}{character; MatchIt::matchit distance parameter to obtain optimal matches (nearest neigboors); default = "mahalanois"}
+\item{matchDistance}{character; MatchIt distance parameter to obtain optimal matches (nearest neigboors); default = "mahalanois"}
 
 \item{sizeFlag}{logical; if TRUE, sampling is made proportional to unit size; default = TRUE}
 

@@ -105,7 +105,36 @@ matchBalance_ <- function(mUnits, unitNumVars, nRepUnits){
     return(list(dfU10gPlt, u10gPlt))
 }
 
-##### % Of successful matches per replacement group:
+##### Successful match frequency:
+#' @noRd
+#' @param replacementUnits
+#' @param nRepUnits
+#' @return ggplot2::ggplot object
+#' 
+matchFreq_ <- function(replacementUnits, nRepUnits){
+  
+  matchFq = as.data.frame((nRepUnits) - rowSums(is.na(replacementUnits)))
+  matchFq$origUnitID = replacementUnits$unitID
+  colnames(matchFq) = c("matchN", "origUnitID")
+  matchFq <- dplyr::select(matchFq, rev(colnames(matchFq)))
+  
+  matchHist <- ggplot2::ggplot(matchFq, ggplot2::aes(x=matchN)) +
+    
+    ggplot2::geom_histogram(color="black", fill="#0F3957", bins = 3*nRepUnits) +
+    ggplot2::theme_bw() +
+    ggplot2::ylab("No. Matches") +
+    ggplot2::xlab("") +
+    ggplot2::scale_x_continuous(limits = c(0, nRepUnits),
+                                breaks = seq(0, nRepUnits, 1),
+                                oob = scales::squish,
+                                labels = as.character(seq(0, nRepUnits, 1))) +
+    ggplot2::ggtitle("") 
+
+  
+  return(list(matchFq, matchHist))
+}
+
+##### Successful matches per replacement group:
 #' @noRd
 #' @param replacementUnits
 #' @param nRepUnits

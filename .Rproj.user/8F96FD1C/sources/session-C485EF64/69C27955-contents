@@ -3,6 +3,7 @@
 export(makeDF)
 export(matchBalance)
 export(matchCount)
+export(matchFreq)
 export(selectMatch)
 export(subUnitBalance)
 export(summary)

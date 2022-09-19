@@ -1285,10 +1285,11 @@ districts (or schools) against target population; 2) initially selected
 districts (or schools) against each of the 10 district replacement
 groups.</p>
 <p>In addition, sitepickR has functions to find out how ‘successful’ the
-matching procedure was, to identify how often it was not possible to
-find all 10 matches for some units (perhaps because we are asking for
-‘too much’ in terms of maximum distance, or exact matching
-constraints).</p>
+matching procedure was, in terms of how often was it possible to find
+exactly K, K-1, …, 1, and 0 matches for the original units –possibly
+indicating we are asking for ‘too much’ in terms of maximum distance, or
+exact matching constraints, and thus, letting us re-adjust our
+parameters accordingly.</p>
 <div class="section level3">
 <h3 id="original-units-vs--target-population">1. Original units vs. target population<a class="anchor" aria-label="anchor" href="#original-units-vs--target-population"></a>
 </h3>
@@ -1612,24 +1613,1175 @@ w.pct.frlunch
 </table>
 </div>
 <div class="section level3">
-<h3 id="successfully-computed-unit-matches">3. Successfully computed unit matches<a class="anchor" aria-label="anchor" href="#successfully-computed-unit-matches"></a>
+<h3 id="successful-matches">3. Successful matches<a class="anchor" aria-label="anchor" href="#successful-matches"></a>
 </h3>
-<p>We also want to look at the success rate of the matching process
-between the original districts and the replacement candidate groups from
-the non-select pool: for each of their K replacements groups (ordered
-from most to least similar, in terms of all specified covariates), we
-look at the percentage of replacements.</p>
-<p>This percentage is expected to be inversely related to restrictions
-imposed by exact matching, caliper value, and inherent structure and
-size of the data, as well as K, the number of matches (i.e. replacement
-candidates) we want for each of the original districts:</p>
+<p>Besides inspecting balance metrics, we might want to look at how many
+matches were actually computed for our original units. sitepickR lets us
+do this in both ways:</p>
+<ol style="list-style-type: decimal">
+<li><p><a href="https://sitepickr.github.io/sitepickR-website/reference/matchFreq.html" class="external-link">matchFreq()</a>:
+distribution of successful matches across all original units. So this is
+the frequency (from 1 to K) of computed matches for the initially
+selected sub-population. This gives us an idea of how successful our
+matching procedure was, overall.</p></li>
+<li><p><a href="https://sitepickr.github.io/sitepickR-website/reference/matchCount.html" class="external-link">matchCount()</a>:
+The number of successful matches between the original districts and
+replacement candidate districts from the non-selected pool, <strong>for
+each of their K replacements groups</strong> (which are by default
+sorted from most to least similar 1…K). So for the group of best matches
+(i.e. Replacement group 1), how many matches were computed by
+selectMatch, how many for the group of second-best matches, and so on.
+This gives us an idea of how restrictive our parameter settings were,
+taken together, and given our dataset structure. More specifically, the
+number of matches for each replacement group is expected to be: 1)
+decreasing in K, the number of matches (i.e. replacement candidates) we
+are asking for, and inversely related to restrictions imposed by exact
+matching, caliper value, and inherent structure and size of the
+data.</p></li>
+</ol>
+<div class="section level4">
+<h4 id="match-histogram">3.1 Match histogram<a class="anchor" aria-label="anchor" href="#match-histogram"></a>
+</h4>
+<p>First, let’s look at the overall match frequency the original units
+got, overall:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchCount.html">matchCount</a></span><span class="op">(</span><span class="va">matchOut</span>,</span>
-<span>             title<span class="op">=</span><span class="st">"Percentage of Successful Matches per Unit Group"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">matchFreq</span><span class="op">(</span><span class="va">matchOut</span>,</span>
+<span>             title<span class="op">=</span><span class="st">"Match Frequency per Original Unit"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-20-1.png" width="672"></p>
-<p>Similarly, we can, use <a href="https://sitepickr.github.io/sitepickR-website/reference/summary.html" class="external-link">summary()</a>to
-obtain balance directly in a table:</p>
+</div>
+<div class="section level4">
+<h4 id="successfully-computed-unit-matches-per-unit-group-1k">3.2 Successfully computed unit matches per unit group (1…K)<a class="anchor" aria-label="anchor" href="#successfully-computed-unit-matches-per-unit-group-1k"></a>
+</h4>
+<p>Now let’s examine the percent of matches for each replacement group,
+sorted from closest to furthest units. Here, 100% for replacement group
+1 means that all units got a best-match matches were successful, 50% for
+replacement group 2 means that only half of all original units got a 2nd
+best match, and so on:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/matchCount.html">matchCount</a></span><span class="op">(</span><span class="va">matchOut</span>,</span>
+<span>             title<span class="op">=</span><span class="st">"% of Successful Matches per Unit Group"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-21-1.png" width="672"></p>
+<p>Again, we can, use <a href="https://sitepickr.github.io/sitepickR-website/reference/summary.html" class="external-link">summary()</a>
+to access each of these stats directly in a table:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">matchFreqTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"matchFreq"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">matchFreqTab</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+origUnitID
+</th>
+<th style="text-align:right;">
+matchN
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+600013
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:right;">
+600014
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:right;">
+600016
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+17
+</td>
+<td style="text-align:right;">
+600028
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+45
+</td>
+<td style="text-align:right;">
+600069
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+47
+</td>
+<td style="text-align:right;">
+600153
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+50
+</td>
+<td style="text-align:right;">
+600160
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+52
+</td>
+<td style="text-align:right;">
+601332
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+57
+</td>
+<td style="text-align:right;">
+601415
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+76
+</td>
+<td style="text-align:right;">
+602360
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+79
+</td>
+<td style="text-align:right;">
+602630
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+93
+</td>
+<td style="text-align:right;">
+603630
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+99
+</td>
+<td style="text-align:right;">
+604020
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+112
+</td>
+<td style="text-align:right;">
+604800
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+119
+</td>
+<td style="text-align:right;">
+605280
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+120
+</td>
+<td style="text-align:right;">
+605400
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+128
+</td>
+<td style="text-align:right;">
+606060
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+138
+</td>
+<td style="text-align:right;">
+606510
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+146
+</td>
+<td style="text-align:right;">
+606810
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+155
+</td>
+<td style="text-align:right;">
+607440
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+159
+</td>
+<td style="text-align:right;">
+607680
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+167
+</td>
+<td style="text-align:right;">
+608130
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+179
+</td>
+<td style="text-align:right;">
+609030
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+181
+</td>
+<td style="text-align:right;">
+609120
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+184
+</td>
+<td style="text-align:right;">
+609390
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+189
+</td>
+<td style="text-align:right;">
+609620
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+208
+</td>
+<td style="text-align:right;">
+611110
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+213
+</td>
+<td style="text-align:right;">
+611460
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+227
+</td>
+<td style="text-align:right;">
+612180
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+229
+</td>
+<td style="text-align:right;">
+612330
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+244
+</td>
+<td style="text-align:right;">
+613470
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+249
+</td>
+<td style="text-align:right;">
+613890
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+254
+</td>
+<td style="text-align:right;">
+614250
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+256
+</td>
+<td style="text-align:right;">
+614370
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+258
+</td>
+<td style="text-align:right;">
+614550
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+262
+</td>
+<td style="text-align:right;">
+614880
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+267
+</td>
+<td style="text-align:right;">
+615150
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+268
+</td>
+<td style="text-align:right;">
+615180
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+283
+</td>
+<td style="text-align:right;">
+616325
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+288
+</td>
+<td style="text-align:right;">
+616740
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+290
+</td>
+<td style="text-align:right;">
+616860
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+312
+</td>
+<td style="text-align:right;">
+619050
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+327
+</td>
+<td style="text-align:right;">
+620010
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+329
+</td>
+<td style="text-align:right;">
+620130
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+332
+</td>
+<td style="text-align:right;">
+620250
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+347
+</td>
+<td style="text-align:right;">
+621090
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+359
+</td>
+<td style="text-align:right;">
+621870
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+365
+</td>
+<td style="text-align:right;">
+622230
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+370
+</td>
+<td style="text-align:right;">
+622500
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+371
+</td>
+<td style="text-align:right;">
+622560
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+372
+</td>
+<td style="text-align:right;">
+622590
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+373
+</td>
+<td style="text-align:right;">
+622650
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+374
+</td>
+<td style="text-align:right;">
+622710
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+375
+</td>
+<td style="text-align:right;">
+622740
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+380
+</td>
+<td style="text-align:right;">
+622950
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+389
+</td>
+<td style="text-align:right;">
+623610
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+390
+</td>
+<td style="text-align:right;">
+623700
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+424
+</td>
+<td style="text-align:right;">
+625470
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+428
+</td>
+<td style="text-align:right;">
+625770
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+435
+</td>
+<td style="text-align:right;">
+626190
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+439
+</td>
+<td style="text-align:right;">
+626370
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+443
+</td>
+<td style="text-align:right;">
+626640
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+452
+</td>
+<td style="text-align:right;">
+627450
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+464
+</td>
+<td style="text-align:right;">
+628050
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+465
+</td>
+<td style="text-align:right;">
+628080
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+468
+</td>
+<td style="text-align:right;">
+628250
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+470
+</td>
+<td style="text-align:right;">
+628470
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+474
+</td>
+<td style="text-align:right;">
+628710
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+486
+</td>
+<td style="text-align:right;">
+629580
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+491
+</td>
+<td style="text-align:right;">
+629820
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+494
+</td>
+<td style="text-align:right;">
+629940
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+516
+</td>
+<td style="text-align:right;">
+631320
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+518
+</td>
+<td style="text-align:right;">
+631400
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+528
+</td>
+<td style="text-align:right;">
+632070
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+545
+</td>
+<td style="text-align:right;">
+633150
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+564
+</td>
+<td style="text-align:right;">
+634320
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+566
+</td>
+<td style="text-align:right;">
+634410
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+568
+</td>
+<td style="text-align:right;">
+634440
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+570
+</td>
+<td style="text-align:right;">
+634620
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+577
+</td>
+<td style="text-align:right;">
+634920
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+585
+</td>
+<td style="text-align:right;">
+635310
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+594
+</td>
+<td style="text-align:right;">
+636000
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+607
+</td>
+<td style="text-align:right;">
+636840
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+629
+</td>
+<td style="text-align:right;">
+638010
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+633
+</td>
+<td style="text-align:right;">
+638430
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+636
+</td>
+<td style="text-align:right;">
+638640
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+647
+</td>
+<td style="text-align:right;">
+639420
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+660
+</td>
+<td style="text-align:right;">
+640590
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+668
+</td>
+<td style="text-align:right;">
+641160
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+669
+</td>
+<td style="text-align:right;">
+641190
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+671
+</td>
+<td style="text-align:right;">
+641280
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+674
+</td>
+<td style="text-align:right;">
+641580
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+676
+</td>
+<td style="text-align:right;">
+641820
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+680
+</td>
+<td style="text-align:right;">
+642060
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+682
+</td>
+<td style="text-align:right;">
+642140
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+686
+</td>
+<td style="text-align:right;">
+642300
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+688
+</td>
+<td style="text-align:right;">
+642450
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+694
+</td>
+<td style="text-align:right;">
+642810
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+704
+</td>
+<td style="text-align:right;">
+684500
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+705
+</td>
+<td style="text-align:right;">
+691134
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">matchCountTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"matchCount"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">matchCountTab</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
@@ -1758,6 +2910,7 @@ Unit_replacement_10
 </tbody>
 </table>
 </div>
+</div>
 <div class="section level3">
 <h3 id="sub-units-from-original-vs--candidate-units">4. Sub-units from original vs. candidate units<a class="anchor" aria-label="anchor" href="#sub-units-from-original-vs--candidate-units"></a>
 </h3>
@@ -1767,13 +2920,13 @@ specified covariates of interest (both the district and school level
 ones). sitepickR’s <a href="https://sitepickr.github.io/sitepickR-website/reference/subUnitBalance.html" class="external-link">subUnitBalance()</a>
 function lets us assess the matching quality precisely on this
 terms:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/subUnitBalance.html">subUnitBalance</a></span><span class="op">(</span><span class="va">matchOut</span>,</span>
 <span>     title<span class="op">=</span><span class="st">"Standardized Mean Difference: \n Sub-units from Original + Replacement Unit Groups vs. Population"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-22-1.png" width="864"></p>
+<p><img src="sitepickR-demo_files/figure-html/unnamed-chunk-24-1.png" width="864"></p>
 <p>Similary, use <a href="https://sitepickr.github.io/sitepickR-website/reference/summary.html" class="external-link">summary()</a>
 function to obtain balance directly in a table:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">subUnitBalanceTab</span> <span class="op">=</span> <span class="fu"><a href="../reference/summary.html">summary</a></span><span class="op">(</span><span class="va">matchOut</span>, diagnostic<span class="op">=</span><span class="st">"subunitBal"</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">subUnitBalanceTab</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
