@@ -111,7 +111,7 @@ calip = 0.2 # maximum standard deviations of covariate distance around target po
 ```
 
 #### Set output sample sizes
-Set size for: initial unit sample (Nu) , number of matches per unit (K), and number of sub-units selected for each potential unit:
+Set size for: 1) initial unit ("district", in our example) sample, Nu; 2) number of desired matches per unit, K;  and 3) the number of sub-units ("schools", in this example) that will be randomly selected for each potential unit:
 
 ```{r}
 Nu <- 100 # district sample size
@@ -120,22 +120,29 @@ Ns <- 5 # number of schools per potential district
 ```
 
 ### Specify covariates of interest
-Now, specify district level covariates on which you'll want to match selected districts (units) with their replacement candidates on the non-selected sample:
+
+Now, specify unit level covariates on which you'll want to match selected units (again "districts" here) with their replacement candidates from the non-selected sample:
 
 ```{r}
 uSampVarsCCD <- c("w.pct.frlunch", "w.pct.black", "w.pct.hisp", "w.pct.female") 
 ```
-Similarly, specify school level covariates on which you'll want to match districts. In our running CCD example, these covariates are just school (sub-unit) level aggregates of the same district level underlying variable. However, they could be any other sub-unit level variables available in your own dataset:
+Similarly, specify sub-unit ("school") level covariates on which you'll want to match districts. 
+
+In our  CCD example, these covariates are just school level aggregates of conceptually the same district level underlying variable (e.g. percent of Hispanic students). 
+
+However, these could be any other sub-unit level variables available in your own dataset, not necessarily expressing the same variable as some other unit level covariate.
 
 ```{r}
 suSampVarsCCD <- c("sch.pct.frlunch", "sch.pct.black", "sch.pct.hisp", "sch.pct.female")
 ```
-You can (optionally) specify covariates on which to _exactly_ match districts. These would usually be categorical covariates, with relatively few categories --otherwise the matching could fail, being too restrictive or even empty:
+You can (optionally) specify covariates on which to _exactly_ match units. These would usually be categorical covariates, with relatively few categories --otherwise the matching could fail, being too restrictive or even empty:
 ```{r}
 exactMatchVars <-  c("distr.type")
 ```
 
-Similarly, you can optionally specify covariates on which to match districts within a given numeric caliper, in terms of standard deviations. Such covariates are expected to be numeric variables. In this case, we are interested in caliper-matching on thre covariates: percentage of Black,  Hispanic, and  female students in the district.
+Similarly, you can optionally specify covariates on which to match units within a given numeric caliper, in terms of standard deviations. Such covariates are expected to be numeric variables. 
+
+In this case, we are interested in caliper-matching on three numeric covariates: percentage of Black,  Hispanic, and  female students in the district.
 
 Notice that the lower the caliper, the more restrictive the matching (which could result in ferwe proportion of successful matches per replacement group, or even empty ones):
 ```{r}
@@ -144,7 +151,7 @@ calipMatchVars <-  c("w.pct.black", "w.pct.hisp", "w.pct.female")
 
 ## Get unit matches
 
-We'll now leverage sampling + MatchIt packages joint functionality, and match districts with their candidate replacements among the non-initially selected units using [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance). We can also do this using propensity scores, as specified on [MatchIt's documentation](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html#trying-a-different-matching-specification):
+We'll now leverage sampling + MatchIt packages joint functionality, and match districts with their candidate replacements among the non-initially selected units using [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance). We could also do this using propensity scores, as specified on [MatchIt's documentation](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html#trying-a-different-matching-specification), and the output structure will be exacrtly the same:
 
 ```{r}
 matchOut <- selectMatch(df=dfCCD, # user dataset
@@ -170,7 +177,7 @@ matchOut <- selectMatch(df=dfCCD, # user dataset
 
 At this point, the two main outputs of the selectMatch procedure have been produced, and are stored inside the 'matchOut' variable we've just defined. In our example, these are: 
 
-1. A table with 10 matches (replacement candidates) for each of the 100 schools district we initially selected. The matches are ordered from the most to the least 'similar' to their original district (where 'similar' is close, in terms of covariate distance).
+1. A table with 10 matches (replacement candidates) for each of the 100 schools districts we initially selected. The matches are ordered from the most to the least 'similar' to their original district (where 'similar' is close, in terms of covariate distance).
 
 2. A table with 5 (or less, when there are less than 5 schools available for a given district) randomly (if applicable) selected schools for each of the 100 original __and__ each of the 100 x 10 candidate districts. Of course, each of these 5 schools  are sampled exclusively from those that belong to each school district:
 
