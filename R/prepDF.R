@@ -5,13 +5,13 @@
 
 
 #' Prepare nested dataset
-#' @name makeDF
+#' @name prepDF 
 #' @param df dataframe
 #' @param unitID character; unit column name in original dataset
 #' @param subunitID character; sub-unit column name in original dataset
 #' @return processed dataframe
 #' @export
-makeDF <- function(df, unitID, subunitID){
+prepDF <- function(df, unitID, subunitID){
   
   # Assign standard variable name to unit/subunit columns:
   df$unitID <- df[,unitID]

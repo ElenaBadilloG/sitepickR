@@ -86,10 +86,12 @@ rawCCD <- sitepickR::rawCCD
 knitr::kable(head(rawCCD), format = "html")
 ```
 
-Process the sample aggregate dataset in order for it to be in the exact format expected by selectMatch by using sitepckr [makeDF()](https://sitepickr.github.io/sitepickR-website/reference/makeDF.html) function. This will re-define some key variables and create a new variable, 'unitSize', that will be used in the step of the selectMatch procedure where units are initially sampled. Specifically, cube sampling allows us to (optionally) select units in a way that is not biased by its number of sub-units:
+Process the sample aggregate dataset in order for it to be in the exact format expected by selectMatch by using sitepckr [prepDF()](https://sitepickr.github.io/sitepickR-website/reference/prepDF.html) function.
+
+This simple step will re-define some key variables, and will create a new variable, 'unitSize', that will be used in the step of the selectMatch procedure where units are initially selected. Specifically, the cube sampling  method implicit in electMatch allows us to select units in a way that is not biased by its number of sub-units (which we would usually want to impose). This is explained in more detail in this section of the [sampling](https://rdrr.io/cran/sampling/man/balancedcluster.html) documentation. What matters here, is that, having created a unitSize column, with selectMatch we can let the sampling step correct by size by setting the [sizeFlag](https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html) input to TRUE.
 
 ```{r, results='asis'}
-dfCCD <- makeDF(rawCCD,
+dfCCD <- prepDF(rawCCD,
                  unitID="LEAID", subunitID="NCESSCH")
 knitr::kable(dfCCD[1:10,(ncol(dfCCD)-5-1):ncol(dfCCD)], format = "html")
 ```

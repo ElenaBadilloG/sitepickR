@@ -469,14 +469,21 @@ D
 </tbody>
 </table>
 <p>Process the sample aggregate dataset in order for it to be in the
-exact format expected by selectMatch by using sitepckr <a href="https://sitepickr.github.io/sitepickR-website/reference/makeDF.html" class="external-link">makeDF()</a>
-function. This will re-define some key variables and create a new
-variable, ‘unitSize’, that will be used in the step of the selectMatch
-procedure where units are initially sampled. Specifically, cube sampling
-allows us to (optionally) select units in a way that is not biased by
-its number of sub-units:</p>
+exact format expected by selectMatch by using sitepckr <a href="https://sitepickr.github.io/sitepickR-website/reference/prepDF.html" class="external-link">prepDF()</a>
+function.</p>
+<p>This simple step will re-define some key variables, and will create a
+new variable, ‘unitSize’, that will be used in the step of the
+selectMatch procedure where units are initially selected. Specifically,
+the cube sampling method implicit in electMatch allows us to select
+units in a way that is not biased by its number of sub-units (which we
+would usually want to impose). This is explained in more detail in this
+section of the <a href="https://rdrr.io/cran/sampling/man/balancedcluster.html" class="external-link">sampling</a>
+documentation. What matters here, is that, having created a unitSize
+column, with selectMatch we can let the sampling step correct by size by
+setting the <a href="https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html" class="external-link">sizeFlag</a>
+input to TRUE.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dfCCD</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makeDF.html">makeDF</a></span><span class="op">(</span><span class="va">rawCCD</span>,</span>
+<code class="sourceCode R"><span><span class="va">dfCCD</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepDF.html">prepDF</a></span><span class="op">(</span><span class="va">rawCCD</span>,</span>
 <span>                 unitID<span class="op">=</span><span class="st">"LEAID"</span>, subunitID<span class="op">=</span><span class="st">"NCESSCH"</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">dfCCD</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">dfCCD</span><span class="op">)</span><span class="op">-</span><span class="fl">5</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">dfCCD</span><span class="op">)</span><span class="op">]</span>, format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
