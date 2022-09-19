@@ -175,7 +175,7 @@ matchOut <- selectMatch(df=dfCCD, # user dataset
 )
 ```
 
-At this point, the two main outputs of the selectMatch procedure have been produced, and are stored inside the 'matchOut' variable we've just defined. In our example, these are: 
+At this point, the two main outputs of the selectMatch procedure have been produced, and are stored inside the object we' have 've just defined as 'matchOut'. In our example, these two main outputs are: 
 
 1. A table with 10 matches (replacement candidates) for each of the 100 schools districts we initially selected. The matches are ordered from the most to the least 'similar' to their original district (where 'similar' is close, in terms of covariate distance).
 
@@ -192,7 +192,7 @@ knitr::kable(head(dplyr::filter(schoolDirectory, !is.na(Sub_unit5_ID))), format 
 
 ```
 
-Each of these two tables can be automatically stored as .csv files in your local computer, by simply settin writeOut = TRUE in the main function call to selectMatch. In case you use this feature, you can given those two files a specific name, using the [replacementUnitsFilename][repFlag](https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html) and [subUnitTableFilename][repFlag](https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html) selectMatch arguments (or just keeping their default values).
+Each of these two tables can be automatically stored as .csv files in your local computer, by simply setting writeOut = TRUE in the main function call to selectMatch. In case you use this feature, you can given those two files a specific name, using the [replacementUnitsFilename][repFlag](https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html) and [subUnitTableFilename][repFlag](https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html) selectMatch arguments (or just keeping their default values).
 
 ## Assess balance and match quality
 
@@ -205,14 +205,16 @@ In addition, sitepickR has functions to find out how 'successful' the matching p
 
 ### 1. Original units vs. target population
 
-First, we want to look at the overall balance between the initially selected districts (i.e. the group of districts that were selected in the initial cube sampling step of the selectMatch procedure) and __all__ the districts in the population:
+First, we want to look at the overall balance between the initially selected districts (i.e. the group of districts that were selected in the initial cube sampling step of the selectMatch procedure) and __all__ the districts in the population. 
+
+While no matching has taken place at this point (so, technically, selectMatch has not done its job yet),  it  might still be of interest to look at this initial balance, in order to have a benchmark for the quality of the subsequent matches:
 
 ```{r fig.width=6, fig.height=5}
 unitLovePlot(matchOut,
    title="Standardized Mean Difference: \n Initially Selected Units vs. Population")
 ```
 
-We can also take a look at a table with the actual SMD for each covariate of interest applying the  [getSummary()](https://sitepickr.github.io/sitepickR-website/reference/getSummary.html) function:
+We can also take a look at a table with the actual SMD for each covariate of interest applying the  [getSummary()](https://sitepickr.github.io/sitepickR-website/reference/getSummary.html) function, which takes the :
 
 ```{r, results='asis'}
 unitBalanceTab = getSummary(matchOut, diagnostic="unitBal")
@@ -223,12 +225,16 @@ knitr::kable(head(unitBalanceTab, 10), format = "html")
 
 ### 2. Original units vs. replacement candidates
 
-To assess the quality of our resulting district matches, we look at the balance  (in terms of SMD) between the group of initially selected districts and each of its K replacement districts groups, where group 1 is composed of the first closest matches ordered in terms of distance, group 2 corresponds to the second-best matches, and so on:
+Now, to assess the quality of our resulting district matches, we look at the balance  (in terms of SMD) between the group of initially selected districts and each of its K replacement districts groups, where group 1 is composed of the first closest matches ordered in terms of distance, group 2 corresponds to the second-best matches, and so on:
 
 ```{r fig.width=9, fig.height=6}
 matchBalance(matchOut, 
   title = "Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units")
 ```
+
+Overall, we expect the SMD to increase from 1 to K. However, the decrease is not necessarily monotonic for each covariate (recall that the distance is computed over __all__ of the covariates, simultaneously!). This diagnostic is quite interesting and relevant since it lets us know the quality of the matching for each replacement group and for each covariate separately. This way we can know more about the strengths and weaknesses of our final study sample.
+
+In addition, it let's us diagnose how strict our matching restrictions are overall, given our data. A steeper curve would indicate rapidly match quality is rapidly deteriorating as we go from the K-1 to the K best replacement, while a flatter one would indicate that pretty much all of our candidate matches are similarly good.
 
 ```{r, results='asis'}
 matchBalanceTab = getSummary(matchOut, diagnostic="matchBal")
