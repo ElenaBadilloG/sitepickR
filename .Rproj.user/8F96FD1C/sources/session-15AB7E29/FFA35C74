@@ -1,26 +1,26 @@
 {
-    "id": "0FC30925",
-    "path": "~/sitepickR/README.md",
-    "project_path": "README.md",
-    "type": "markdown",
+    "id": "FFA35C74",
+    "path": "~/sitepickR/R/data.R",
+    "project_path": "R/data.R",
+    "type": "r_source",
     "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1663517899296.0,
+    "created": 1663384981100.0,
     "source_on_save": false,
-    "relative_order": 20,
+    "relative_order": 15,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "9,839",
-        "scrollLine": "7"
+        "cursorPosition": "2,96",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1663592675,
+    "lastKnownWriteTime": 1663587887,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1663592675381,
+    "last_content_update": 1663587887537,
     "read_only": false,
     "read_only_alternatives": []
 }

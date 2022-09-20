@@ -109,12 +109,12 @@ knitr::kable(dfCCD[1:10,(ncol(dfCCD)-5-1):ncol(dfCCD)], format = "html")
 
 Since there is some underlying random sampling in selectMatch, we can set a seed for replication purposes (optional):
 ```{r}
-seed = 1122 
+seed <- 1122 
 ```
  
 Set distance tolerance for restricted covariates:
 ```{r}
-calip = 0.2 # maximum standard deviations of covariate distance around target population
+calip <- 0.2 # maximum standard deviations of covariate distance around target population
 ```
 
 #### Set output sample sizes
@@ -161,13 +161,13 @@ calipMatchVars <-  c("w.pct.black", "w.pct.hisp", "w.pct.female")
 We'll now leverage sampling + MatchIt packages joint functionality, and match districts with their candidate replacements among the non-initially selected units using [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance). We could also do this using propensity scores, as specified on [MatchIt's documentation](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html#trying-a-different-matching-specification), and the output structure will be exacrtly the same:
 
 ```{r}
-smOut <- selectMatch(df=dfCCD, # user dataset
-                       unitID="LEAID", # column name of unit ID in user dataset
-                       subunitID="NCESSCH", # column name of sub-unit ID in user dataset
-                       unitVars=uSampVarsCCD, # name of unit level covariate columns
-                       subunitSampVars=suSampVarsCCD, # name of sub-unit level covariate columns
-                       exactMatchVars= exactMatchVars, # unit level categorical covariates on which to match exactly
-                       calipMatchVars=calipMatchVars, # unit level numeric covariates on which to match within a radius
+smOut <- selectMatch(df = dfCCD, # user dataset
+                       unitID = "LEAID", # column name of unit ID in user dataset
+                       subunitID = "NCESSCH", # column name of sub-unit ID in user dataset
+                       unitVars = uSampVarsCCD, # name of unit level covariate columns
+                       subunitSampVars = suSampVarsCCD, # name of sub-unit level covariate columns
+                       exactMatchVars = exactMatchVars, # unit level categorical covariates on which to match exactly
+                       calipMatchVars = calipMatchVars, # unit level numeric covariates on which to match within a radius
                        nUnitSamp = Nu, # original unit sample size
                        nRepUnits = K, # number of desired matches per initially selected unit
                        nsubUnits = Ns, # number of sub-units to sample from each candidate unit
@@ -189,12 +189,12 @@ At this point, the two main outputs of the selectMatch procedure have been produ
 2. A table with 5 (or less, when there are less than 5 schools available for a given district) randomly (if applicable) selected schools for each of the 100 original __and__ each of the 100 x 10 candidate districts. Of course, each of these 5 schools  are sampled exclusively from those that belong to each school district:
 
 ```{r, results='asis'}
-districtReplTable = smOut[[1]]
+districtReplTable <- smOut[[1]]
 knitr::kable(head(districtReplTable), format = "html")
 ```
 
 ```{r, results='asis'}
-schoolDirectory = smOut[[2]]
+schoolDirectory <- smOut[[2]]
 knitr::kable(head(dplyr::filter(schoolDirectory, !is.na(Sub_unit5_ID))), format = "html")
 
 ```
@@ -218,13 +218,13 @@ While no matching has taken place at this point (so, technically, selectMatch ha
 
 ```{r fig.width=6, fig.height=5}
 unitLovePlot(smOut,
-   title="Standardized Mean Difference: \n Initially Selected Units vs. Population")
+   title = "Standardized Mean Difference: \n Initially Selected Units vs. Population")
 ```
 
 We can also take a look at a table with the actual SMD for each covariate of interest applying the  [getSummary()](https://sitepickr.github.io/sitepickR-website/reference/getSummary.html) function, which takes the :
 
 ```{r, results='asis'}
-unitBalanceTab = getSummary(smOut, diagnostic="unitBal")
+unitBalanceTab <- getSummary(smOut, diagnostic="unitBal")
 
 knitr::kable(head(unitBalanceTab, 10), format = "html")
 ```
@@ -244,7 +244,7 @@ Overall, we expect the SMD to increase from 1 to K. However, the decrease is not
 In addition, it let's us diagnose how strict our matching restrictions are overall, given our data. A steeper curve would indicate rapidly match quality is rapidly deteriorating as we go from the K-1 to the K best replacement, while a flatter one would indicate that pretty much all of our candidate matches are similarly good.
 
 ```{r, results='asis'}
-matchBalanceTab = getSummary(smOut, diagnostic="matchBal")
+matchBalanceTab <- getSummary(smOut, diagnostic="matchBal")
 knitr::kable(head(matchBalanceTab, 20), format = "html")
 ```
 
@@ -277,13 +277,13 @@ matchCount(smOut,
 
 Again, we can, use [getSummary()](https://sitepickr.github.io/sitepickR-website/reference/getSummary.html) to access each of these stats directly in a table:
 ```{r, results='asis'}
-matchFreqTab = getSummary(smOut, diagnostic="matchFreq")
+matchFreqTab <- getSummary(smOut, diagnostic="matchFreq")
 
 knitr::kable(matchFreqTab, format = "html")
 ```
 
 ```{r, results='asis'}
-matchCountTab = getSummary(smOut, diagnostic="matchCount")
+matchCountTab <- getSummary(smOut, diagnostic="matchCount")
 
 knitr::kable(matchCountTab, format = "html")
 ```
@@ -301,6 +301,6 @@ Similary, use [getSummary()](https://sitepickr.github.io/sitepickR-website/refer
 
 
 ```{r, results='asis'}
-subUnitBalanceTab = getSummary(smOut, diagnostic="subunitBal")
+subUnitBalanceTab <- getSummary(smOut, diagnostic="subunitBal")
 knitr::kable(subUnitBalanceTab, format = "html")
 ```

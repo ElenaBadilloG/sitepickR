@@ -3,7 +3,7 @@
     "path": "~/sitepickR/R/sitepickR_diagnostics.R",
     "project_path": "R/sitepickR_diagnostics.R",
     "type": "r_source",
-    "hash": "1333576452",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1662124087842.0,
@@ -13,7 +13,7 @@
         "source_window_id": "",
         "Source": "Source",
         "cursorPosition": "45,25",
-        "scrollLine": "26"
+        "scrollLine": "0"
     },
     "folds": "16|107|24|0|\n35|129|43|0|\n53|65|62|0|\n73|84|83|0|\n94|112|103|0|\n",
     "lastKnownWriteTime": 1663590249,

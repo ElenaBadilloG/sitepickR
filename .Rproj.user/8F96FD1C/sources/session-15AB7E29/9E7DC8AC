@@ -3,7 +3,7 @@
     "path": "~/sitepickR.Rcheck/00_pkg_src/sitepickR/man/rwCCD.Rd",
     "project_path": null,
     "type": "r_doc",
-    "hash": "2684202175",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1662437522346.0,
@@ -21,8 +21,6 @@
     "collab_server": "",
     "source_window": "",
     "last_content_update": 1662437670120,
-    "read_only": true,
-    "read_only_alternatives": [
-        "R/rwCCD-data.R"
-    ]
+    "read_only": false,
+    "read_only_alternatives": []
 }
