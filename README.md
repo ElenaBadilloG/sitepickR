@@ -19,7 +19,7 @@ Install seamlessly using the devtools package:
 
 ```
 if(!require(devtools)){
-    install.packages("devtools")
+    install.packages("devtools", repos = "http://cran.us.r-project.org")
     }
 
 devtools::install_github("ElenaBadilloG/sitepickR")
