@@ -4,7 +4,7 @@ Title: Two-level Sample Selection with Optimal Site Replacement
 Version: 0.1.0
 Author: Elizabeth A. Stuart, Robert Olsen, Elena Badillo-Goicoechea
 Date: 2022-08-24
-Maintainer: Elena Badillo-Goicoechea <egoicoe1@jhu.edu>
+Maintainer: Elena Badillo-Goicoechea (egoicoe1@jhu.edu)
 Description: Carries out a two-level sample selection where the possibility of an initially selected site not wanting to participate is anticipated, and the site is optimally replaced. The procedure aims to reduce the bias (and/or loss of generalizability) with respect to the target population.
 Imports: MatchIt, sampling, dplyr, ggplot2, reshape2, data.table, stats, stringr, tidyr, magrittr, tidyselect, scales
 License: GPL (>=3)

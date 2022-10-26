@@ -11,9 +11,12 @@ In addition, sitepicker is designed to select sites in two stages —first “un
 
 In selecting units and sub-units, sitepickR uses the cube method (e.g., Deville & Tillé, 2004; Tillé 2011). The cube method is a probability sampling method that is designed to satisfy criteria for balance between the sample and the population. Recent research has shown that this method performs well in simulations for studies of educational programs (Fay & Olsen, under review). To implement the cube method, sitepickerR uses the [sampling](https://cran.r-project.org/web/packages/sampling/index.html) R package. Users have the option to select units with equal probabilities or with probabilities proportional to their “size” measured in terms of the number of sub-units nested within units.
 
-
 In addition, sitepickR uses statistical matching to select possible replacement units. In education RCTs, the share of selected districts that agrees to participate tends to be low. To address this challenge, sitepickR selects and ranks up to K replacement districts for each districts selected using the cube method. Replacement districts are selected using statistical matching based on propensity score methods. To implement statistical matching, sitepickR uses the [MatchIt](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html) R package.
 
+Questions/troubleshooting? Reach out at:
+	- egoicoe1@jhu.edu
+	- robolsen@gwu.edu
+	- estuart@jhu.edu
 
 ## Usage
 
