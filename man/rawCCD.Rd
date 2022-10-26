@@ -17,7 +17,8 @@ A data frame with 1890 rows and 11 variables.
   \item{sch.pct.black}{percentage of students in the school who are Black.}
   \item{sch.pct.hisp}{percentage of students in the school who are Hispanic.}
   \item{sch.pct.female}{percentage of students in the school who are female.}
-  \item{distr.type}{categorical  district type (artificially created for illustration purposes; (values={"A", "B", "C", "D"})).}
+  \item{distr.type}{school district type (constructed for illustration purposes; (values={"A", "B", "C", "D"})).}
+  \item{dtrct_size}{number of schools in the district}
 }
 }
 \source{

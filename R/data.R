@@ -18,7 +18,8 @@
 #'   \item{sch.pct.black}{percentage of students in the school who are Black.}
 #'   \item{sch.pct.hisp}{percentage of students in the school who are Hispanic.}
 #'   \item{sch.pct.female}{percentage of students in the school who are female.}
-#'   \item{distr.type}{categorical  district type (artificially created for illustration purposes; (values={"A", "B", "C", "D"})).}
+#'   \item{distr.type}{school district type (constructed for illustration purposes; (values={"A", "B", "C", "D"})).}
+#'   \item{dtrct_size}{number of schools in the district}
 #' }
 #' @source \url{https://nces.ed.gov/ccd/files.asp#FileNameId:15,VersionId:10,FileSchoolYearId:33,Page:1}
 "rawCCD"

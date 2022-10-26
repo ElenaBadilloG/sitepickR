@@ -5,7 +5,7 @@
 # Read pre-processed data:
 rawCCD <- read.csv("data-raw/rawdfCAL.csv")
 
-# Add a toy unit level categorical, "district type":
+# Add toy unit level categorical, "district type":
 dfG <- rawCCD %>% dplyr::group_by(LEAID) %>%
   dplyr::summarise(unitSize = dplyr::n())
 dummy_dtrct_types <- c("A", "B", "C", "D")

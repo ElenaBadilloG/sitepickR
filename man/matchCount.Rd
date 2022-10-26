@@ -4,12 +4,12 @@
 \alias{matchCount}
 \title{Successful matches for each replacement group}
 \usage{
-matchCount(smtchOut, title = "Percentage of Successful Matches per Unit Group")
+matchCount(smOut, title = "Percentage of Successful Matches per Unit Group")
 }
 \arguments{
-\item{title}{character; user-specified figure title}
-
 \item{smOut}{list; selectMatch() output}
+
+\item{title}{character; user-specified figure title}
 }
 \value{
 ggplot object

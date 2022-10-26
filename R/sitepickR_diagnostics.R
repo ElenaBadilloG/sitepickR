@@ -70,7 +70,7 @@ matchFreq <- function(smOut,
 #' @param title character; user-specified figure title
 #' @return ggplot object
 #' @export
-matchCount  <- function(smtchOut, 
+matchCount  <- function(smOut, 
                            title="Percentage of Successful Matches per Unit Group"){
   
   gMC <- smOut[[7]][[2]] + 
