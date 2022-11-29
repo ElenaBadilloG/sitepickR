@@ -6,14 +6,16 @@
 \usage{
 matchBalance(
   smOut,
-  title =
-    "Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units"
+  title = "Standardized Mean Difference:",
+  subtitle = "Replacement Unit Groups (1...K) vs. Originally Selected Units"
 )
 }
 \arguments{
 \item{smOut}{list; selectMatch() output}
 
 \item{title}{character; user-specified figure title}
+
+\item{subtitle}{character; user-specified figure title}
 }
 \value{
 ggplot object

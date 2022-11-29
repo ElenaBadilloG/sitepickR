@@ -6,13 +6,16 @@
 \usage{
 unitLovePlot(
   smOut,
-  title = "Standardized Mean Difference: \\n Initially Selected Units vs. Population"
+  title = "Standardized Mean Difference",
+  subtitle = "Initially Selected Units vs. Population"
 )
 }
 \arguments{
 \item{smOut}{list; selectMatch() output}
 
 \item{title}{character; user-specified figure title}
+
+\item{subtitle}{character; user-specified figure subtitle}
 }
 \value{
 ggplot object
