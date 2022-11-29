@@ -1,8 +1,8 @@
 Package: sitepickR
 Type: Package
-Title: Two-level Sample Selection with Optimal Site Replacement
+Title: Two-Level Sample Selection with Optimal Site Replacement
 Version: 0.0.1
-Date: 2022-08-24
+Date: 2022-11-29
 Authors@R: c(
     person("Elena", "Badillo-Goicoechea", , "egoicoe1@jhu.edu", role = c("aut", "cre"),
            comment = c(ORCID = "")),
@@ -12,14 +12,18 @@ Authors@R: c(
            comment = c(ORCID = ""))
   )
 Description: Carries out a two-level sample selection where the possibility of an initially selected site not wanting to participate is anticipated, and the site is optimally replaced. The procedure aims to reduce the bias (and/or loss of generalizability) with respect to the target population.
-Imports: MatchIt, sampling, dplyr, ggplot2, reshape2, data.table, stats, stringr, tidyr, magrittr, tidyselect, scales
+Imports: MatchIt, sampling, dplyr, ggplot2, reshape2, data.table,
+        stats, stringr, tidyr, magrittr, tidyselect, scales
 License: GPL (>=3)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.1
-Depends: 
-    R (>= 2.10)
-Suggests: 
-    knitr,
-    rmarkdown
+Depends: R (>= 2.10)
+Suggests: knitr, rmarkdown, devtools
 VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2022-11-29 13:39:22 UTC; r1707404
+Author: Elena Badillo-Goicoechea [aut, cre],
+  Robert Olsen [aut],
+  Elizabeth Stuart [aut]
+Maintainer: Elena Badillo-Goicoechea <egoicoe1@jhu.edu>
