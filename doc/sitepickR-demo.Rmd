@@ -28,10 +28,10 @@ sitepickR is designed to select a representative sample of sites for a prospecti
 
 The main function in this package, [selectMatch()](https://sitepickr.github.io/sitepickR-website/reference/selectMatch.html) lets the user carry out a two-level sample selection where the possibility of an initially selected unit not wanting to participate is anticipated. The procedure aims to reduce the bias (and/or loss of generalizability to the target population) this could introduce.
 
-In selecting units and sub-units, sitepickR uses the cube method (e.g., Deville & Tillé, 2004; Tillé 2011). The cube method is a probability sampling method that is designed to satisfy criteria for balance between the sample and the population. Recent research has shown that this method performs well in simulations for studies of educational programs (Fay & Olsen, under review). To implement the cube method, sitepickerR uses the [sampling](https://cran.r-project.org/web/packages/sampling/index.html) R package. Users have the option to select units with equal probabilities or with probabilities proportional to their "size" measured in terms of the number of sub-units nested within units.
+In selecting units and sub-units, sitepickR uses the cube method (e.g., Deville & Tillé, 2004; Tillé 2011). The cube method is a probability sampling method that is designed to satisfy criteria for balance between the sample and the population. Recent research has shown that this method performs well in simulations for studies of educational programs (Fay & Olsen, under review). To implement the cube method, sitepickerR uses the [sampling](https://cran.r-project.org/package=sampling) R package. Users have the option to select units with equal probabilities or with probabilities proportional to their "size" measured in terms of the number of sub-units nested within units.
 
 
-In addition, sitepickR uses statistical matching to select possible replacement units. In education RCTs, the share of selected districts that agrees to participate tends to be low. To address this challenge, sitepickR selects and ranks up to K replacement districts for each districts selected using the cube method. Replacement districts are selected using statistical matching based on propensity score methods. To implement statistical matching, sitepickR uses the [MatchIt](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html) R package.
+In addition, sitepickR uses statistical matching to select possible replacement units. In education RCTs, the share of selected districts that agrees to participate tends to be low. To address this challenge, sitepickR selects and ranks up to K replacement districts for each districts selected using the cube method. Replacement districts are selected using statistical matching based on propensity score methods. To implement statistical matching, sitepickR uses the [MatchIt](https://cran.r-project.org/package=MatchIt) R package.
 
 
 sitepickR's core sampling + matching procedure, implemented with the selectMatch() function, consists of four main steps:
@@ -61,7 +61,7 @@ Technical details on each of the package's main functions and on the sample data
 
 ## Common Core of Data
 
-The [CCD](https://nces.ed.gov/ccd) is the U.S. Department of Education's primary database on public elementary and secondary education in the United States. CCD is a comprehensive, annual, national database of all public elementary and secondary schools and school districts. 
+The [CCD](http://nces.ed.gov/ccd/) is the U.S. Department of Education's primary database on public elementary and secondary education in the United States. CCD is a comprehensive, annual, national database of all public elementary and secondary schools and school districts. 
 
 In addition to administrative data, it provides relevant information about schools and districts, disaggregated by demographics (grade, race/ethnicity, and sex) and socioeconomic factors (school-level counts of student eligible for free and reduced-price lunches).
 
@@ -158,7 +158,7 @@ calipMatchVars <-  c("w.pct.black", "w.pct.hisp", "w.pct.female")
 
 ## Get unit matches
 
-We'll now leverage sampling + MatchIt packages joint functionality, and match districts with their candidate replacements among the non-initially selected units using [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance). We could also do this using propensity scores, as specified on [MatchIt's documentation](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html#trying-a-different-matching-specification), and the output structure will be exacrtly the same:
+We'll now leverage sampling + MatchIt packages joint functionality, and match districts with their candidate replacements among the non-initially selected units using [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance). We could also do this using propensity scores, as specified on [MatchIt](https://cran.r-project.org/package=MatchIt), and the output structure would be exactly the same:
 
 ```{r}
 smOut <- selectMatch(df = dfCCD, # user dataset
