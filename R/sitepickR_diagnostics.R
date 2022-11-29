@@ -11,14 +11,16 @@
 #' @name unitLovePlot
 #' @param smOut list; selectMatch() output
 #' @param title character; user-specified figure title
+#' @param subtitle character; user-specified figure subtitle
 #' @return ggplot object
 #' @export
 unitLovePlot <- function(smOut,
-                         title="Standardized Mean Difference: \n Initially Selected Units vs. Population"){
+                         title="Standardized Mean Difference",
+                         subtitle="Initially Selected Units vs. Population"){
   
   return(smOut[[4]] +
            ggplot2::xlim(-1, 1) +
-           ggplot2::ggtitle(title) +
+           ggplot2::labs(title=title, subtitle=subtitle) +
            ggplot2::theme(title=ggplot2::element_text(size=10),
                           axis.text.x=ggplot2::element_text(size=9),
                           axis.text.y=ggplot2::element_text(size=9)))
@@ -30,14 +32,16 @@ unitLovePlot <- function(smOut,
 #' @name matchBalance
 #' @param smOut list; selectMatch() output
 #' @param title character; user-specified figure title
+#' @param subtitle character; user-specified figure title
 #' @return ggplot object
 #' @export
 matchBalance <- function(smOut,
-                            title="Standardized Mean Difference: Replacement Unit Groups (1...K) vs. Originally Selected Units"){
+                        title="Standardized Mean Difference:",
+                       subtitle="Replacement Unit Groups (1...K) vs. Originally Selected Units"){
   
   return(smOut[[5]][[2]] + 
            ggplot2::ylim(-2, 2) +
-           ggplot2::ggtitle(title) +
+           ggplot2::labs(title=title, subtitle=subtitle) +
            ggplot2::theme(title=ggplot2::element_text(size=10),
                                                                      axis.text.x=ggplot2::element_text(size=9),
                                                                      axis.text.y=ggplot2::element_text(size=9)))

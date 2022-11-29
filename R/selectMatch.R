@@ -5,6 +5,10 @@
 ##########################################################################################################
 
 #' @importFrom magrittr "%>%"
+#' @importFrom stats "as.formula"
+#' @importFrom stats "na.omit"
+#' @importFrom stats  "setNames"
+#' @importFrom utils "write.csv"
 
 # Helper 1. Obtain best unit matches
 
@@ -100,7 +104,7 @@ getMatches <- function(dfSU, sizeFlag, unitVars, exactMatchVars,
       }
       
       # Re-compute the weights using the updates match.matrix
-      m1$weights <- MatchIt:::weights.matrix(m1$match.matrix, m1$treat)
+      m1$weights <- weights.matrix(m1$match.matrix, m1$treat)
       
       unitMatch <- m1} else {
         
@@ -135,8 +139,8 @@ getMatches <- function(dfSU, sizeFlag, unitVars, exactMatchVars,
           }
           
           #Re-compute weights and subclasses from new match.matrix
-          m1$weights <- MatchIt:::weights.matrix(m1$match.matrix, m1$treat)
-          m1$subclass <- MatchIt:::mm2subclass(m1$match.matrix, m1$treat)
+          m1$weights <- weights.matrix(m1$match.matrix, m1$treat)
+          m1$subclass <- mm2subclass(m1$match.matrix, m1$treat)
           
           unitMatch <- m1} 
         
@@ -168,6 +172,89 @@ getUnitID <- function(idxCol, units){
   return(res)
 }
 
+# Helper 3. Recover weights matrix from a MatchIt object \n [ref: https://rdrr.io/cran/MatchIt/src/R/weights.matrix.R]
+#' @noRd
+#' @param match.matrix
+#' @param treat
+#' @return matrix
+weights.matrix <- function(match.matrix, treat) {
+  
+    
+    n <- length(treat)
+    labels <- names(treat)
+    tlabels <- labels[treat == 1]
+    clabels <- labels[treat == 0]
+    
+    
+    match.matrix <- match.matrix[tlabels,, drop=F]
+    num.matches <- dim(match.matrix)[2] - apply(as.matrix(match.matrix), 1,
+                                                function(x){ sum(is.na(x)) })
+    names(num.matches) <- tlabels
+    
+    t.units <- row.names(match.matrix)[num.matches > 0]
+    c.units <- na.omit(as.vector(as.matrix(match.matrix)))
+    
+    weights <- rep(0, length(treat))
+    names(weights) <- labels
+    weights[t.units] <- 1
+    
+    for (cont in clabels) {
+      treats <- na.omit(row.names(match.matrix)[cont == match.matrix[,1]])
+      if (dim(match.matrix)[2] > 1) {
+        for (j in 2:dim(match.matrix)[2]) {
+          treats <- c(na.omit(row.names(match.matrix)[cont == match.matrix[,j]]), treats)
+        }
+      }
+      for (k in unique(treats)) {
+        weights[cont] <- weights[cont] + 1 / num.matches[k]
+      }
+    }
+    
+    if (sum(weights[clabels]) == 0) {
+      weights[clabels] <- rep(0, length(weights[clabels]))
+    } else {
+      weights[clabels] <- weights[clabels] * length(unique(c.units)) / sum(weights[clabels])
+    }
+    
+
+    if (sum(weights) == 0) {
+      stop("No units were matched")
+    } else if (sum(weights[tlabels]) == 0) {
+      stop("No treated units were matched")
+    } else if (sum(weights[clabels]) == 0) {
+      stop("No control units were matched")
+    }
+    
+    return(weights)
+  }
+
+
+# Helper 4. Aux \n [ref: https://rdrr.io/cran/MatchIt/src/R/aux_functions.R]
+#' @noRd
+charmm2nummm <- function(charmm, treat) {
+  nummm <- array(NA_integer_, dim = dim(charmm))
+  n_index <- setNames(seq_along(treat), names(treat))
+  nummm[] <- n_index[charmm]
+  nummm
+}
+
+# Helper 5. Aux \n [ref: https://rdrr.io/cran/MatchIt/src/R/aux_functions.R]
+#' @noRd
+#Get subclass from match.matrix. Only to be used if replace = FALSE. See subclass2mmC.cpp for reverse.
+mm2subclass <- function(mm, treat) {
+  lab <- names(treat)
+  ind1 <- which(treat == 1)
+  
+  subclass <- setNames(rep(NA_character_, length(treat)), lab)
+  no.match <- is.na(mm)
+  subclass[ind1[!no.match[,1]]] <- ind1[!no.match[,1]]
+  subclass[mm[!no.match]] <- ind1[row(mm)[!no.match]]
+  
+  subclass <- setNames(factor(subclass, nmax = length(ind1)), lab)
+  levels(subclass) <- seq_len(nlevels(subclass))
+  
+  return(subclass)
+}
 
 #' Initial Unit Selection
 #' @noRd
