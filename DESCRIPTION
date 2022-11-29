@@ -11,18 +11,18 @@ Authors@R: c(
     person("Elizabeth", "Stuart", , "estuart1@jhu.edu",role = "aut",
            comment = c(ORCID = ""))
   )
-Description: Carries out a two-level sample selection where the possibility of an initially selected site not wanting to participate is anticipated, and the site is optimally replaced. The procedure aims to reduce the bias (and/or loss of generalizability) with respect to the target population.
+Description: Carries out a two-level sample selection where the possibility of an initially selected site not wanting to participate is anticipated, and the site is optimally replaced. The procedure aims to reduce bias (and/or loss of external validity) with respect to the target population.
 Imports: MatchIt, sampling, dplyr, ggplot2, reshape2, data.table,
         stats, stringr, tidyr, magrittr, tidyselect, scales
 License: GPL (>=3)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2
 Depends: R (>= 2.10)
 Suggests: knitr, rmarkdown, devtools
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2022-11-29 13:39:22 UTC; r1707404
+Packaged: 2022-11-29 16:56:39 UTC; r1707404
 Author: Elena Badillo-Goicoechea [aut, cre],
   Robert Olsen [aut],
   Elizabeth Stuart [aut]
